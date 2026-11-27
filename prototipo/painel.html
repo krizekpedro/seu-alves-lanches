@@ -216,21 +216,31 @@ button:focus-visible{outline:2px solid #FBBF24;outline-offset:2px}
               <span class="sub">{{trTitle}}</span>
               <span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 26px; color: #FBBF24;">{{trTotal}}</span>
               <span style="font-size: 12px; font-weight: 600; color: {{trVarColor}};">{{trVar}}</span>
+              <span style="align-self: flex-start; margin-top: 4px; padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; color: {{trTrendColor}}; background: {{trTrendBg}};">{{trTrendTxt}}</span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
               <div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end;"><sc-for list="{{trPeriods}}" as="p" hint-placeholder-count="3"><button type="button" style="{{p.style}}" onClick="{{p.pick}}">{{p.label}}</button></sc-for></div>
               <div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end;"><sc-for list="{{trMetrics}}" as="p" hint-placeholder-count="2"><button type="button" style="{{p.style}}" onClick="{{p.pick}}">{{p.label}}</button></sc-for></div>
             </div>
           </div>
+          <sc-if value="{{trIsMes}}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+              <button type="button" aria-label="Mês anterior" onClick="{{trMesPrev}}" style="{{trPrevS}}">‹</button>
+              <span style="min-width: 150px; text-align: center; font-size: 14px; font-weight: 700; color: #F5E9D7;">{{trMesLabel}}</span>
+              <button type="button" aria-label="Próximo mês" onClick="{{trMesNext}}" style="{{trNextS}}">›</button>
+            </div>
+          </sc-if>
           <svg viewBox="0 0 320 130" width="100%" preserveAspectRatio="none" role="img" aria-label="{{trAria}}" style="display: block; height: 230px;">
             <defs><linearGradient id="trGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F59E0B" stop-opacity="0.35"></stop><stop offset="1" stop-color="#F59E0B" stop-opacity="0"></stop></linearGradient></defs>
             <path d="M0 42H320M0 83H320M0 124H320" stroke="rgba(255,255,255,.06)" stroke-width="1" vector-effect="non-scaling-stroke"></path>
             <path d="{{trArea}}" fill="url(#trGrad)"></path>
             <path d="{{trPrev}}" fill="none" stroke="#71717A" stroke-width="1.5" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"></path>
-            <path d="{{trLine}}" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
+            <path d="{{trProj}}" fill="none" stroke="#FBBF24" stroke-opacity="0.7" stroke-width="2" stroke-dasharray="2 5" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
+            <path d="{{trLine}}" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
+            <path d="{{trTrend}}" fill="none" stroke="{{trTrendColor}}" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
           </svg>
           <div style="display: flex; justify-content: space-between; gap: 4px; margin-top: -4px;"><sc-for list="{{trLabels}}" as="l" hint-placeholder-count="6"><span class="num" style="font-size: 10px; color: #A1A1AA;">{{l.t}}</span></sc-for></div>
-          <div style="display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: #A1A1AA;"><span><span style="display: inline-block; width: 14px; height: 3px; border-radius: 2px; background: #F59E0B; vertical-align: middle;"></span> Este período</span><span><span style="display: inline-block; width: 14px; border-top: 2px dashed #71717A; vertical-align: middle;"></span> Período anterior</span></div>
+          <div style="display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: #A1A1AA;"><span><span style="display: inline-block; width: 14px; height: 3px; border-radius: 2px; background: #F59E0B; vertical-align: middle;"></span> Vendas</span><span><span style="display: inline-block; width: 14px; height: 3px; border-radius: 2px; background: {{trTrendColor}}; vertical-align: middle;"></span> Linha de tendência</span><span><span style="display: inline-block; width: 14px; border-top: 2px dashed #71717A; vertical-align: middle;"></span> {{trLegendPrev}}</span><sc-if value="{{trHasProj}}" hint-placeholder-val="{{ true }}"><span><span style="display: inline-block; width: 14px; border-top: 2px dotted #FBBF24; vertical-align: middle;"></span> Projeção até o fim do mês</span></sc-if></div>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;">
             <sc-for list="{{trInsights}}" as="i" hint-placeholder-count="4">
               <div style="padding: 10px 12px; border-radius: 12px; background: #202024; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 11px; color: #A1A1AA;">{{i.k}}</span><span style="font-size: 14px; font-weight: 700; color: #F5E9D7;">{{i.v}}</span></div>
@@ -1859,58 +1869,111 @@ class Component extends DCLogic {
     });
   }
   salesTrend() {
-    // Tendência de vendas: série deste período x período anterior (linha tracejada).
+    // Tendência de vendas: série do período x período anterior (linha tracejada).
     // Padrão semanal e horário de pico vêm das vendas reais da OlaClick; valores em escala de exemplo.
-    var self = this, st = this.state, per = st.trP || '30', met = st.trM || 'fat';
+    var self = this, st = this.state, per = st.trP || 'mes', met = st.trM || 'fat', mOff = st.trMes || 0;
     var WD = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'], WF = [1.25, 0.35, 1.05, 1.15, 0.95, 1.2, 1.35];
     var MES = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-    var end = new Date(2026, 10, 27), cur = [], prev = [], labels = [], n;
+    var MESL = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+    var TODAY = new Date(2026, 10, 27), META = 52000, TICKET = 41.9;
+    var cur = [], prev = [], labels = [], n, slots, proj = null, sub = '', insights;
     function noise(i, s) { return 1 + 0.09 * Math.sin(i * 2.3 + s) + 0.05 * Math.cos(i * 0.7 + s * 3); }
-    if (per === '12') {
-      n = 12;
-      for (var m = 0; m < n; m++) {
-        var mi = (10 - 11 + m + 12) % 12;
-        cur.push(36500 + m * 1060 * noise(m, 1)); prev.push(30800 + m * 820 * noise(m, 4));
-        labels.push(MES[mi]);
-      }
-      cur[n - 1] = 48200;
-    } else {
-      n = per === '7' ? 7 : 30;
-      for (var i = 0; i < n; i++) {
-        var d = new Date(end.getTime() - (n - 1 - i) * 86400000), w = d.getDay();
-        cur.push(1520 * WF[w] * noise(i, 1) * (1 + i * 0.004)); prev.push(1430 * WF[w] * noise(i, 5));
-        labels.push(per === '7' ? WD[w] : (('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2)));
-      }
+    function monthTotal(off) { var m = 11 - off; return off === 0 ? 48200 : Math.round(36500 + m * 1060 * noise(m, 1)); }
+    // Vendas dia a dia de um mês (off = meses atrás). O mês atual soma R$ 48.200 até hoje.
+    function monthDays(off) {
+      var y = TODAY.getFullYear(), m = TODAY.getMonth() - off;
+      var first = new Date(y, m, 1), dim = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+      // Inclinação de exemplo: a maioria dos meses sobe; um em cada três cai um pouco.
+      var upto = off === 0 ? TODAY.getDate() : dim, raw = [], w = [], g = off % 3 === 2 ? -0.008 : 0.014;
+      for (var d = 1; d <= dim; d++) { var wd = new Date(first.getFullYear(), first.getMonth(), d).getDay(); w.push(wd); raw.push(WF[wd] * noise(d + off * 31, off + 1) * (1 + g * d)); }
+      var base = 0; for (var i = 0; i < (off === 0 ? upto : dim); i++) base += raw[i];
+      var k = monthTotal(off) / base;
+      return { y: first.getFullYear(), m: first.getMonth(), dim: dim, upto: upto, wd: w, vals: raw.map(function (v) { return v * k; }), weights: raw };
     }
-    var TICKET = 41.9;
-    if (met === 'ped') { cur = cur.map(function (v) { return v / TICKET; }); prev = prev.map(function (v) { return v / (TICKET * 0.97); }); }
-    var W = 320, H = 130, PT = 10, PB = 6, max = Math.max.apply(null, cur.concat(prev)) * 1.08;
-    function x(i) { return n === 1 ? W / 2 : 4 + i * (W - 8) / (n - 1); }
-    function y(v) { return PT + (H - PT - PB) * (1 - v / max); }
-    function path(arr) { return arr.map(function (v, i) { return (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1); }).join(' '); }
-    var line = path(cur), area = line + ' L' + x(n - 1).toFixed(1) + ' ' + (H - PB) + ' L' + x(0).toFixed(1) + ' ' + (H - PB) + ' Z';
     var sum = function (a) { return a.reduce(function (s, v) { return s + v; }, 0); };
-    var tot = sum(cur), ptot = sum(prev), vr = (tot / ptot - 1) * 100;
-    var step = n === 30 ? 6 : n === 12 ? 2 : 1, lab = [];
-    for (var k = 0; k < n; k += step) lab.push({ t: labels[k] });
-    if ((n - 1) % step) lab.push({ t: labels[n - 1] });
-    var bestI = cur.indexOf(Math.max.apply(null, cur));
-    function chipS(on) { return 'min-height:32px;padding:0 12px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;' + (on ? 'border:1px solid #F59E0B;background:rgba(245,158,11,.16);color:#FBBF24;' : 'border:1px solid rgba(255,255,255,.12);background:transparent;color:#D4D4D8;'); }
-    var nomeP = { '7': 'últimos 7 dias', '30': 'últimos 30 dias', '12': 'últimos 12 meses' }[per];
-    return {
-      trTitle: met === 'fat' ? 'Faturamento · ' + nomeP : 'Pedidos · ' + nomeP,
-      trTotal: met === 'fat' ? self.brl(tot, 0) : Math.round(tot).toLocaleString('pt-BR') + ' pedidos',
-      trVar: (vr >= 0 ? '▲ ' : '▼ ') + Math.abs(vr).toFixed(1).replace('.', ',') + '% vs. período anterior', trVarColor: vr >= 0 ? '#22C55E' : '#F87171',
-      trLine: line, trArea: area, trPrev: path(prev), trLastX: x(n - 1).toFixed(1), trLastY: y(cur[n - 1]).toFixed(1), trLabels: lab,
-      trAria: 'Gráfico de linha: ' + (met === 'fat' ? 'faturamento' : 'pedidos') + ' nos ' + nomeP + ', comparado ao período anterior',
-      trPeriods: [['7', '7 dias'], ['30', '30 dias'], ['12', '12 meses']].map(function (p) { return { label: p[1], style: chipS(per === p[0]), pick: function () { self.setState({ trP: p[0] }); } }; }),
-      trMetrics: [['fat', 'Faturamento'], ['ped', 'Pedidos']].map(function (p) { return { label: p[1], style: chipS(met === p[0]), pick: function () { self.setState({ trM: p[0] }); } }; }),
-      trInsights: [
-        { k: per === '12' ? 'Melhor mês' : 'Melhor dia', v: labels[bestI] + (per === '30' ? ' (' + WD[new Date(end.getTime() - (n - 1 - bestI) * 86400000).getDay()] + ')' : '') },
+    if (per === 'mes') {
+      var A = monthDays(mOff), B = monthDays(mOff + 1);
+      slots = A.dim; n = A.upto;
+      cur = A.vals.slice(0, n); prev = B.vals.slice(0, Math.min(B.dim, A.dim));
+      for (var d2 = 1; d2 <= A.dim; d2++) labels.push(('0' + d2).slice(-2));
+      if (n < A.dim) {
+        var done = sum(A.weights.slice(0, n)), all = sum(A.weights), k2 = sum(cur) / done;
+        proj = [cur[n - 1]].concat(A.weights.slice(n).map(function (w) { return w * k2; }));
+      }
+      var mesNome = MESL[A.m], mesAnt = MESL[B.m];
+      sub = (mOff === 0 ? mesNome + ' até hoje (dia ' + n + ')' : mesNome + ' de ' + A.y + ' completo');
+      var accPrev = sum(B.vals.slice(0, n));
+      var totFat = sum(A.vals.slice(0, n)), projFat = proj ? totFat / done * all : totFat;
+      var bestD = A.vals.slice(0, n).indexOf(Math.max.apply(null, A.vals.slice(0, n)));
+      insights = [
+        { k: mOff === 0 ? 'Projeção do mês' : 'Fechou o mês em', v: self.brl(projFat, 0) },
+        { k: 'Meta do mês (' + self.brl(META, 0) + ')', v: Math.round(projFat / META * 100) + '% ' + (mOff === 0 ? 'previsto' : 'atingido') },
+        { k: 'Média por dia', v: self.brl(totFat / n, 0) },
+        { k: 'Melhor dia', v: ('0' + (bestD + 1)).slice(-2) + '/' + ('0' + (A.m + 1)).slice(-2) + ' (' + WD[A.wd[bestD]] + ')' }
+      ];
+      var cmpTxt = mOff === 0 ? 'mesmos ' + n + ' dias de ' + mesAnt : mesAnt;
+    } else if (per === '12') {
+      n = slots = 12;
+      for (var mm = 0; mm < n; mm++) { cur.push(monthTotal(11 - mm)); prev.push(30800 + mm * 820 * noise(mm, 4)); labels.push(MES[(TODAY.getMonth() - 11 + mm + 12) % 12]); }
+      sub = 'últimos 12 meses';
+    } else {
+      n = slots = per === '7' ? 7 : 30;
+      for (var i = 0; i < n; i++) {
+        var dd = new Date(TODAY.getTime() - (n - 1 - i) * 86400000), w2 = dd.getDay();
+        cur.push(1520 * WF[w2] * noise(i, 1) * (1 + i * 0.004)); prev.push(1430 * WF[w2] * noise(i, 5));
+        labels.push(per === '7' ? WD[w2] : (('0' + dd.getDate()).slice(-2) + '/' + ('0' + (dd.getMonth() + 1)).slice(-2)));
+      }
+      sub = per === '7' ? 'últimos 7 dias' : 'últimos 30 dias';
+    }
+    if (met === 'ped') {
+      var toP = function (v) { return v / TICKET; };
+      cur = cur.map(toP); prev = prev.map(function (v) { return v / (TICKET * 0.97); }); if (proj) proj = proj.map(toP);
+    }
+    var Wd = 320, H = 130, PT = 10, PB = 6, max = Math.max.apply(null, cur.concat(prev, proj || [])) * 1.08;
+    function x(i) { return 4 + i * (Wd - 8) / (slots - 1); }
+    function y(v) { return PT + (H - PT - PB) * (1 - v / max); }
+    function path(arr, from) { return arr.map(function (v, i) { return (i ? 'L' : 'M') + x(i + (from || 0)).toFixed(1) + ' ' + y(v).toFixed(1); }).join(' '); }
+    // Linha de tendência: reta pelos mínimos quadrados sobre os pontos do período.
+    var mx = (n - 1) / 2, my = cur.reduce(function (s0, v) { return s0 + v; }, 0) / n, sxy = 0, sxx = 0;
+    cur.forEach(function (v, i) { sxy += (i - mx) * (v - my); sxx += (i - mx) * (i - mx); });
+    var slope = sxx ? sxy / sxx : 0, icpt = my - slope * mx, tEnd = per === 'mes' ? slots - 1 : n - 1;
+    var trendPath = 'M' + x(0).toFixed(1) + ' ' + y(icpt).toFixed(1) + ' L' + x(tEnd).toFixed(1) + ' ' + y(icpt + slope * tEnd).toFixed(1);
+    var trendPct = my ? slope * (n - 1) / my * 100 : 0, up = trendPct > 2, down = trendPct < -2;
+    var unit = per === '12' ? 'mês' : 'dia', slopeTxt = met === 'fat' ? self.brl(Math.abs(slope), 0) : (Math.round(Math.abs(slope) * 10) / 10).toString().replace('.', ',') + ' pedidos';
+    var line = path(cur), area = line + ' L' + x(n - 1).toFixed(1) + ' ' + (H - PB) + ' L' + x(0).toFixed(1) + ' ' + (H - PB) + ' Z';
+    var tot = sum(cur), ptot = per === 'mes' ? (met === 'ped' ? accPrev / (TICKET * 0.97) : accPrev) : sum(prev), vr = (tot / ptot - 1) * 100;
+    if (per !== 'mes') {
+      var bestI = cur.indexOf(Math.max.apply(null, cur));
+      insights = [
+        { k: per === '12' ? 'Melhor mês' : 'Melhor dia', v: labels[bestI] },
         { k: 'Dias mais fortes', v: 'Sáb, Dom e Sex' },
         { k: 'Horário de pico', v: '20h às 22h' },
         { k: 'Ticket médio', v: self.brl(TICKET, 2) }
-      ]
+      ];
+    }
+    var step = slots >= 28 ? 7 : slots === 12 ? 2 : 1, lab = [];
+    for (var s2 = 0; s2 < slots; s2 += step) lab.push({ t: labels[s2] });
+    if ((slots - 1) % step) lab.push({ t: labels[slots - 1] });
+    function chipS(on) { return 'min-height:32px;padding:0 12px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;' + (on ? 'border:1px solid #F59E0B;background:rgba(245,158,11,.16);color:#FBBF24;' : 'border:1px solid rgba(255,255,255,.12);background:transparent;color:#D4D4D8;'); }
+    var navM = new Date(TODAY.getFullYear(), TODAY.getMonth() - mOff, 1);
+    var navS = 'width:34px;height:34px;border-radius:99px;border:1px solid rgba(255,255,255,.12);background:transparent;color:#F5E9D7;font-size:16px;cursor:pointer;';
+    return {
+      trTitle: (met === 'fat' ? 'Faturamento · ' : 'Pedidos · ') + sub,
+      trTotal: met === 'fat' ? self.brl(tot, 0) : Math.round(tot).toLocaleString('pt-BR') + ' pedidos',
+      trVar: (vr >= 0 ? '▲ ' : '▼ ') + Math.abs(vr).toFixed(1).replace('.', ',') + '% vs. ' + (per === 'mes' ? cmpTxt : 'período anterior'), trVarColor: vr >= 0 ? '#22C55E' : '#F87171',
+      trTrend: trendPath, trTrendColor: up ? '#22C55E' : down ? '#F87171' : '#A1A1AA',
+      trTrendTxt: (up ? '↗ Tendência de alta' : down ? '↘ Tendência de baixa' : '→ Tendência estável') + ' · ' + (slope >= 0 ? '+' : '−') + slopeTxt + ' por ' + unit,
+      trTrendBg: up ? 'rgba(34,197,94,.14)' : down ? 'rgba(248,113,113,.14)' : 'rgba(161,161,170,.14)',
+      trLine: line, trArea: area, trPrev: path(prev), trProj: proj ? path(proj, n - 1) : '', trHasProj: !!proj, trLabels: lab,
+      trAria: 'Gráfico de linha: ' + (met === 'fat' ? 'faturamento' : 'pedidos') + ' · ' + sub + ', comparado ao período anterior',
+      trLegendPrev: per === 'mes' ? 'Mês anterior' : 'Período anterior',
+      trIsMes: per === 'mes', trMesLabel: MESL[navM.getMonth()].charAt(0).toUpperCase() + MESL[navM.getMonth()].slice(1) + ' ' + navM.getFullYear(),
+      trMesPrev: function () { self.setState({ trMes: Math.min(11, mOff + 1) }); },
+      trMesNext: function () { self.setState({ trMes: Math.max(0, mOff - 1) }); },
+      trPrevS: navS + (mOff >= 11 ? 'opacity:.35;' : ''), trNextS: navS + (mOff === 0 ? 'opacity:.35;' : ''),
+      trPeriods: [['mes', 'Mês'], ['7', '7 dias'], ['30', '30 dias'], ['12', '12 meses']].map(function (p) { return { label: p[1], style: chipS(per === p[0]), pick: function () { self.setState({ trP: p[0] }); } }; }),
+      trMetrics: [['fat', 'Faturamento'], ['ped', 'Pedidos']].map(function (p) { return { label: p[1], style: chipS(met === p[0]), pick: function () { self.setState({ trM: p[0] }); } }; }),
+      trInsights: insights
     };
   }
 
