@@ -1,6 +1,6 @@
 # Seu Alves — Plano Arquitetural do Sistema Unificado de Delivery
 
-> Versão 0.5 · 27/11/2026 · Documento de desenho (ainda sem código de aplicação)
+> Versão 0.6 · 27/11/2026 · Documento de desenho (ainda sem código de aplicação)
 
 Este documento une os quatro pilares (WhatsApp/atendimento, cardápio + PDV + KDS, iFood e financeiro) em um único sistema próprio, já considerando as respostas do questionário inicial. Onde algo ainda depende de uma informação sua, está marcado com **⚠ A confirmar**.
 
@@ -255,6 +255,21 @@ Objetivo: saber **onde o pedido está demorando** e se cada etapa está dentro d
 - uma frase automática apontando o maior gargalo (ex.: "espera do motoboy entre 20h e 22h");
 - tempos por motoboy e por cozinheiro/turno, para acompanhamento;
 - alerta em tempo real no KDS e no painel quando um pedido passa da meta numa etapa.
+
+### 1.11 Recursos de operação e crescimento
+
+Recursos que entram no núcleo, desenhados junto com o protótipo:
+
+| Recurso | Como funciona | Peças técnicas |
+|---|---|---|
+| **Acompanhamento do pedido pelo cliente** | Ao confirmar, o cliente recebe no WhatsApp um link com a linha do tempo do pedido (recebido, aceito, em preparo, saiu com o motoboy, entregue), previsão de chegada e, na rua, a posição do motoboy. Reduz as mensagens de "cadê meu pedido?". | página pública por `tracking_token` (sem login), atualizada por WebSocket; posição vinda do app do motoboy |
+| **Fechamento de caixa** | Abertura com troco inicial, sangrias e suprimentos com PIN de gerente, e no fim do turno a conferência do dinheiro contado contra o esperado, mais a maquininha e o Pix. A diferença fica registrada e vai para o financeiro. | `cash_sessions`, `cash_movements`, ligação com `financial_entries` |
+| **Esgotar em todos os canais** | Um botão no cadastro pausa o item no iFood, no cardápio próprio e no PDV ao mesmo tempo. O item também esgota sozinho quando um insumo obrigatório da ficha técnica zera, e volta quando entra uma nota de compra. | `product_availability`, evento `availability.changed`, adaptador iFood (API de catálogo) |
+| **Lista de compras automática** | Para cada insumo: estoque atual, mínimo e consumo médio dos últimos dias, projetado até a próxima compra. O sistema sugere a quantidade e monta o pedido por fornecedor para enviar pelo WhatsApp. | `purchase_suggestions`, `purchase_orders`, envio por template no WhatsApp |
+| **Ritmo da cozinha** | O tempo prometido ao cliente se ajusta ao tamanho da fila. Acima de um limite configurável de pedidos em preparo, o iFood é pausado automaticamente por alguns minutos e reaberto depois. | cálculo a partir da fila e das médias da seção 1.10; API de interrupções da loja no iFood |
+| **Fidelidade e campanhas** | Cashback nos pedidos dos canais próprios, cupons e campanhas automáticas no WhatsApp ("sumido há 30 dias", aniversário), com medição de quantos voltaram e quanto faturaram. Objetivo: tirar pedidos do iFood e levar para o cardápio próprio, sem comissão. | `loyalty_ledger`, `coupons`, `campaigns`, `campaign_sends` (templates de marketing da Meta, com consentimento) |
+| **Avaliação depois da entrega** | Mensagem no WhatsApp com nota de 1 a 5. Nota baixa vira alerta para o dono responder pessoalmente. | `reviews` ligado a pedido, canal, motoboy e tempos |
+| **Equipe e convites** | O dono cadastra o funcionário com nome, celular e função; a pessoa recebe um convite no WhatsApp e cria o próprio PIN. Desativar mantém o histórico. | `users`, `store_users`, `user_invites` |
 
 ---
 
@@ -697,6 +712,12 @@ Receita bruta (por canal: iFood | Cardápio | WhatsApp | Balcão)
 | `outbox_events` | id, tipo (order.created, order.status_changed…), agregado_id, payload, criado_em, publicado_em |
 | `store_devices` | id, store_id, tipo (impressora, kds, pdv), nome, driver (escpos_rede, escpos_usb, serial, bluetooth, navegador), conexão (IP/porta, caminho), largura_papel, perfil_codepage, roteamento (praças e tipos de ticket), ativo |
 | `service_targets` | id, store_id, tipo_pedido (delivery, balcão, retirada), etapa (aceite, preparo, espera_motoboy, rota, entrega_balcao), meta_minutos, faixa_horario (opcional), dias_semana (opcional) |
+| `cash_sessions` / `cash_movements` | sessão de caixa (aparelho, quem abriu e fechou, troco inicial, esperado × contado, diferença) e seus movimentos (venda, sangria, suprimento, pagamento) |
+| `product_availability` | store_id, produto ou opção, canal (ou todos), disponível, motivo (manual, insumo zerado, horário), até quando |
+| `purchase_suggestions` / `purchase_orders` | sugestão de compra por insumo e o pedido enviado ao fornecedor |
+| `loyalty_ledger`, `coupons`, `campaigns`, `campaign_sends` | cashback (créditos e usos), cupons, campanhas automáticas e envios |
+| `reviews` | order_id, nota, comentário, canal, respondido_por |
+| `user_invites` | celular, função, token, expira_em, aceito_em |
 | `sync_cursors` | provedor, store_id, cursor, atualizado_em |
 | `fiscal_documents` | id, order_id, tipo (NFC-e), chave, status, xml, danfe_url, protocolo |
 | `audit_log` | quem, o quê, quando, antes/depois (para cancelamentos, descontos, ajustes de estoque) |
@@ -775,6 +796,7 @@ A ideia é rodar o sistema novo **em paralelo** à OlaClick, assumindo um canal 
 - PDV de balcão (online) e KDS em tempo real com Aceitar/Pronto; impressão térmica via Hub da Loja.
 - App do motoboy (Peguei/Entreguei, QR no ticket) e tela de tempos e gargalos com metas por etapa.
 - Pedido único multicanal com máquina de estados; motoboys e entregas.
+- Fechamento de caixa, cadastro da equipe com convites e botão de esgotar em todos os canais.
 - Financeiro básico automático: receita bruta por canal e meios de pagamento, fechamento de caixa do dia.
 - **Marco:** balcão roda no sistema novo; OlaClick continua para o delivery.
 
@@ -782,6 +804,7 @@ A ideia é rodar o sistema novo **em paralelo** à OlaClick, assumindo um canal 
 - Novo cardápio digital ligado ao Core (pedido entra direto no KDS) com Pix dinâmico.
 - Chatwoot + WhatsApp Cloud API, resposta automática com link do cardápio, mensagens de status.
 - Dashboard App no Chatwoot para o atendente lançar pedidos.
+- Página de acompanhamento do pedido para o cliente e avaliação depois da entrega.
 - **Marco:** pedidos de WhatsApp e cardápio saem da OlaClick para o sistema novo.
 
 ### Fase 3 — iFood (2 a 3 semanas + homologação)
@@ -794,6 +817,7 @@ A ideia é rodar o sistema novo **em paralelo** à OlaClick, assumindo um canal 
 - Cadastro de insumos e fichas técnicas (começando pelos itens mais vendidos).
 - Importação de NF de compra por XML e por chave de acesso; vínculo fornecedor ↔ insumo; lotes.
 - Baixa PEPS automática ao concluir pedidos, aba de desperdício, inventário.
+- Esgotar automaticamente quando o insumo zera e lista de compras sugerida.
 - **Marco:** CMV real por pedido e por produto.
 
 ### Fase 5 — Financeiro completo e conciliação (3 semanas)
@@ -814,6 +838,7 @@ A ideia é rodar o sistema novo **em paralelo** à OlaClick, assumindo um canal 
 
 ### Fase 8 — Escala e multi-loja
 - Segunda loja (provável migração de MEI para ME e ativação da NFC-e): cadastro de nova `store`, merchant iFood próprio, estoque e caixa separados, relatórios consolidados.
+- Fidelidade (cashback, cupons, campanhas automáticas) e ritmo da cozinha com pausa automática do iFood (podem ser antecipados assim que as Fases 2 e 3 estiverem rodando).
 - Opcionais: Typebot para fluxos mais elaborados, n8n para automações (avaliações, campanhas), programa de fidelidade, novos marketplaces.
 
 As durações são estimativas para uma pessoa desenvolvendo com apoio de IA, em ritmo parcial; servem para ordem e proporção, não como prazo fechado.
