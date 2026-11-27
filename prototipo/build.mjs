@@ -14,7 +14,7 @@ const pages = [
   { file: 'Main.dc.html', out: 'painel.html', title: 'Seu Alves · Painel de gestão', phone: false },
   { file: 'Celular.dc.html', out: 'app-dono.html', title: 'Seu Alves · App do dono', phone: true },
   { file: 'Funcionario.dc.html', out: 'funcionario.html', title: 'Seu Alves · Área do funcionário', phone: true },
-  { file: 'Cliente.dc.html', out: 'cliente.html', title: 'Seu Alves · Cardápio e acompanhamento', phone: true },
+  { file: 'Cliente.dc.html', out: 'cliente.html', title: 'Seu Alves · Cardápio e acompanhamento', phone: false },
 ];
 
 const runtime = readFileSync(join(here, 'runtime.js'), 'utf8');
@@ -43,9 +43,10 @@ body{display:flex;justify-content:center;align-items:center;min-height:100dvh;ba
 ${helmet.trim()}
 <style>*{box-sizing:border-box}${phoneCss}
 .proto-back{position:fixed;left:12px;bottom:12px;z-index:50;padding:8px 12px;border-radius:99px;background:rgba(15,15,15,.85);border:1px solid rgba(245,158,11,.4);color:#FBBF24;font:600 12px Inter,system-ui,sans-serif;text-decoration:none}
-@media (max-width:499px){.proto-phone .proto-back{display:none}}</style>
+@media (max-width:499px){.proto-phone .proto-back{display:none}}
+@media (max-width:899px){.proto-top .proto-back{top:10px;bottom:auto;left:auto;right:10px}}</style>
 </head>
-<body class="${p.phone ? 'proto-phone' : ''}">
+<body class="${p.phone ? 'proto-phone' : ''}${p.file === 'Cliente.dc.html' ? ' proto-top' : ''}">
 <div id="app"></div>
 <a class="proto-back" href="./">← Todas as telas</a>
 <template id="tpl">${tpl}</template>

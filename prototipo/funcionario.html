@@ -24,7 +24,8 @@ body{display:flex;justify-content:center;align-items:center;min-height:100dvh;ba
 #app>div{width:min(430px,100vw) !important;height:min(900px,100dvh) !important}
 @media (min-width:500px){#app>div{border-radius:28px;border:1px solid rgba(245,158,11,.25);box-shadow:0 30px 80px rgba(0,0,0,.6)}}
 .proto-back{position:fixed;left:12px;bottom:12px;z-index:50;padding:8px 12px;border-radius:99px;background:rgba(15,15,15,.85);border:1px solid rgba(245,158,11,.4);color:#FBBF24;font:600 12px Inter,system-ui,sans-serif;text-decoration:none}
-@media (max-width:499px){.proto-phone .proto-back{display:none}}</style>
+@media (max-width:499px){.proto-phone .proto-back{display:none}}
+@media (max-width:899px){.proto-top .proto-back{top:10px;bottom:auto;left:auto;right:10px}}</style>
 </head>
 <body class="proto-phone">
 <div id="app"></div>
@@ -86,29 +87,13 @@ body{display:flex;justify-content:center;align-items:center;min-height:100dvh;ba
               <span class="num" style="font-weight: 800; color: {{s.timeColor}};">{{s.time}}</span>
             </div>
           </sc-for>
-          <span class="sub" style="line-height: 1.45;">Cada registro gera um comprovante com data, hora e local, enviado no seu WhatsApp. Ninguém pode apagar um registro; correções ficam anotadas com quem fez.</span>
+          <span class="sub" style="line-height: 1.45;">Cada registro gera um comprovante enviado no seu WhatsApp. Ninguém pode apagar um registro; correções ficam anotadas com quem fez.</span>
+          <button type="button" class="btn2" onClick="{{askFix}}" style="min-height: 44px;">Esqueci de registrar: pedir correção</button>
         </div>
-      </div>
-    </sc-if>
-
-    <sc-if value="{{isHoras}}" hint-placeholder-val="{{ false }}">
-      <div style="display: flex; flex-direction: column; gap: 14px;">
-        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
-          <sc-for list="{{hourKpis}}" as="k" hint-placeholder-count="3">
-            <div class="card" style="padding: 12px; gap: 2px;"><span style="font-size: 11px; color: #A1A1AA;">{{k.label}}</span><span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 18px; color: {{k.color}};">{{k.value}}</span></div>
-          </sc-for>
+        <div class="card" style="gap: 6px; flex-direction: row; align-items: center;">
+          <span aria-hidden="true" style="font-size: 18px;">🔒</span>
+          <span class="sub" style="line-height: 1.45;">Horas trabalhadas, banco de horas e relatórios ficam só com o dono da loja.</span>
         </div>
-        <div class="card">
-          <h2 class="h3">Esta semana</h2>
-          <sc-for list="{{week}}" as="w" hint-placeholder-count="6">
-            <div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 12px; background: #202024;">
-              <div class="row" style="justify-content: space-between;"><span style="font-size: 14px; font-weight: 700;">{{w.day}}</span><span class="num" style="font-weight: 800; color: {{w.color}};">{{w.total}}</span></div>
-              <span class="num sub">{{w.detail}}</span>
-              <sc-if value="{{w.hasFlag}}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; color: #FDBA74;">{{w.flag}}</span></sc-if>
-            </div>
-          </sc-for>
-        </div>
-        <button type="button" class="btn2" onClick="{{askFix}}" style="min-height: 48px;">Pedir correção de um registro</button>
       </div>
     </sc-if>
 
@@ -133,8 +118,8 @@ body{display:flex;justify-content:center;align-items:center;min-height:100dvh;ba
     </sc-if>
   </div>
 
-  <nav aria-label="Seções" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 6px 6px 16px; background: #0A0A0A; border-top: 1px solid rgba(255,255,255,.08);">
-    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+  <nav aria-label="Seções" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 6px 6px 16px; background: #0A0A0A; border-top: 1px solid rgba(255,255,255,.08);">
+    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="2">
       <button type="button" onClick="{{t.pick}}" style="{{t.style}}">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>
         <span>{{t.label}}</span>
@@ -225,7 +210,7 @@ window.PROTO_IMG='../assets/img/produtos/';window.PROTO_LOGO='../assets/img/logo
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { tab: 'ponto', who: 'bruno', inStore: true, done: { bruno: 1, rita: 1, julia: 0 }, toast: '' };
+    this.state = { tab: 'ponto', who: 'bruno', inStore: true, done: { bruno: 1, rita: 1, julia: 0, leo: 0 }, toast: '' };
   }
   renderVals() {
     var self = this, st = this.state;
@@ -233,17 +218,19 @@ class Component extends DCLogic {
     var PEOPLE = {
       bruno: { name: 'Bruno', ini: 'BR', role: 'Caixa', shift: '17h45 às 00h30', opens: true, times: ['17:41', '17:58', '00:34', '00:41'] },
       rita: { name: 'Rita', ini: 'RI', role: 'Cozinha', shift: '17h30 às 00h00', opens: false, times: ['17:26', '', '', '00:06'] },
-      julia: { name: 'Júlia', ini: 'JU', role: 'Atendente', shift: '18h00 às 00h00', opens: false, times: ['17:59', '', '', '00:02'] }
+      julia: { name: 'Júlia', ini: 'JU', role: 'Atendente', shift: '18h00 às 00h00', opens: false, times: ['17:59', '', '', '00:02'] },
+      leo: { name: 'Léo', ini: 'LE', role: 'Motoboy', shift: '18h00 às 00h00', opens: false, moto: true, times: ['18:09', '', '', '00:12'] }
     };
-    var order = ['bruno', 'rita', 'julia'];
+    var order = ['bruno', 'rita', 'julia', 'leo'];
     var p = PEOPLE[st.who], n = st.done[st.who] || 0;
     var kinds = p.opens
       ? [['in', 'Entrada', 'chegou na loja'], ['open', 'Abertura da loja', 'loja aberta para pedidos'], ['close', 'Fechamento da loja', 'últimos pedidos encerrados'], ['out', 'Saída', 'foi embora']]
+      : p.moto ? [['in', 'Chegada na loja', 'pronto para as entregas'], ['out', 'Saída', 'última entrega feita']]
       : [['in', 'Entrada', 'chegou na loja'], ['out', 'Saída', 'foi embora']];
     var storeInfo = p.opens ? '' : 'Loja aberta hoje às 17:58 por Bruno.';
     var steps = kinds.map(function (k, i) {
       var done = i < n, next = i === n;
-      return { label: k[1], note: done ? k[2] + ' · na loja (12 m)' : (next ? 'próximo registro' : 'pendente'), time: done ? p.times[p.opens ? i : (i === 0 ? 0 : 3)] : '--:--',
+      return { label: k[1], note: done ? 'registrado · ' + k[2] : (next ? 'próximo registro' : 'pendente'), time: done ? '✓' : '',
         mark: done ? '✓' : '', dot: done ? '#22C55E' : (next ? '#F59E0B' : '#3F3F46'), dotBg: done ? '#22C55E' : 'transparent', notLast: i < kinds.length - 1,
         labelColor: done || next ? '#FAFAF9' : '#71717A', timeColor: done ? '#FAFAF9' : '#52525B' };
     });
@@ -262,18 +249,18 @@ class Component extends DCLogic {
       ['Dom 22', '7h36', '17:40 → 01:16 · abriu 17:56 · fechou 01:05', '#86EFAC', '+ 46 min de hora extra (movimento forte)']
     ].map(function (w) { return { day: w[0], total: w[1], detail: w[2], color: w[3], flag: w[4], hasFlag: !!w[4] }; });
     var scale = [['Sex', '27', '17h45 às 00h30', 'Caixa', 1], ['Sáb', '28', '17h00 às 01h00', 'Caixa', 0], ['Dom', '29', '17h00 às 00h30', 'Caixa', 0], ['Seg', '30', 'Folga', '', 2], ['Ter', '01', '17h45 às 00h30', 'Caixa', 0], ['Qua', '02', '17h45 às 00h30', 'Caixa', 0], ['Qui', '03', '17h45 às 00h30', 'Caixa', 0]].map(function (e) {
-      return { wd: e[0], d: e[1], shift: e[2], role: e[3], bg: e[4] === 1 ? 'rgba(245,158,11,.12)' : '#202024', color: e[4] === 2 ? '#71717A' : '#FAFAF9' };
+      return { wd: e[0], d: e[1], shift: e[2], role: e[3] ? p.role : '', bg: e[4] === 1 ? 'rgba(245,158,11,.12)' : '#202024', color: e[4] === 2 ? '#71717A' : '#FAFAF9' };
     });
-    var defs = [['ponto', 'Ponto', 'M12 7v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z'], ['horas', 'Minhas horas', 'M4 20V10M10 20V4M16 20v-7M22 20H2'], ['escala', 'Escala', 'M3 5h18v16H3zM3 10h18M8 3v4M16 3v4']];
+    var defs = [['ponto', 'Ponto', 'M12 7v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z'], ['escala', 'Escala', 'M3 5h18v16H3zM3 10h18M8 3v4M16 3v4']];
     var tabs = defs.map(function (d) {
       var on = st.tab === d[0];
       return { label: d[1], icon: d[2], pick: function () { set({ tab: d[0] }); },
         style: 'min-height:56px;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;font-weight:600;color:' + (on ? '#FBBF24' : '#A1A1AA') + ';' };
     });
-    var titles = { ponto: 'Meu ponto', horas: 'Minhas horas', escala: 'Minha escala' };
+    var titles = { ponto: 'Meu ponto', escala: 'Minha escala' };
     return {
       ini: p.ini, title: titles[st.tab], who: p.name + ' · ' + p.role + ' · Vila Kosmos', tabs: tabs,
-      isPonto: st.tab === 'ponto', isHoras: st.tab === 'horas', isEscala: st.tab === 'escala',
+      isPonto: st.tab === 'ponto', isEscala: st.tab === 'escala',
       switchUser: function () { var i = order.indexOf(self.state.who); set({ who: order[(i + 1) % order.length], toast: '' }); },
       toastOn: !!st.toast, toast: st.toast, closeToast: function () { set({ toast: '' }); },
       locTitle: st.inStore ? 'Você está na loja' : 'Você está fora da loja',
@@ -292,7 +279,7 @@ class Component extends DCLogic {
       punch: function () {
         if (!canPunch) { if (!allDone) set({ toast: 'Fora da loja: o ponto não foi registrado. O gestor foi avisado da tentativa.' }); return; }
         var nd = Object.assign({}, self.state.done); nd[self.state.who] = n + 1;
-        set({ done: nd, toast: nextK[1] + ' registrada às ' + nextTime + '. Comprovante enviado no seu WhatsApp.' });
+        set({ done: nd, toast: nextK[1] + ' registrada. Comprovante enviado no seu WhatsApp.' + (p.moto && n === 0 ? ' A loja foi avisada que você chegou.' : '') });
       },
       steps: steps,
       hourKpis: [{ label: 'Horas na semana', value: '28h06', color: '#FAFAF9' }, { label: 'Banco de horas', value: '+ 1h12', color: '#86EFAC' }, { label: 'Atrasos no mês', value: '2', color: '#FDBA74' }],
