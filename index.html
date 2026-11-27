@@ -6,7 +6,7 @@
   <title>Seu Alves Lanches | Cardápio Digital · Vila Kosmos, RJ</title>
   <meta name="description" content="Hambúrgueres artesanais, combos na caixa, porções e açaí. Peça pelo WhatsApp — Seu Alves Lanches, Vila Kosmos, Rio de Janeiro." />
   <meta name="theme-color" content="#0F0F0F" />
-  <link rel="icon" href="https://assets.olaclick.app/companies/logos/01bf6473-9273-413d-93dd-c51f71faf7b4.webp" />
+  <link rel="icon" href="assets/img/logo.webp" />
 
   <!-- Fontes -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -358,8 +358,8 @@ const LOJA = {
   nome: 'Seu Alves Lanches',
   whatsapp: '5521967350248', // DDI + DDD + número, só dígitos
   endereco: 'R. Sd. Ivo de Oliveira, 64 - Vila Kosmos, Rio de Janeiro - RJ, 21210-010',
-  logo: 'https://assets.olaclick.app/companies/logos/01bf6473-9273-413d-93dd-c51f71faf7b4.webp',
-  banner: 'https://assets.olaclick.app/companies/backgrounds/f9d0f8a5-877b-4f12-b69c-3c6b1991615a.webp',
+  logo: 'assets/img/logo.webp',
+  banner: 'assets/img/banner.webp',
 };
 
 // Horários (0 = domingo ... 6 = sábado). "fecha" 24:00 = meia-noite.
@@ -672,8 +672,9 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const brl = v => v == null ? 'A confirmar' : v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 // Se houver imagens embutidas no arquivo (IMAGENS_EMBUTIDAS), usa elas — funcionam offline e em qualquer visualizador.
 const EMB = window.IMAGENS_EMBUTIDAS || {};
+// Fotos resgatadas da OlaClick ficam em assets/img/produtos/<código>.webp (não dependem mais da OlaClick).
 const imgUrl = (code, size = 800) => !code ? '' : EMB[code] || (code.startsWith('http') ? code
-  : `https://assets.olaclick.app/companies/products/images/${size}/${code}.webp`);
+  : `assets/img/produtos/${code}.webp`);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#202024"/><text x="50" y="58" font-size="34" text-anchor="middle">🍔</text></svg>');

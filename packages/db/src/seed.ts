@@ -1,14 +1,16 @@
 /**
  * Seed inicial: cria a organização, a loja, a conta do dono, as metas de tempo
- * e importa o cardápio atual direto do index.html (cardápio estático do repositório).
+ * e importa o cardápio. Fonte preferida: data/olaclick/cardapio.json (exportado do painel da
+ * OlaClick, com adicionais, tamanhos e fotos). Sem esse arquivo, lê o cardápio do index.html.
  *
  * Uso: pnpm db:seed   (lê DATABASE_URL, OWNER_EMAIL e OWNER_PASSWORD do .env)
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import vm from 'node:vm';
 import bcrypt from 'bcryptjs';
 import { PrismaClient, OrderType } from '@prisma/client';
+import { mapOlaclickMenu, type OlaCardapio } from '../../shared/src/olaclick';
 
 const prisma = new PrismaClient();
 
@@ -71,9 +73,77 @@ async function main() {
     data: menu.bairros.map((b) => ({ storeId: store.id, name: b.nome, feeCents: cents(b.taxa) })),
   });
 
+  const olaPath = resolve(__dirname, '../../../data/olaclick/cardapio.json');
+  const summary = existsSync(olaPath)
+    ? await importOlaclick(store.id, JSON.parse(readFileSync(olaPath, 'utf8')) as OlaCardapio)
+    : await importStaticMenu(store.id, menu);
+
+  console.log(`Loja criada: ${store.name} (${store.id})`);
+  console.log(`Dono: ${ownerEmail}`);
+  console.log(`Bairros: ${menu.bairros.length}. ${summary}`);
+}
+
+/** Cardápio completo da OlaClick: categorias, produtos (ativos e escondidos), tamanhos e adicionais. */
+async function importOlaclick(storeId: string, raw: OlaCardapio) {
+  const menu = mapOlaclickMenu(raw);
+  const groupIds = new Map<string, string>();
+  for (const g of menu.grupos) {
+    const group = await prisma.optionGroup.create({
+      data: {
+        storeId,
+        name: g.nome,
+        min: g.min,
+        max: g.max,
+        options: { create: g.opcoes.map((o) => ({ name: o.nome, priceCents: o.precoCentavos, active: o.ativo })) },
+      },
+    });
+    groupIds.set(g.ref, group.id);
+  }
+  let produtos = 0;
+  for (const c of menu.categorias) {
+    const cat = await prisma.category.create({ data: { storeId, name: c.nome, position: c.posicao } });
+    for (const p of c.produtos) {
+      const product = await prisma.product.create({
+        data: {
+          storeId,
+          categoryId: cat.id,
+          name: p.nome,
+          description: p.descricao,
+          photoUrl: p.foto ? `assets/img/produtos/${p.foto}.webp` : null,
+          basePriceCents: p.precoBaseCentavos,
+          available: p.disponivel,
+          active: p.ativo,
+        },
+      });
+      let position = 0;
+      if (p.tamanhos.length) {
+        const size = await prisma.optionGroup.create({
+          data: {
+            storeId,
+            name: `Tamanho · ${p.nome}`,
+            min: 1,
+            max: 1,
+            options: { create: p.tamanhos.map((t) => ({ name: t.nome, priceCents: t.precoCentavos, active: t.ativo })) },
+          },
+        });
+        await prisma.productOptionGroup.create({ data: { productId: product.id, optionGroupId: size.id, position: position++ } });
+      }
+      for (const ref of p.grupos) {
+        await prisma.productOptionGroup.create({
+          data: { productId: product.id, optionGroupId: groupIds.get(ref)!, position: position++ },
+        });
+      }
+      produtos++;
+    }
+  }
+  return `Cardápio da OlaClick: ${menu.categorias.length} categorias, ${produtos} produtos, ${menu.grupos.length} grupos de adicionais.`;
+}
+
+/** Plano B: cardápio estático do index.html (sem adicionais). */
+async function importStaticMenu(storeId: string, menu: ReturnType<typeof readStaticMenu>) {
   const catIds = new Map<string, string>();
   for (const [i, c] of menu.categorias.entries()) {
-    const cat = await prisma.category.create({ data: { storeId: store.id, name: c.nome, position: i } });
+    const cat = await prisma.category.create({ data: { storeId, name: c.nome, position: i } });
     catIds.set(c.id, cat.id);
   }
 
@@ -87,18 +157,12 @@ async function main() {
       continue;
     }
     const product = await prisma.product.create({
-      data: {
-        storeId: store.id,
-        categoryId: catIds.get(p.categoria)!,
-        name: p.nome,
-        description: p.descricao,
-        basePriceCents: cents(base),
-      },
+      data: { storeId, categoryId: catIds.get(p.categoria)!, name: p.nome, description: p.descricao, basePriceCents: cents(base) },
     });
     if (priced.length > 1) {
       const group = await prisma.optionGroup.create({
         data: {
-          storeId: store.id,
+          storeId,
           name: `Tamanho · ${p.nome}`,
           min: 1,
           max: 1,
@@ -109,11 +173,7 @@ async function main() {
     }
     imported++;
   }
-
-  console.log(`Loja criada: ${store.name} (${store.id})`);
-  console.log(`Dono: ${ownerEmail}`);
-  console.log(`Cardápio importado: ${imported} produtos, ${menu.bairros.length} bairros.`);
-  if (skipped.length) console.log(`Sem preço no index.html (cadastrar depois): ${skipped.join(', ')}`);
+  return `Cardápio do index.html: ${imported} produtos.` + (skipped.length ? ` Sem preço (cadastrar depois): ${skipped.join(', ')}` : '');
 }
 
 if (require.main === module) {

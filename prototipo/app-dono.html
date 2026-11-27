@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Seu Alves · App do dono</title>
-<link rel="icon" href="https://assets.olaclick.app/companies/logos/01bf6473-9273-413d-93dd-c51f71faf7b4.webp">
+<link rel="icon" href="../assets/img/logo.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -40,7 +40,7 @@ body{display:flex;justify-content:center;align-items:center;min-height:100dvh;ba
 <div style="position: relative; width: 390px; height: 844px; box-sizing: border-box; background: #0F0F0F; color: #FAFAF9; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden;">
 
   <header style="padding: 18px 16px 12px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,.06);">
-    <div style="width: 40px; height: 40px; border-radius: 12px; background: #7A1F1F; border: 1px solid rgba(245,158,11,.5); display: flex; align-items: center; justify-content: center; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 14px; color: #F5E9D7; flex: 0 0 auto; overflow: hidden; padding: 0;"><img src="https://assets.olaclick.app/companies/logos/01bf6473-9273-413d-93dd-c51f71faf7b4.webp" alt="Seu Alves Lanches" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.replaceWith('SA')"></div>
+    <div style="width: 40px; height: 40px; border-radius: 12px; background: #7A1F1F; border: 1px solid rgba(245,158,11,.5); display: flex; align-items: center; justify-content: center; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 14px; color: #F5E9D7; flex: 0 0 auto; overflow: hidden; padding: 0;"><img src="../assets/img/logo.webp" alt="Seu Alves Lanches" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.replaceWith('SA')"></div>
     <div style="flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0;">
       <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 17px;">{{title}}</span>
       <span style="font-size: 12px; color: #A1A1AA; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; border-radius: 99px; background: {{storeDot}};"></span>{{storeLine}}</span>
@@ -91,6 +91,35 @@ body{display:flex;justify-content:center;align-items:center;min-height:100dvh;ba
           <span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 34px; letter-spacing: -0.02em; color: #FBBF24;">R$ 3.480</span>
           <span style="font-size: 13px; font-weight: 600; color: #22C55E;">▲ 12% vs. sexta passada · meta do dia R$ 3.800</span>
           <div class="bar" style="margin-top: 8px;"><div style="width: 92%; background: #F59E0B;"></div></div>
+        </div>
+
+        <div class="card" style="gap: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap;">
+            <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+              <h2 class="h3" style="margin: 0;">Tendência de vendas</h2>
+              <span class="sub">{{trTitle}}</span>
+              <span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 26px; color: #FBBF24;">{{trTotal}}</span>
+              <span style="font-size: 12px; font-weight: 600; color: {{trVarColor}};">{{trVar}}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end;"><sc-for list="{{trPeriods}}" as="p" hint-placeholder-count="3"><button type="button" style="{{p.style}}" onClick="{{p.pick}}">{{p.label}}</button></sc-for></div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end;"><sc-for list="{{trMetrics}}" as="p" hint-placeholder-count="2"><button type="button" style="{{p.style}}" onClick="{{p.pick}}">{{p.label}}</button></sc-for></div>
+            </div>
+          </div>
+          <svg viewBox="0 0 320 130" width="100%" preserveAspectRatio="none" role="img" aria-label="{{trAria}}" style="display: block; height: 150px;">
+            <defs><linearGradient id="trGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F59E0B" stop-opacity="0.35"></stop><stop offset="1" stop-color="#F59E0B" stop-opacity="0"></stop></linearGradient></defs>
+            <path d="M0 42H320M0 83H320M0 124H320" stroke="rgba(255,255,255,.06)" stroke-width="1" vector-effect="non-scaling-stroke"></path>
+            <path d="{{trArea}}" fill="url(#trGrad)"></path>
+            <path d="{{trPrev}}" fill="none" stroke="#71717A" stroke-width="1.5" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"></path>
+            <path d="{{trLine}}" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
+          </svg>
+          <div style="display: flex; justify-content: space-between; gap: 4px; margin-top: -4px;"><sc-for list="{{trLabels}}" as="l" hint-placeholder-count="6"><span class="num" style="font-size: 10px; color: #A1A1AA;">{{l.t}}</span></sc-for></div>
+          <div style="display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: #A1A1AA;"><span><span style="display: inline-block; width: 14px; height: 3px; border-radius: 2px; background: #F59E0B; vertical-align: middle;"></span> Este período</span><span><span style="display: inline-block; width: 14px; border-top: 2px dashed #71717A; vertical-align: middle;"></span> Período anterior</span></div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;">
+            <sc-for list="{{trInsights}}" as="i" hint-placeholder-count="4">
+              <div style="padding: 10px 12px; border-radius: 12px; background: #202024; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 11px; color: #A1A1AA;">{{i.k}}</span><span style="font-size: 14px; font-weight: 700; color: #F5E9D7;">{{i.v}}</span></div>
+            </sc-for>
+          </div>
         </div>
 
         <div class="card" style="gap: 14px;">
@@ -522,6 +551,27 @@ body{display:flex;justify-content:center;align-items:center;min-height:100dvh;ba
           </div>
         </sc-if>
 
+        <sc-if value="{{gAdicionais}}" hint-placeholder-val="{{ false }}">
+          <div class="card">
+            <div class="row" style="justify-content: space-between;"><h2 class="h3">Adicionais e complementos</h2><button type="button" class="btn2" onClick="{{newGrupo}}">+ Grupo</button></div>
+            <span class="sub">{{adicResumo}}</span>
+            <sc-for list="{{adicRows}}" as="g" hint-placeholder-count="4">
+              <div style="display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; border-radius: 12px; background: #202024;">
+                <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 700;">{{g.nome}}</span><span class="sub">{{g.regra}}</span><span class="sub" style="color: {{g.usoColor}};">{{g.uso}}</span></div>
+                <sc-for list="{{g.itens}}" as="i" hint-placeholder-count="3">
+                  <div class="row" style="gap: 6px;">
+                    <span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: {{i.color}}; overflow-wrap: anywhere;">{{i.nome}}</span>
+                    <button type="button" class="step" style="width: 32px; height: 32px;" aria-label="{{i.downLabel}}" onClick="{{i.down}}">−</button>
+                    <span class="num" style="min-width: 62px; text-align: center; font-size: 13px; font-weight: 700;">{{i.preco}}</span>
+                    <button type="button" class="step" style="width: 32px; height: 32px;" aria-label="{{i.upLabel}}" onClick="{{i.up}}">+</button>
+                    <button type="button" role="switch" aria-checked="{{i.aria}}" aria-label="{{i.ariaLabel}}" onClick="{{i.toggle}}" style="{{i.track}}"><span style="{{i.knob}}"></span></button>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
         <sc-if value="{{gEquipe}}" hint-placeholder-val="{{ true }}">
           <div style="display: flex; flex-direction: column; gap: 14px;">
             <div class="card">
@@ -778,15 +828,72 @@ body{display:flex;justify-content:center;align-items:center;min-height:100dvh;ba
 
 </script>
 <script>
+window.PROTO_IMG='../assets/img/produtos/';window.PROTO_LOGO='../assets/img/logo.webp';window.PROTO_BANNER='../assets/img/banner.webp';
 
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { tab: 'inicio', done: {}, paid: {}, open: true, pause: 0, eta: 40, prio: {}, warned: {}, off: { toscano: true }, prices: { xalves: 32.9, duplo: 38.9, batm: 24.9 }, staffOff: {}, camps: { volta10: true, terca: false }, replied: {}, gsec: 'produtos', pcat: 'todos', edit: null, draft: null, pEdit: {}, newProds: [], catOrder: null, catHidden: {}, newCats: [], site: { accent: '#F59E0B', notice: true, noticeTxt: 'Hoje tem Combo Casal com refri grátis!', welcome: 'Hambúrguer artesanal na Vila Kosmos', banner: '', logo: '' }, dayOff: {}, closedToday: false, taxa: {}, newBairros: [], role: 'Caixa', permOv: {}, invRole: 'Motoboy', pinReset: {}, tick: 0, sel: '', wItem: 'pao', wReason: 'Estragou', wQty: 4, wasteAdd: 0, buyOk: false, toast: '' };
+    this.state = { tab: 'inicio', done: {}, paid: {}, open: true, pause: 0, eta: 40, prio: {}, warned: {}, off: { toscano: true }, prices: { xalves: 32.9, duplo: 38.9, batm: 24.9 }, staffOff: {}, camps: { volta10: true, terca: false }, replied: {}, gsec: 'produtos', pcat: 'todos', edit: null, draft: null, pEdit: {}, newProds: [], catOrder: null, catHidden: {}, newCats: [], site: { accent: '#F59E0B', notice: true, noticeTxt: 'Hoje tem Combo Casal com refri grátis!', welcome: 'Hambúrguer artesanal na Vila Kosmos', banner: '', logo: '' }, dayOff: {}, closedToday: false, taxa: {}, newBairros: [], adOff: {}, adPreco: {}, role: 'Caixa', permOv: {}, invRole: 'Motoboy', pinReset: {}, tick: 0, sel: '', wItem: 'pao', wReason: 'Estragou', wQty: 4, wasteAdd: 0, buyOk: false, toast: '' };
   }
   brl(n, dec) {
     return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 });
   }
+  salesTrend() {
+    // Tendência de vendas: série deste período x período anterior (linha tracejada).
+    // Padrão semanal e horário de pico vêm das vendas reais da OlaClick; valores em escala de exemplo.
+    var self = this, st = this.state, per = st.trP || '30', met = st.trM || 'fat';
+    var WD = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'], WF = [1.25, 0.35, 1.05, 1.15, 0.95, 1.2, 1.35];
+    var MES = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    var end = new Date(2026, 10, 27), cur = [], prev = [], labels = [], n;
+    function noise(i, s) { return 1 + 0.09 * Math.sin(i * 2.3 + s) + 0.05 * Math.cos(i * 0.7 + s * 3); }
+    if (per === '12') {
+      n = 12;
+      for (var m = 0; m < n; m++) {
+        var mi = (10 - 11 + m + 12) % 12;
+        cur.push(36500 + m * 1060 * noise(m, 1)); prev.push(30800 + m * 820 * noise(m, 4));
+        labels.push(MES[mi]);
+      }
+      cur[n - 1] = 48200;
+    } else {
+      n = per === '7' ? 7 : 30;
+      for (var i = 0; i < n; i++) {
+        var d = new Date(end.getTime() - (n - 1 - i) * 86400000), w = d.getDay();
+        cur.push(1520 * WF[w] * noise(i, 1) * (1 + i * 0.004)); prev.push(1430 * WF[w] * noise(i, 5));
+        labels.push(per === '7' ? WD[w] : (('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2)));
+      }
+    }
+    var TICKET = 41.9;
+    if (met === 'ped') { cur = cur.map(function (v) { return v / TICKET; }); prev = prev.map(function (v) { return v / (TICKET * 0.97); }); }
+    var W = 320, H = 130, PT = 10, PB = 6, max = Math.max.apply(null, cur.concat(prev)) * 1.08;
+    function x(i) { return n === 1 ? W / 2 : 4 + i * (W - 8) / (n - 1); }
+    function y(v) { return PT + (H - PT - PB) * (1 - v / max); }
+    function path(arr) { return arr.map(function (v, i) { return (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1); }).join(' '); }
+    var line = path(cur), area = line + ' L' + x(n - 1).toFixed(1) + ' ' + (H - PB) + ' L' + x(0).toFixed(1) + ' ' + (H - PB) + ' Z';
+    var sum = function (a) { return a.reduce(function (s, v) { return s + v; }, 0); };
+    var tot = sum(cur), ptot = sum(prev), vr = (tot / ptot - 1) * 100;
+    var step = n === 30 ? 6 : n === 12 ? 2 : 1, lab = [];
+    for (var k = 0; k < n; k += step) lab.push({ t: labels[k] });
+    if ((n - 1) % step) lab.push({ t: labels[n - 1] });
+    var bestI = cur.indexOf(Math.max.apply(null, cur));
+    function chipS(on) { return 'min-height:32px;padding:0 12px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;' + (on ? 'border:1px solid #F59E0B;background:rgba(245,158,11,.16);color:#FBBF24;' : 'border:1px solid rgba(255,255,255,.12);background:transparent;color:#D4D4D8;'); }
+    var nomeP = { '7': 'últimos 7 dias', '30': 'últimos 30 dias', '12': 'últimos 12 meses' }[per];
+    return {
+      trTitle: met === 'fat' ? 'Faturamento · ' + nomeP : 'Pedidos · ' + nomeP,
+      trTotal: met === 'fat' ? self.brl(tot, 0) : Math.round(tot).toLocaleString('pt-BR') + ' pedidos',
+      trVar: (vr >= 0 ? '▲ ' : '▼ ') + Math.abs(vr).toFixed(1).replace('.', ',') + '% vs. período anterior', trVarColor: vr >= 0 ? '#22C55E' : '#F87171',
+      trLine: line, trArea: area, trPrev: path(prev), trLastX: x(n - 1).toFixed(1), trLastY: y(cur[n - 1]).toFixed(1), trLabels: lab,
+      trAria: 'Gráfico de linha: ' + (met === 'fat' ? 'faturamento' : 'pedidos') + ' nos ' + nomeP + ', comparado ao período anterior',
+      trPeriods: [['7', '7 dias'], ['30', '30 dias'], ['12', '12 meses']].map(function (p) { return { label: p[1], style: chipS(per === p[0]), pick: function () { self.setState({ trP: p[0] }); } }; }),
+      trMetrics: [['fat', 'Faturamento'], ['ped', 'Pedidos']].map(function (p) { return { label: p[1], style: chipS(met === p[0]), pick: function () { self.setState({ trM: p[0] }); } }; }),
+      trInsights: [
+        { k: per === '12' ? 'Melhor mês' : 'Melhor dia', v: labels[bestI] + (per === '30' ? ' (' + WD[new Date(end.getTime() - (n - 1 - bestI) * 86400000).getDay()] + ')' : '') },
+        { k: 'Dias mais fortes', v: 'Sáb, Dom e Sex' },
+        { k: 'Horário de pico', v: '20h às 22h' },
+        { k: 'Ticket médio', v: self.brl(TICKET, 2) }
+      ]
+    };
+  }
+
   sw(on) {
     return {
       track: 'width:52px;height:32px;border-radius:99px;border:none;padding:3px;flex:0 0 auto;display:flex;align-items:center;justify-content:' + (on ? 'flex-end' : 'flex-start') + ';background:' + (on ? '#22C55E' : '#3F3F46') + ';',
@@ -1024,6 +1131,7 @@ class Component extends DCLogic {
     var BANNER = (typeof window !== 'undefined' && window.PROTO_BANNER) || 'https://assets.olaclick.app/companies/backgrounds/f9d0f8a5-877b-4f12-b69c-3c6b1991615a.webp';
     var MENU_P = [["combo-casal", "Combo Casal", "promocoes", 42, "038e2a3f-6631-4266-affd-13f252333dcc", "1 Seu Cheddar, 1 Duplo Alves, batata P e 2 Guaravitas."], ["combo-familia", "Combo Família Alves", "promocoes", 89.9, "2b903f6f-3e7f-477b-abd8-4176a4fb49e2", "4 X-Tudos, Batata Maluca com cream cheese, cheddar e frango, 8 nuggets e molho."], ["combo-01", "Combo 01", "combos", 55, "91d554f1-2ff1-4ab5-ae54-09a87fb0c506", "4 Mini Alves, 10 nuggets, batata média com cheddar e bacon e refri 1 litro."], ["combo-02", "Combo 02", "combos", 65, "11e3cf33-678b-49a4-be40-fc942ecc190c", "3 Duplos Alves, batata com cheddar e bacon, 10 nuggets e Convenção 2L."], ["combo-03", "Combo 03", "combos", 65, "532b90d9-ab81-4eaa-94f9-a51cd1d2cf0e", "1 Seu Cheddar, 1 Seu Cheese, 1 Mini Alves, 10 nuggets, batata com cheddar e bacon e refri 1L."], ["x-alves", "X-Alves", "hamburgueres", 25, "bd64864e-7adb-4188-b9e4-831d32dbba71", "2 carnes, presunto, calabresa, bacon, ovo, 2 queijos, milho, ervilha, queijo ralado, batata palha, alface, tomate e cebola."], ["x-tudo", "X-Tudo", "hamburgueres", 20, "6619a978-e672-4055-a594-6af8143c376a", "Carne, calabresa, presunto, bacon, ovo, queijo, milho, ervilha, queijo ralado, batata palha, alface, tomate e cebola."], ["burger-classico", "Burger Clássico", "hamburgueres", 20, "4856c0e0-46a7-4760-8eae-b05e0a61f62f", "Carne artesanal 150g, queijo, alface, tomate, cebola, picles e Molho Alves."], ["toscano", "Toscano Artesanal", "hamburgueres", 30, "5ffdb9ed-912b-45e9-9093-75cd439fcf2a", "Blend de linguiça toscana, carne artesanal 90g, queijo branco, queijo coalho, cebola e tomate picadinho e maionese temperada."], ["duplo-onion", "Duplo Onion Artesanal", "hamburgueres", 28, "1cf8c0cd-f889-4281-afc9-3a78c32c0548", "2 carnes artesanais 90g, 2 queijos, bacon, anel de cebola empanado, barbecue, alface, tomate e Molho Alves."], ["ct2", "CT2 - Contra Filé", "hamburgueres", 22, "bec91678-231c-4d43-87fa-18ef1fb023a9", "Iscas de carne acebolada, mussarela, cream cheese e maionese de alho."], ["c1", "C1 - Mini Alves", "hamburgueres", 9, "6223c409-664c-4267-896b-4aa10d8d9917", "Hambúrguer, queijo e ketchup."], ["c2", "C2 - Duplo Alves", "hamburgueres", 14, "b4ee9c32-a5d3-41c7-bed2-fdea94dd8a57", "2 hambúrgueres, 2 queijos, alface, tomate, cebola, picles e molho american burgers."], ["c3", "C3 - Triplo Alves", "hamburgueres", 18, "5ded3b99-defc-49a8-92d2-bdd9bf596901", "3 hambúrgueres, 3 queijos, alface, tomate, cebola, picles e molho american burgers."], ["c4", "C4 - Monstrão", "hamburgueres", 20, "679af8e2-b3ce-4be0-a93b-2d9733f7e38f", "4 carnes, 4 queijos, alface, tomate, cebola, picles e molho american burgers."], ["hb2", "HB2 - Seu Cheddar", "hamburgueres", 16, "611d000f-e109-410f-9723-f430a85a8240", "2 carnes, 2 queijos cheddar, bacon, molho cheddar melt, alface, picles e molho american burgers."], ["hb4", "HB4 - Seu Cheese", "hamburgueres", 18, "6bf6fc11-ebe6-4bae-9ca3-967a181f208d", "2 carnes, bacon, cream cheese, cebola caramelizada no barbecue, 2 queijos, alface, tomate, picles e molho american."], ["p1", "P1 - Seu Picanha", "hamburgueres", 15, "6e03b41c-b8b2-4582-b49f-0341952f0a33", "Carne sabor picanha, 2 queijos, alface, tomate, cebola, picles e molho american."], ["p2", "P2 - Duplo Picanha", "hamburgueres", 19, "eab7ee48-4731-4c0c-a8e9-244542c45c23", "2 carnes sabor picanha, 3 queijos, alface, tomate, cebola, picles e molho american."], ["f1", "F1 - Franguinho", "hamburgueres", 14, "bcb3c745-7865-4fd5-8e17-8b315ca8cd63", "Filé de frango grelhado, queijo, salada e maionese temperada."], ["batata", "Batata Frita", "batatas", 7, "b0d91043-63ed-4bd6-a540-70e07eb1549b", "Batata frita 7mm, corte fino e sequinha."], ["batata-maluca", "Batata Maluca", "batatas", 35, "9c83fd8b-b668-4242-9715-d05b61cf0206", "Cheddar, bacon e calabresa."], ["maluca-frango", "Maluca c/ Frango", "batatas", 45, "54da5494-e8fb-4c75-a64d-68ceca3c99dc", "Frango, bacon, calabresa, cheddar e cream cheese."], ["nugget-6", "Nuggets 6 un.", "porcoes", 9, "4fcbb19c-b749-4fab-937f-f478f7a29b12", "6 unidades de nuggets de frango."], ["nugget-15", "Nuggets 15 un.", "porcoes", 18, "4fcbb19c-b749-4fab-937f-f478f7a29b12", "15 unidades de nuggets de frango."], ["anel-cebola", "Anel de Cebola", "porcoes", 5, "d1aec5b3-bf86-4fe8-ab1a-5721c285fc74", "Cebola empanada + potinho de molho."], ["calabresa-fritas", "Calabresa c/ Fritas", "porcoes", 38, "306f0704-d85b-4fd0-bce0-183cacb1973b", "Calabresa acebolada acompanhada de batata frita."], ["frango-passarinho", "Frango à Passarinho c/ Fritas", "porcoes", 40, "59ac47df-9bde-4cd4-bb91-fa4eed781293", "Cerca de 1kg de cortes de frango frito, alho torrado, limão, molho e batata frita."], ["carne-fritas", "Carne c/ Fritas", "porcoes", 65, "b5eca595-db20-4515-b3b0-d6a0cceb55d0", "500g de isca de carne acebolada com fritas + potinho de molho."], ["churraskinho", "Churraskinho Misto", "porcoes", 60, "d98cebad-b2e5-4e4f-a4c3-bcabba935ed8", "Iscas de carne, frango e calabresa aceboladas com fritas + potinho de molho."], ["file-frango-fritas", "Filé de Frango c/ Fritas", "porcoes", 42, "b2f5091a-ccce-4a98-959c-4bcb0d60037e", "Iscas de filé de frango acebolado com fritas + potinho de molho."], ["gurjao", "Gurjão de Frango", "porcoes", 45, "", "Tiras de frango empanadas e crocantes."], ["acai", "Açaí", "acai", 6, "996c790c-a8cc-48c7-84d3-4c5a9ddd9b67", "Açaí natural batido todo dia (sempre fresco)."], ["refri-2l", "Refri 2L", "bebidas", null, "1b08db59-656f-4f6a-8dd8-49f3427aa130", "Coca-Cola, Fanta ou Sprite 2 litros."], ["refri-lata", "Refri Lata 350ml", "bebidas", 7, "64b58b48-240a-46f4-8e28-f87a9d215818", "Coca-Cola 350ml."], ["guaravita", "Guaravita", "bebidas", 3, "344d4717-fea1-4a41-b4de-1ecd1c20b99b", "Guaravita 290ml."], ["agua-500", "Água 500ml", "bebidas", 3, "32d6afe5-9859-4834-b065-f0b6aefa6508", "Água mineral sem gás (pequena)."], ["agua-1500", "Água 1,5L", "bebidas", 6, "9b34160c-5328-4ba4-99bf-dba354318d23", "Água mineral sem gás (grande)."]];
     var MENU_C = [["promocoes", "Promoções", "🔥"], ["combos", "Combo na Caixa", "📦"], ["hamburgueres", "Hambúrgueres", "🍔"], ["batatas", "Batata Frita", "🍟"], ["porcoes", "Porções", "🍗"], ["acai", "Açaí", "🍇"], ["bebidas", "Bebidas", "🥤"]];
+    var ADIC = [["Escolha 2 por 39,99", "Obrigatório · escolhe 2", [["X-Tudo", 0], ["Toscano", 0], ["Duplo Onion", 0]], []], ["Escolha 2 por 27,99", "Opcional · até 2", [["Triplo Alves", 0], ["Seu Cheddar", 0], ["Seu Cheese", 0]], []], ["Escolha 2 hambúrgueres", "Obrigatório · escolhe 2", [["Duplo Alves", 0], ["Franguinho", 0]], []], ["Nuggets", "Obrigatório · escolhe de 6 a 30", [["Unidade Nugget", 0], ["Escolha o termo carne", 0]], []], ["Sabor do refri", "Obrigatório · escolhe 1", [["Coca 2l", 9], ["Sukita Uva 2L", 0], ["Kuat 2 l", 0]], ["COMBO 01", "COMBO 02", "COMBO 03"]], ["Escoha seus 2 burger's", "Obrigatório · escolhe 2", [["SEU CHEDDAR", 0], ["DUPLO ALVES", 0], ["TRIPLO ALVES", 0], ["SEU CHEESE", 0]], []], ["Escolha o seu pão", "Opcional · até 1", [["Pão com Gergelim", 0]], ["Burger Clássico", "Toscano Artesanal", "Duplo Onion Artesanal", "CT2 - Contra Filé", "F1 - Franguinho"]], ["Combo (batata p + refri lata)", "Opcional · até 1", [["Batata P + Coca Lata", 12]], ["X-Alves", "X-Tudo", "Burger Clássico", "Toscano Artesanal", "Duplo Onion Artesanal", "CT2 - Contra Filé", "C1 - Mini Alves", "C2 - Duplo Alves", "C3 - Triplo Alves", "C4 - Monstrão", "HB2 - Seu Cheddar", "HB4 - Seu Cheese", "P1 - Seu Picanha", "P2 - Duplo Picanha", "F1 - Franguinho", "Nugget 6und.", "Anel de Cebola"]], ["Adicionais", "Opcional · até 20", [["OVO", 2], ["BACON (50g)", 3], ["CALABRESA (50g)", 3], ["CHEDDAR (30g)", 2], ["Hambúruger", 4], ["Hamb. Picanha", 6], ["Carne Artesanal 90g", 10], ["Filé de Frango", 7], ["Frango Recheado c/ Queijo e Presunto", 10]], ["X-Alves", "X-Tudo", "Burger Clássico", "Toscano Artesanal", "Duplo Onion Artesanal", "CT2 - Contra Filé", "C1 - Mini Alves", "C2 - Duplo Alves", "C3 - Triplo Alves", "C4 - Monstrão", "HB2 - Seu Cheddar", "HB4 - Seu Cheese", "P1 - Seu Picanha", "P2 - Duplo Picanha", "F1 - Franguinho", "Batata", "Batata Maluca", "MALUCA C/ FRANGO", "Nugget 6und.", "Anel de Cebola", "Calabresa c/ Fritas", "Frango á Passarinho c/ Fritas", "Carne c/ Fritas", "Churraskinho Misto", "Filé de Frango c/ Fritas"]], ["Sabor do Refri 2 Litros", "Obrigatório · escolhe 1", [["Coca-Cola", 14], ["Convenção Abacaxi", 10], ["Fanta Laranja", 13], ["Fanta Uva", 13]], ["Refri 2L"]], ["Sabor do refri lata", "Obrigatório · escolhe 1", [["Coca-Cola", 0], ["Fanta laranja", 0], ["Guaraná Antártica", 0]], ["Refri Lata 350ml"]], ["Escolha a calda", "Obrigatório · até 20", [["Morango", 0], ["Chocolate", 0], ["Menta", 0], ["SEM CALDA", 0]], ["AÇAÍ"]], ["Escolha o sabor", "Obrigatório · escolhe 1", [["Só açaí", 0], ["Só morango ao leite", 0], ["meio a meio", 0]], []], ["Molho potinho", "Opcional · até 5", [["Molho Verde (Saquinho)", 1], ["Barbecue", 2], ["Maionese Temperada", 3], ["Rosê", 2], ["American Burgers", 2], ["Mostada c/ Mel", 2]], ["X-Alves", "X-Tudo", "Burger Clássico", "Toscano Artesanal", "Duplo Onion Artesanal", "CT2 - Contra Filé", "C1 - Mini Alves", "C2 - Duplo Alves", "C3 - Triplo Alves", "C4 - Monstrão", "HB2 - Seu Cheddar", "HB4 - Seu Cheese", "P1 - Seu Picanha", "P2 - Duplo Picanha", "F1 - Franguinho", "Batata", "Batata Maluca", "MALUCA C/ FRANGO", "Nugget 6und.", "Anel de Cebola", "Calabresa c/ Fritas", "Frango á Passarinho c/ Fritas", "Carne c/ Fritas", "Churraskinho Misto", "Filé de Frango c/ Fritas"]], ["Escolha os complementos", "Obrigatório · até 20", [["Granola", 0], ["Amendoin", 0], ["Paçoca", 0], ["Jujuba", 0], ["Chocoboll", 0], ["Flocos de Arroz", 0], ["Granulado de Chocolate", 0], ["Leite em Pó", 0], ["SEM COMPLEMENTO", 0]], ["AÇAÍ"]]];
     var MENU_B = [["Vila Kosmos", 5], ["Ipase", 5], ["Vila da Penha", 5], ["Morro da Fé", 6], ["Praça do Carmo", 6], ["Penha Circular", 6], ["Largo do Bicão", 6], ["Vaz Lobo", 7], ["Quitungo", 7], ["Penha", 7], ["Irajá", 7]];
     function brl2(v) { return v == null || v === '' || isNaN(v) ? 'a definir' : self.brl(+v, 2); }
     function num(s) { var n = parseFloat(String(s).replace(/\./g, '').replace(',', '.')); return isNaN(n) ? null : n; }
@@ -1076,12 +1184,26 @@ class Component extends DCLogic {
         toggle: function () { var nd = Object.assign({}, self.state.dayOff); nd[d[0]] = !nd[d[0]]; set({ dayOff: nd }); } };
     });
     var ct = this.sw(st.closedToday);
+    var adicRows = ADIC.slice().sort(function (a, b) { return b[3].length - a[3].length; }).map(function (g, gi) {
+      var itens = g[2].map(function (it, ii) {
+        var k = gi + ':' + ii, on = !st.adOff[k], pr = st.adPreco[k] != null ? st.adPreco[k] : it[1], s = self.sw(on);
+        function setP(v) { var np = Object.assign({}, self.state.adPreco); np[k] = Math.max(0, Math.round(v * 2) / 2); set({ adPreco: np }); }
+        return { nome: it[0], preco: pr ? self.brl(pr, 2) : 'grátis', color: on ? '#E4E4E7' : '#71717A', down: function () { setP(pr - 0.5); }, up: function () { setP(pr + 0.5); },
+          downLabel: 'Baixar preço de ' + it[0], upLabel: 'Subir preço de ' + it[0], track: s.track, knob: s.knob, aria: s.aria, ariaLabel: 'Disponível: ' + it[0],
+          toggle: function () { var no = Object.assign({}, self.state.adOff); no[k] = on; set({ adOff: no, toast: on ? it[0] + ' esgotado no site, WhatsApp e iFood.' : it[0] + ' disponível de novo.' }); } };
+      });
+      var n = g[3].length;
+      return { nome: g[0], regra: g[1], itens: itens, usoColor: n ? '#A1A1AA' : '#FBBF24',
+        uso: n ? 'Usado em ' + n + (n === 1 ? ' produto: ' : ' produtos: ') + g[3].slice(0, 3).join(', ') + (n > 3 ? ' e mais ' + (n - 3) : '') : 'Não está em nenhum produto à venda (dá pra apagar ou ligar a um produto)' };
+    });
+    var adicSoltos = ADIC.filter(function (g) { return !g[3].length; }).length;
     var bairroRows = MENU_B.concat(st.newBairros).map(function (b) {
       var tx = st.taxa[b[0]] != null ? st.taxa[b[0]] : b[1];
       function setT(v) { var nt2 = Object.assign({}, self.state.taxa); nt2[b[0]] = Math.max(0, v); set({ taxa: nt2 }); }
       return { nome: b[0], taxa: self.brl(tx, 0), meta: 'entrega em ' + (24 + tx * 2) + ' a ' + (34 + tx * 2) + ' min', down: function () { setT(tx - 1); }, up: function () { setT(tx + 1); }, downLabel: 'Baixar taxa de ' + b[0], upLabel: 'Subir taxa de ' + b[0] };
     });
     var IC2 = {
+      layers: 'M12 3l9 5-9 5-9-5zM3 13l9 5 9-5M3 17.5l9 5 9-5',
       list: 'M8 6h13M8 12h13M8 18h13M3 6h1M3 12h1M3 18h1', store: 'M3 9l2-5h14l2 5M4 9v11h16V9M9 20v-6h6v6', pin: 'M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12zM12 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4',
       plus: 'M12 5v14M5 12h14', camera: 'M4 7h3l2-3h6l2 3h3v13H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8', image: 'M3 5h18v14H3zM3 16l5-5 4 4 3-3 6 6M15 9h.01',
       map: 'M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14', check: 'M20 6L9 17l-5-5', cart: 'M6 6h15l-2 8H8zM6 6L5 3H2M9 20h.01M18 20h.01',
@@ -1090,7 +1212,7 @@ class Component extends DCLogic {
     };
     var GROUPS = [
       ['Operação', '#FDA4AF', 'rgba(244,63,94,.16)', [['Pedidos ao vivo', IC2.list, 'operacao'], ['Abrir e fechar loja', IC2.store, 'operacao'], ['Pausar iFood', ICON.pause, 'operacao'], ['Motoboys no mapa', IC2.pin, 'operacao']]],
-      ['Cardápio e site', '#FBBF24', 'rgba(245,158,11,.16)', [['Novo produto', IC2.plus, 'gestao:produtos:novo'], ['Produtos e fotos', IC2.camera, 'gestao:produtos'], ['Esgotar item', ICON.off, 'gestao:produtos'], ['Preços', ICON.tag, 'gestao:precos'], ['Categorias', IC2.list, 'gestao:categorias'], ['Banner e site', IC2.image, 'gestao:site'], ['Horários', ICON.op, 'gestao:horarios'], ['Bairros e taxas', IC2.map, 'gestao:bairros']]],
+      ['Cardápio e site', '#FBBF24', 'rgba(245,158,11,.16)', [['Novo produto', IC2.plus, 'gestao:produtos:novo'], ['Produtos e fotos', IC2.camera, 'gestao:produtos'], ['Esgotar item', ICON.off, 'gestao:produtos'], ['Preços', ICON.tag, 'gestao:precos'], ['Categorias', IC2.list, 'gestao:categorias'], ['Banner e site', IC2.image, 'gestao:site'], ['Horários', ICON.op, 'gestao:horarios'], ['Bairros e taxas', IC2.map, 'gestao:bairros'], ['Adicionais', IC2.layers, 'gestao:adicionais']]],
       ['Dinheiro', '#86EFAC', 'rgba(34,197,94,.16)', [['Contas a pagar', ICON.cash, 'fin'], ['Lucro do mês', IC2.chart, 'fin'], ['Conciliação', IC2.check, 'fin'], ['Taxas por canal', ICON.fin, 'fin']]],
       ['Estoque e compras', '#FDBA74', 'rgba(251,146,60,.16)', [['Lançar nota', ICON.nf, 'estoque'], ['Desperdício', ICON.trash, 'estoque'], ['Lista de compras', IC2.cart, 'estoque'], ['Estoque', ICON.est, 'estoque']]],
       ['Pessoas', '#F5E9D7', 'rgba(245,233,215,.12)', [['Equipe e acessos', ICON.team, 'gestao:equipe'], ['Ponto e RH', ICON.op, 'gestao:ponto'], ['Convidar pessoa', IC2.userplus, 'gestao:equipe'], ['Desempenho', IC2.chart, 'gestao:ponto']]],
@@ -1154,7 +1276,7 @@ class Component extends DCLogic {
       title: cur.title, tabs: tabs, storeLine: storeLine, storeDot: !st.open ? '#EF4444' : (st.pause ? '#FB923C' : '#22C55E'),
       hasTodo: todoCount > 0, todoCount: todoCount, bellLabel: todoCount + ' itens precisam de você', goHome: function () { set({ tab: 'inicio' }); },
       toastOn: !!st.toast, toast: st.toast, closeToast: function () { set({ toast: '' }); },
-      isInicio: t === 'inicio', isOperacao: t === 'operacao', isFin: t === 'fin', isEstoque: t === 'estoque', isGestao: t === 'gestao',
+      isInicio: t === 'inicio', ...this.salesTrend(), isOperacao: t === 'operacao', isFin: t === 'fin', isEstoque: t === 'estoque', isGestao: t === 'gestao',
       todos: todos, noTodo: todoCount === 0, todoPill: todoCount ? todoCount + ' pendentes' : 'em dia', todoPillFg: todoCount ? '#FCA5A5' : '#86EFAC', todoPillBg: todoCount ? 'rgba(239,68,68,.16)' : 'rgba(34,197,94,.14)', todoBorder: todoCount ? 'rgba(239,68,68,.35)' : 'rgba(255,255,255,.08)',
       quick: quick,
       kpis: [
@@ -1215,7 +1337,7 @@ class Component extends DCLogic {
       ],
       menu: menu, prices: prices, team: team, camps: camps, reviews: reviews, onShift: onShift, roles: roles, perms: perms, inviteRoles: inviteRoles, inviteRole: st.invRole.toLowerCase(), audit: audit, gsecs: gsecs, riders: riders, tickMap: function () { set({ tick: self.state.tick + 1 }); },
       sendInvite: function () { toast('Convite de ' + self.state.invRole.toLowerCase() + ' pronto para enviar pelo WhatsApp.'); },
-      allGroups: allGroups, gGroups: gGroups, gProdutos: st.gsec === 'produtos', gCategorias: st.gsec === 'categorias', gSite: st.gsec === 'site', gHorarios: st.gsec === 'horarios', gBairros: st.gsec === 'bairros',
+      allGroups: allGroups, gGroups: gGroups, gProdutos: st.gsec === 'produtos', gCategorias: st.gsec === 'categorias', gSite: st.gsec === 'site', gHorarios: st.gsec === 'horarios', gBairros: st.gsec === 'bairros', gAdicionais: st.gsec === 'adicionais',
       editing: !!st.edit, edTitle: isNew ? 'Novo produto' : 'Editar produto', edHasPhoto: !!dr.foto, edNoPhoto: !dr.foto, edPhoto: dr.foto || '', edPhotoBtn: dr.foto ? 'Trocar foto' : 'Adicionar foto',
       edOnPhoto: function (e) { readFile(e, function (u) { setDraft('foto', u); }); },
       edNome: dr.nome || '', edDesc: dr.desc || '', edPreco: dr.preco || '', edPrecoIfood: dr.precoIfood || '',
@@ -1242,7 +1364,7 @@ class Component extends DCLogic {
       noticeTrack: nt.track, noticeKnob: nt.knob, noticeAria: nt.aria, toggleNotice: function () { siteSet('notice', !self.state.site.notice); },
       accents: accents, copyLink: function () { toast('Link do cardápio copiado.'); }, publishSite: function () { toast('Site atualizado. Clientes já veem o novo visual.'); },
       hourRows: hourRows, closedTodayTrack: ct.track, closedTodayKnob: ct.knob, closedTodayAria: ct.aria, toggleClosedToday: function () { set({ closedToday: !self.state.closedToday, toast: self.state.closedToday ? 'Horário normal de hoje mantido.' : 'Hoje aparece como fechado em todos os canais.' }); },
-      bairroRows: bairroRows, newBairro: function () { var n = self.state.newBairros.length + 1; set({ newBairros: self.state.newBairros.concat([['Novo bairro ' + n, 7]]), toast: 'Bairro adicionado com taxa de R$ 7.' }); },
+      bairroRows: bairroRows, adicRows: adicRows, adicResumo: ADIC.length + ' grupos trazidos da OlaClick' + (adicSoltos ? ' · ' + adicSoltos + ' sem produto ligado' : '') + '. Esgotou? Desligue o item e ele some em todos os canais.', newGrupo: function () { set({ toast: 'Novo grupo criado. Dê um nome, defina mínimo e máximo e ligue aos produtos.' }); }, newBairro: function () { var n = self.state.newBairros.length + 1; set({ newBairros: self.state.newBairros.concat([['Novo bairro ' + n, 7]]), toast: 'Bairro adicionado com taxa de R$ 7.' }); },
       gEquipe: st.gsec === 'equipe', gPonto: st.gsec === 'ponto', staffMetrics: staffMetrics, pKpis: pKpis, punches: punches, fixOpen: !st.done.fix, fixClosed: !!st.done.fix, fixOk: function () { mark('fix', 'done', 'Correção do ponto da Rita aprovada e anotada.'); }, fixNo: function () { mark('fix', 'done', 'Correção recusada. A Rita foi avisada.'); }, gCardapio: st.gsec === 'cardapio', gPrecos: st.gsec === 'precos', gCampanhas: st.gsec === 'campanhas', gAvaliacoes: st.gsec === 'avaliacoes'
     };
   }

@@ -6,7 +6,9 @@ import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const src = process.argv[2];
-const LOGO = 'https://assets.olaclick.app/companies/logos/01bf6473-9273-413d-93dd-c51f71faf7b4.webp';
+// Imagens resgatadas da OlaClick e guardadas no próprio repositório (assets/img).
+const LOGO = '../assets/img/logo.webp';
+const IMG_VARS = `window.PROTO_IMG='../assets/img/produtos/';window.PROTO_LOGO='${LOGO}';window.PROTO_BANNER='../assets/img/banner.webp';`;
 
 const pages = [
   { file: 'Main.dc.html', out: 'painel.html', title: 'Seu Alves · Painel de gestão', phone: false },
@@ -51,6 +53,7 @@ ${helmet.trim()}
 ${runtime}
 </script>
 <script>
+${IMG_VARS}
 ${script}
 DC.mount(Component);
 </script>

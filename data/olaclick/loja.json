@@ -1,0 +1,107 @@
+{
+ "fonte": "Painel OlaClick, exportado em 2026-11-27 (somente leitura)",
+ "horarios": {
+  "dom": "19:00-02:00",
+  "seg": "fechado (só madrugada de domingo até 02:00)",
+  "ter": "19:00-02:00",
+  "qua": "19:00-02:00",
+  "qui": "19:00-02:00",
+  "sex": "19:00-02:00",
+  "sab": "19:00-02:00"
+ },
+ "bairros": [
+  {
+   "nome": "Vila Kosmos",
+   "taxa": 5
+  },
+  {
+   "nome": "Ipase",
+   "taxa": 5
+  },
+  {
+   "nome": "Vila da Penha",
+   "taxa": 5
+  },
+  {
+   "nome": "Vaz Lobo",
+   "taxa": 7
+  },
+  {
+   "nome": "Morro da Fé",
+   "taxa": 6
+  },
+  {
+   "nome": "Praça do Carmo",
+   "taxa": 6
+  },
+  {
+   "nome": "Penha Circular",
+   "taxa": 6
+  },
+  {
+   "nome": "Largo do Bicão",
+   "taxa": 6
+  },
+  {
+   "nome": "Quitungo",
+   "taxa": 7
+  },
+  {
+   "nome": "Penha",
+   "taxa": 7
+  },
+  {
+   "nome": "Irajá",
+   "taxa": 7
+  }
+ ],
+ "embalagemCobradaNaEntrega": true,
+ "canais": [
+  "delivery",
+  "retirada",
+  "consumo no local (QR)",
+  "mesa"
+ ],
+ "pagamentos": {
+  "delivery": [
+   "cartão",
+   "pix",
+   "dinheiro"
+  ],
+  "retirada": [
+   "cartão",
+   "pix",
+   "dinheiro"
+  ],
+  "local": [
+   "cartão",
+   "pix",
+   "dinheiro"
+  ],
+  "mesa": [
+   "cartão",
+   "dinheiro"
+  ],
+  "pdv": [
+   "cartão",
+   "pix",
+   "dinheiro",
+   "99Food pago",
+   "99Food dinheiro"
+  ]
+ },
+ "cupons": [
+  {
+   "codigo": "PRIMEIRA-COMPRA",
+   "tipo": "%",
+   "valor": 5,
+   "usos": 312,
+   "limite": "1 por cliente",
+   "validade": "2027-08-14"
+  }
+ ],
+ "fidelidade": {
+  "ativa": false,
+  "regra": "1 ponto a cada R$10"
+ }
+}
