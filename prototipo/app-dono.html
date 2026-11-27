@@ -1,0 +1,985 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seu Alves · App do dono</title>
+<link rel="icon" href="https://assets.olaclick.app/companies/logos/01bf6473-9273-413d-93dd-c51f71faf7b4.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0F0F}
+a{color:#FBBF24}a:hover{color:#F59E0B}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid #FBBF24;outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;margin:0}
+.card{background:#18181B;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;align-items:center;gap:10px}
+.sub{font-size:12px;color:#A1A1AA}
+.bar{height:8px;border-radius:99px;background:#27272A}
+.bar>div{height:8px;border-radius:99px}
+.btn{min-height:40px;padding:0 14px;border-radius:10px;border:none;background:#F59E0B;color:#0F0F0F;font-weight:800;font-size:13px;flex:0 0 auto}
+.btn2{min-height:40px;padding:0 12px;border-radius:10px;border:1px solid rgba(245,158,11,.5);background:transparent;color:#FBBF24;font-weight:700;font-size:13px;flex:0 0 auto}
+.step{width:40px;height:40px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#202024;color:#FAFAF9;font-size:18px;font-weight:700}
+</style>
+<style>*{box-sizing:border-box}
+html,body{height:100%}
+body{display:flex;justify-content:center;align-items:center;min-height:100dvh;background:radial-gradient(circle at 50% 0%,#2a1212 0%,#0F0F0F 60%)}
+#app>div{width:min(430px,100vw) !important;height:min(900px,100dvh) !important}
+@media (min-width:500px){#app>div{border-radius:28px;border:1px solid rgba(245,158,11,.25);box-shadow:0 30px 80px rgba(0,0,0,.6)}}
+.proto-back{position:fixed;left:12px;bottom:12px;z-index:50;padding:8px 12px;border-radius:99px;background:rgba(15,15,15,.85);border:1px solid rgba(245,158,11,.4);color:#FBBF24;font:600 12px Inter,system-ui,sans-serif;text-decoration:none}
+@media (max-width:499px){.proto-phone .proto-back{display:none}}</style>
+</head>
+<body class="proto-phone">
+<div id="app"></div>
+<a class="proto-back" href="./">← Todas as telas</a>
+<template id="tpl">
+<div style="position: relative; width: 390px; height: 844px; box-sizing: border-box; background: #0F0F0F; color: #FAFAF9; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden;">
+
+  <header style="padding: 18px 16px 12px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,.06);">
+    <div style="width: 40px; height: 40px; border-radius: 12px; background: #7A1F1F; border: 1px solid rgba(245,158,11,.5); display: flex; align-items: center; justify-content: center; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 14px; color: #F5E9D7; flex: 0 0 auto; overflow: hidden; padding: 0;"><img src="https://assets.olaclick.app/companies/logos/01bf6473-9273-413d-93dd-c51f71faf7b4.webp" alt="Seu Alves Lanches" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.replaceWith('SA')"></div>
+    <div style="flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0;">
+      <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 17px;">{{title}}</span>
+      <span style="font-size: 12px; color: #A1A1AA; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; border-radius: 99px; background: {{storeDot}};"></span>{{storeLine}}</span>
+    </div>
+    <button type="button" onClick="{{goHome}}" aria-label="{{bellLabel}}" style="position: relative; width: 44px; height: 44px; border-radius: 12px; border: 1px solid rgba(255,255,255,.1); background: #18181B; color: #FAFAF9; display: flex; align-items: center; justify-content: center; flex: 0 0 auto;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+      <sc-if value="{{hasTodo}}" hint-placeholder-val="{{ true }}">
+        <span class="num" style="position: absolute; top: 4px; right: 4px; min-width: 18px; height: 18px; border-radius: 99px; background: #EF4444; color: #FFF; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center;">{{todoCount}}</span>
+      </sc-if>
+    </button>
+  </header>
+
+  <sc-if value="{{toastOn}}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: absolute; left: 16px; right: 16px; bottom: 96px; z-index: 5; padding: 12px 14px; border-radius: 12px; background: #F5E9D7; color: #0F0F0F; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,.4); display: flex; align-items: center; gap: 10px;">
+      <span style="flex: 1 1 auto;">{{toast}}</span>
+      <button type="button" onClick="{{closeToast}}" aria-label="Fechar aviso" style="border: none; background: transparent; font-size: 16px; font-weight: 800; color: #0F0F0F;">×</button>
+    </div>
+  </sc-if>
+
+  <div style="flex: 1 1 auto; overflow-y: auto; overflow-x: hidden; padding: 14px 16px 24px; display: flex; flex-direction: column; gap: 14px;">
+
+    <sc-if value="{{isInicio}}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div class="card" style="border-color: {{todoBorder}};">
+          <div class="row" style="justify-content: space-between;">
+            <h2 class="h3">Precisa de você</h2>
+            <span class="num" style="font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 99px; color: {{todoPillFg}}; background: {{todoPillBg}};">{{todoPill}}</span>
+          </div>
+          <sc-for list="{{todos}}" as="t" hint-placeholder-count="5">
+            <div style="display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 12px; background: #202024; border-left: 4px solid {{t.color}};">
+              <div style="display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-size: 14px; font-weight: 700;">{{t.title}}</span>
+                <span class="sub">{{t.text}}</span>
+              </div>
+              <div class="row">
+                <button type="button" class="btn" onClick="{{t.act}}" style="flex: 1 1 auto;">{{t.action}}</button>
+                <button type="button" class="btn2" onClick="{{t.go}}">{{t.goLabel}}</button>
+              </div>
+            </div>
+          </sc-for>
+          <sc-if value="{{noTodo}}" hint-placeholder-val="{{ false }}">
+            <div class="row" style="padding: 12px; border-radius: 12px; background: rgba(34,197,94,.1); color: #86EFAC; font-size: 14px; font-weight: 600;">✓ Tudo em dia. Nada esperando por você agora.</div>
+          </sc-if>
+        </div>
+
+        <div class="card" style="gap: 4px;">
+          <span class="sub" style="font-size: 13px;">Faturamento de hoje</span>
+          <span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 34px; letter-spacing: -0.02em; color: #FBBF24;">R$ 3.480</span>
+          <span style="font-size: 13px; font-weight: 600; color: #22C55E;">▲ 12% vs. sexta passada · meta do dia R$ 3.800</span>
+          <div class="bar" style="margin-top: 8px;"><div style="width: 92%; background: #F59E0B;"></div></div>
+        </div>
+
+        <div class="card">
+          <h2 class="h3">Ações rápidas</h2>
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+            <sc-for list="{{quick}}" as="q" hint-placeholder-count="8">
+              <button type="button" onClick="{{q.go}}" style="min-height: 76px; border-radius: 14px; border: 1px solid rgba(255,255,255,.08); background: #202024; color: #FAFAF9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 6px 2px;">
+                <span style="width: 34px; height: 34px; border-radius: 10px; background: {{q.bg}}; color: {{q.fg}}; display: flex; align-items: center; justify-content: center;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{q.icon}}"></path></svg>
+                </span>
+                <span style="font-size: 11px; font-weight: 600; text-align: center; line-height: 1.2;">{{q.label}}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+          <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+            <div class="card" style="padding: 14px; gap: 4px;">
+              <span class="sub">{{k.label}}</span>
+              <span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 22px; color: {{k.color}};">{{k.value}}</span>
+              <span style="font-size: 11px; color: #A1A1AA;">{{k.hint}}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div class="card">
+          <h2 class="h3">Agora na loja</h2>
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+            <sc-for list="{{now}}" as="n" hint-placeholder-count="4">
+              <div style="background: #202024; border-radius: 12px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                <span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 22px; color: {{n.color}};">{{n.count}}</span>
+                <span style="font-size: 11px; color: #D4D4D8; text-align: center;">{{n.label}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isOperacao}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div class="card">
+          <h2 class="h3">Loja</h2>
+          <div class="row">
+            <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 600;">Loja aberta</span><span class="sub">fecha cardápio, WhatsApp e iFood de uma vez</span></div>
+            <button type="button" role="switch" aria-checked="{{openAria}}" aria-label="Loja aberta" onClick="{{toggleOpen}}" style="{{openTrack}}"><span style="{{openKnob}}"></span></button>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-size: 14px; font-weight: 600;">iFood</span>
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;">
+              <sc-for list="{{pauseOpts}}" as="p" hint-placeholder-count="3">
+                <button type="button" onClick="{{p.pick}}" style="{{p.style}}">{{p.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div class="row">
+            <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 600;">Prazo de entrega mostrado</span><span class="sub">vale para todos os canais</span></div>
+            <button type="button" class="step" aria-label="Diminuir prazo" onClick="{{etaDown}}">−</button>
+            <span class="num" style="min-width: 58px; text-align: center; font-weight: 800; font-size: 16px;">{{eta}} min</span>
+            <button type="button" class="step" aria-label="Aumentar prazo" onClick="{{etaUp}}">+</button>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div class="row" style="justify-content: space-between; font-size: 13px;"><span>Ritmo da cozinha</span><span style="font-weight: 700; color: #FB923C;">7 em preparo · alto</span></div>
+            <div class="bar"><div style="width: 78%; background: #FB923C;"></div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="row" style="justify-content: space-between;"><h2 class="h3">Motoboys na rua</h2><span style="font-size: 12px; color: #86EFAC; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; border-radius: 99px; background: #22C55E;"></span>GPS ao vivo</span></div>
+          <svg viewBox="0 0 360 240" width="100%" role="img" aria-label="Mapa com a posição dos motoboys em tempo real" style="display: block; border-radius: 12px; background: #141416;">
+  <g stroke="#26262B" stroke-width="7" stroke-linecap="round" fill="none">
+    <path d="M0 80H360M0 130H360M0 192H360M118 0V240M180 0V240M246 0V240M300 0V240"></path>
+    <path d="M40 0L120 240M262 80L330 0" stroke-width="5"></path>
+  </g>
+  <g stroke="#1E1E22" stroke-width="2" fill="none"><path d="M0 40H360M0 160H360M0 222H360M60 0V240M215 0V240M330 0V240"></path></g>
+  <g font-family="Inter, sans-serif" font-size="9" fill="#71717A">
+    <text x="268" y="30">Vila da Penha</text><text x="24" y="232">Ipase</text><text x="262" y="226">Quitungo</text><text x="190" y="120">Vila Kosmos</text>
+  </g>
+  <sc-for list="{{riders}}" as="r" hint-placeholder-count="3">
+    <g style="opacity: {{r.op}};">
+      <polyline points="{{r.done}}" fill="none" stroke="{{r.color}}" stroke-width="3" stroke-opacity=".35" stroke-linecap="round" stroke-linejoin="round"></polyline>
+      <polyline points="{{r.rest}}" fill="none" stroke="{{r.color}}" stroke-width="3" stroke-dasharray="5 5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+      <sc-if value="{{r.hasDest}}" hint-placeholder-val="{{ true }}">
+        <circle cx="{{r.dx}}" cy="{{r.dy}}" r="7" fill="#0F0F0F" stroke="{{r.color}}" stroke-width="2.5"></circle>
+      </sc-if>
+      <circle cx="{{r.x}}" cy="{{r.y}}" r="12" fill="{{r.color}}" stroke="#0F0F0F" stroke-width="2"></circle>
+      <text x="{{r.tx}}" y="{{r.ty}}" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" font-weight="800" fill="#0F0F0F">{{r.ini}}</text>
+    </g>
+  </sc-for>
+  <rect x="168" y="118" width="24" height="24" rx="7" fill="#7A1F1F" stroke="#F59E0B" stroke-width="2"></rect>
+  <text x="180" y="134" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="9" font-weight="800" fill="#F5E9D7">SA</text>
+</svg>
+          <sc-for list="{{riders}}" as="r" hint-placeholder-count="3">
+            <button type="button" onClick="{{r.pick}}" style="{{r.rowStyle}}">
+              <span style="width: 34px; height: 34px; border-radius: 99px; background: {{r.color}}; color: #0F0F0F; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex: 0 0 auto;">{{r.ini}}</span>
+              <span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0; text-align: left;"><span style="font-size: 14px; font-weight: 700;">{{r.name}} · {{r.order}}</span><span class="sub">{{r.where}}</span></span>
+              <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex: 0 0 auto;"><span class="num" style="font-size: 12px; font-weight: 700; color: {{r.statusColor}};">{{r.status}}</span><span class="num sub">{{r.km}}</span></span>
+            </button>
+          </sc-for>
+          <button type="button" class="btn2" onClick="{{tickMap}}">Simular 1 minuto</button>
+          <span class="sub" style="line-height: 1.45;">O cliente recebe um link e acompanha o mesmo trajeto. Entregas feitas pelo iFood mostram o status que o iFood envia.</span>
+        </div>
+        <div class="card">
+          <div class="row" style="justify-content: space-between;"><h2 class="h3">Pedidos agora</h2><span class="sub">mais atrasados primeiro</span></div>
+          <sc-for list="{{orders}}" as="o" hint-placeholder-count="5">
+            <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 12px; background: #202024; border-left: 4px solid {{o.color}};">
+              <div class="row">
+                <span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 17px;">{{o.num}}</span>
+                <span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 99px; color: #0F0F0F; background: {{o.chColor}};">{{o.channel}}</span>
+                <span style="flex: 1 1 auto;"></span>
+                <span class="num" style="font-weight: 800; color: {{o.color}};">{{o.min}}</span>
+              </div>
+              <span class="sub">{{o.stage}} · {{o.items}}</span>
+              <sc-if value="{{o.late}}" hint-placeholder-val="{{ false }}">
+                <div class="row">
+                  <button type="button" class="btn" onClick="{{o.prio}}" style="flex: 1 1 0;">{{o.prioLabel}}</button>
+                  <button type="button" class="btn2" onClick="{{o.warn}}" style="flex: 1 1 0;">{{o.warnLabel}}</button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <div class="card">
+          <div class="row" style="justify-content: space-between;"><h2 class="h3">Tempo por etapa hoje</h2><span class="num" style="font-weight: 800; color: #FB923C;">39:36 · meta 37:00</span></div>
+          <sc-for list="{{stages}}" as="s" hint-placeholder-count="4">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div class="row" style="justify-content: space-between; font-size: 13px;"><span>{{s.label}}</span><span class="num" style="font-weight: 700; color: {{s.color}};">{{s.avg}} <span style="color: #A1A1AA; font-weight: 400;">/ {{s.target}}</span></span></div>
+              <div class="bar"><div style="width: {{s.within}}%; background: {{s.color}};"></div></div>
+            </div>
+          </sc-for>
+          <span style="font-size: 12px; color: #FDE68A; line-height: 1.45;">Maior atraso: espera do motoboy entre 20h e 22h.</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isFin}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div class="card">
+          <div class="row" style="justify-content: space-between;"><h2 class="h3">Contas para pagar</h2><span class="num" style="font-size: 12px; font-weight: 700; color: {{billsColor}};">{{billsPill}}</span></div>
+          <sc-for list="{{bills}}" as="b" hint-placeholder-count="5">
+            <div class="row" style="padding: 10px 12px; border-radius: 12px; background: #202024; opacity: {{b.op}};">
+              <div style="width: 38px; flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; line-height: 1.1;"><span class="num" style="font-weight: 800; font-size: 16px; color: {{b.dayColor}};">{{b.day}}</span><span style="font-size: 10px; color: #A1A1AA;">{{b.month}}</span></div>
+              <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 13px; font-weight: 600;">{{b.label}}</span><span class="num sub">{{b.value}} · <span style="color: {{b.stColor}};">{{b.status}}</span></span></div>
+              <button type="button" onClick="{{b.toggle}}" style="{{b.btnStyle}}">{{b.btn}}</button>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{hasConc}}" hint-placeholder-val="{{ true }}">
+          <div class="card">
+            <h2 class="h3">A conciliar</h2>
+            <sc-for list="{{conc}}" as="c" hint-placeholder-count="2">
+              <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 12px; background: #202024;">
+                <div class="row" style="justify-content: space-between;"><span style="font-size: 13px; font-weight: 600;">{{c.label}}</span><span class="num" style="font-weight: 700;">{{c.value}}</span></div>
+                <span class="sub">{{c.text}}</span>
+                <button type="button" class="btn2" onClick="{{c.act}}">{{c.action}}</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div class="card" style="gap: 8px;">
+          <span class="sub" style="font-size: 13px;">Lucro líquido do mês</span>
+          <span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 32px; color: #FBBF24;">R$ 11.530</span>
+          <span style="font-size: 13px; color: #D4D4D8;">23,9% de margem sobre R$ 48.200 · ▲ 6% vs. outubro</span>
+          <div style="display: flex; gap: 8px; align-items: flex-end; height: 76px; margin-top: 4px;">
+            <sc-for list="{{trend}}" as="t" hint-placeholder-count="6">
+              <div style="flex: 1 1 0; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                <div style="width: 100%; max-width: 30px; height: {{t.h}}px; border-radius: 5px; background: {{t.bg}};"></div>
+                <span style="font-size: 10px; color: #A1A1AA;">{{t.label}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+          <sc-for list="{{cash}}" as="c" hint-placeholder-count="3">
+            <div class="card" style="padding: 12px; gap: 2px;">
+              <span style="font-size: 11px; color: #A1A1AA;">{{c.label}}</span>
+              <span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 16px; color: {{c.color}};">{{c.value}}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div class="card">
+          <h2 class="h3">Para onde foi o dinheiro</h2>
+          <sc-for list="{{dre}}" as="d" hint-placeholder-count="7">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div class="row" style="justify-content: space-between; font-size: 13px;"><span style="color: #E4E4E7;">{{d.label}}</span><span class="num" style="font-weight: 600; color: {{d.textColor}};">{{d.value}}</span></div>
+              <div class="bar"><div style="width: {{d.w}}%; background: {{d.color}};"></div></div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div class="card">
+          <h2 class="h3">Quanto cada canal cobra</h2>
+          <sc-for list="{{fees}}" as="f" hint-placeholder-count="4">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div class="row" style="justify-content: space-between; font-size: 13px;"><span class="row" style="gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: {{f.color}};"></span>{{f.label}}</span><span class="num" style="font-weight: 700; color: {{f.pctColor}};">{{f.pct}}</span></div>
+              <div class="bar"><div style="width: {{f.w}}%; background: {{f.color}};"></div></div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div class="card" style="gap: 6px;">
+          <div class="row" style="justify-content: space-between;"><h2 class="h3">Aviso: limite do MEI</h2><span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 20px; color: #FB923C;">71%</span></div>
+          <div class="bar"><div style="width: 71%; background: #FB923C;"></div></div>
+          <span class="sub" style="line-height: 1.45;">R$ 57.500 de R$ 81.000 no ano. Aviso informativo: o que fazer é decisão sua com o contador.</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isEstoque}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div class="card">
+          <div class="row" style="justify-content: space-between;"><h2 class="h3">Lista de compras</h2><span class="num" style="font-weight: 800; color: #FBBF24;">R$ 486,30</span></div>
+          <sc-for list="{{buy}}" as="b" hint-placeholder-count="4">
+            <div class="row" style="font-size: 13px;"><span style="width: 8px; height: 8px; border-radius: 99px; background: {{b.color}}; flex: 0 0 auto;"></span><span style="flex: 1 1 auto;">{{b.name}}</span><span class="num sub">{{b.qty}}</span></div>
+          </sc-for>
+          <span class="sub">Calculada pelo consumo dos últimos 14 dias e pelo estoque mínimo.</span>
+          <button type="button" onClick="{{approveBuy}}" style="{{buyBtnStyle}}">{{buyBtn}}</button>
+        </div>
+
+        <div class="card">
+          <h2 class="h3">Registrar desperdício</h2>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px;">
+            <sc-for list="{{wItems}}" as="w" hint-placeholder-count="4"><button type="button" onClick="{{w.pick}}" style="{{w.style}}">{{w.label}}</button></sc-for>
+          </div>
+          <div class="row">
+            <span style="flex: 1 1 auto; font-size: 14px; font-weight: 600;">Quantidade</span>
+            <button type="button" class="step" aria-label="Diminuir quantidade" onClick="{{wDown}}">−</button>
+            <span class="num" style="min-width: 58px; text-align: center; font-weight: 800; font-size: 16px;">{{wQty}}</span>
+            <button type="button" class="step" aria-label="Aumentar quantidade" onClick="{{wUp}}">+</button>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px;">
+            <sc-for list="{{wReasons}}" as="w" hint-placeholder-count="4"><button type="button" onClick="{{w.pick}}" style="{{w.style}}">{{w.label}}</button></sc-for>
+          </div>
+          <button type="button" class="btn" onClick="{{wSave}}" style="min-height: 48px;">Registrar {{wCost}}</button>
+          <div class="row" style="justify-content: space-between; padding-top: 4px; border-top: 1px solid rgba(255,255,255,.06);">
+            <span class="sub">Desperdício do mês · meta até R$ 500</span>
+            <span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 18px; color: #FB923C;">{{wasteTotal}}</span>
+          </div>
+        </div>
+
+        <button type="button" onClick="{{scanNf}}" style="min-height: 56px; border-radius: 14px; border: 1px dashed rgba(245,158,11,.6); background: rgba(245,158,11,.08); color: #FBBF24; font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"></path></svg>
+          Lançar nota de compra (ler QR)
+        </button>
+
+        <div class="card">
+          <h2 class="h3">Estoque dos insumos</h2>
+          <sc-for list="{{stock}}" as="s" hint-placeholder-count="6">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div class="row" style="justify-content: space-between; font-size: 13px;"><span style="font-weight: 600;">{{s.name}}</span><span class="num" style="color: {{s.color}}; font-weight: 600;">{{s.qty}}</span></div>
+              <div class="bar"><div style="width: {{s.w}}%; background: {{s.color}};"></div></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isGestao}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+          <sc-for list="{{gsecs}}" as="g" hint-placeholder-count="6">
+            <button type="button" onClick="{{g.pick}}" style="{{g.style}}">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{g.icon}}"></path></svg>
+              <span style="font-size: 11px; font-weight: 700; text-align: center; line-height: 1.2;">{{g.label}}</span>
+            </button>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{gEquipe}}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="card">
+              <div class="row" style="justify-content: space-between;"><h2 class="h3">Equipe</h2><span class="sub">{{onShift}}</span></div>
+              <sc-for list="{{team}}" as="t" hint-placeholder-count="6">
+                <div style="display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; border-radius: 12px; background: #202024;">
+                  <div class="row">
+                    <span style="width: 36px; height: 36px; border-radius: 99px; background: {{t.avatarBg}}; border: 1px solid rgba(245,158,11,.4); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #F5E9D7; flex: 0 0 auto;">{{t.initials}}</span>
+                    <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">{{t.name}} <span style="font-weight: 400; color: #A1A1AA;">· {{t.role}}</span></span><span class="sub" style="color: {{t.stColor}};">{{t.status}}</span></div>
+                    <button type="button" role="switch" aria-checked="{{t.aria}}" aria-label="{{t.ariaLabel}}" onClick="{{t.toggle}}" style="{{t.track}}"><span style="{{t.knob}}"></span></button>
+                  </div>
+                  <div class="row">
+                    <span class="sub" style="flex: 1 1 auto;">{{t.login}}</span>
+                    <button type="button" class="btn2" onClick="{{t.pin}}" style="min-height: 34px; font-size: 12px;">{{t.pinLabel}}</button>
+                  </div>
+                </div>
+              </sc-for>
+              <span class="sub">Desligar bloqueia o acesso na hora, em todos os aparelhos.</span>
+            </div>
+
+            <div class="card">
+              <div style="display: flex; flex-direction: column; gap: 2px;"><h2 class="h3">Cargos e acessos</h2><span class="sub">Escolha o cargo e ligue ou desligue o que ele pode fazer.</span></div>
+              <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;">
+                <sc-for list="{{roles}}" as="r" hint-placeholder-count="5"><button type="button" onClick="{{r.pick}}" style="{{r.style}}">{{r.label}}</button></sc-for>
+              </div>
+              <sc-for list="{{perms}}" as="p" hint-placeholder-count="8">
+                <div class="row">
+                  <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">{{p.label}}</span><span class="sub">{{p.note}}</span></div>
+                  <button type="button" role="switch" aria-checked="{{p.aria}}" aria-label="{{p.label}}" onClick="{{p.toggle}}" style="{{p.track}}"><span style="{{p.knob}}"></span></button>
+                </div>
+              </sc-for>
+              <span class="sub">O dono sempre tem acesso total. Mudanças valem no próximo toque da pessoa.</span>
+            </div>
+
+            <div class="card">
+              <h2 class="h3">Convidar pessoa</h2>
+              <span class="sub">A pessoa recebe um link no WhatsApp, cria o PIN de 4 dígitos e já entra com o cargo escolhido.</span>
+              <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;">
+                <sc-for list="{{inviteRoles}}" as="r" hint-placeholder-count="5"><button type="button" onClick="{{r.pick}}" style="{{r.style}}">{{r.label}}</button></sc-for>
+              </div>
+              <button type="button" class="btn" onClick="{{sendInvite}}" style="min-height: 48px;">Enviar convite de {{inviteRole}}</button>
+            </div>
+
+            <div class="card">
+              <h2 class="h3">Histórico de acessos</h2>
+              <sc-for list="{{audit}}" as="a" hint-placeholder-count="6">
+                <div class="row" style="align-items: flex-start;">
+                  <span class="num" style="font-size: 12px; color: #A1A1AA; width: 40px; flex: 0 0 auto; padding-top: 1px;">{{a.time}}</span>
+                  <span style="width: 8px; height: 8px; border-radius: 99px; background: {{a.color}}; margin-top: 5px; flex: 0 0 auto;"></span>
+                  <span style="font-size: 13px; color: #E4E4E7; line-height: 1.4;">{{a.text}}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{gPonto}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+              <sc-for list="{{pKpis}}" as="k" hint-placeholder-count="3">
+                <div class="card" style="padding: 12px; gap: 2px;"><span style="font-size: 11px; color: #A1A1AA;">{{k.label}}</span><span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 18px; color: {{k.color}};">{{k.value}}</span></div>
+              </sc-for>
+            </div>
+            <section class="card">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px;">
+            <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700;">Desempenho de cada funcionário</h2>
+            <span style="font-size: 12px; color: #A1A1AA;">novembro · ponto + números do trabalho de cada cargo</span>
+          </div>
+          <div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px;">
+            <sc-for list="{{staffMetrics}}" as="m" hint-placeholder-count="6">
+              <div style="background: #202024; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="width: 38px; height: 38px; border-radius: 99px; background: #7A1F1F; border: 1px solid rgba(245,158,11,.45); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #F5E9D7; flex: 0 0 auto;">{{m.ini}}</span>
+                  <div style="flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0;"><span style="font-size: 15px; font-weight: 700;">{{m.name}}</span><span style="font-size: 12px; color: #A1A1AA;">{{m.role}}</span></div>
+                  <div style="display: flex; flex-direction: column; align-items: flex-end;"><span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 20px; color: {{m.pontColor}};">{{m.pont}}</span><span style="font-size: 11px; color: #A1A1AA;">pontualidade</span></div>
+                </div>
+                <div style="height: 6px; border-radius: 99px; background: #27272A;"><div style="height: 6px; border-radius: 99px; width: {{m.pontW}}%; background: {{m.pontColor}};"></div></div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: #D4D4D8;">
+                  <span class="num">{{m.hours}} no mês</span><span class="num">extras {{m.extra}}</span><span style="color: {{m.faltaColor}};">{{m.faltas}}</span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px;">
+                  <sc-for list="{{m.stats}}" as="s" hint-placeholder-count="4">
+                    <div style="background: #18181B; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 11px; color: #A1A1AA;">{{s.label}}</span><span class="num" style="font-size: 14px; font-weight: 700;">{{s.value}}</span></div>
+                  </sc-for>
+                </div>
+                <span style="font-size: 12px; color: #A1A1AA; line-height: 1.4;">{{m.note}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+
+            <div class="card">
+              <h2 class="h3">Ponto de hoje</h2>
+              <sc-for list="{{punches}}" as="p" hint-placeholder-count="6">
+                <div class="row" style="padding: 8px 10px; border-radius: 12px; background: #202024;">
+                  <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">{{p.name}} <span style="font-weight: 400; color: #A1A1AA;">· escala {{p.shift}}</span></span><span class="num sub">{{p.times}}</span></div>
+                  <span style="font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 99px; color: {{p.fg}}; background: {{p.bg}}; flex: 0 0 auto;">{{p.status}}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div class="card" style="gap: 8px;">
+              <h2 class="h3">Tentativas fora da loja</h2>
+              <span style="font-size: 13px; color: #E4E4E7; line-height: 1.45;">17:41 · Júlia tentou bater a entrada a 1,4 km da loja. Bloqueado; bateu de novo às 17:59 na loja.</span>
+            </div>
+            <div class="card">
+              <h2 class="h3">Correções pedidas</h2>
+              <sc-if value="{{fixOpen}}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 12px; background: #202024;">
+                  <span style="font-size: 14px; font-weight: 600;">Rita · quarta 25/11</span>
+                  <span class="sub">Esqueceu de bater a saída. Diz que saiu 00:05 (a última venda da cozinha foi 23:58).</span>
+                  <div class="row"><button type="button" class="btn" onClick="{{fixOk}}" style="flex: 1 1 0;">Aprovar</button><button type="button" class="btn2" onClick="{{fixNo}}" style="flex: 1 1 0;">Recusar</button></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{fixClosed}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: #86EFAC;">Nenhuma correção pendente.</span></sc-if>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{gCardapio}}" hint-placeholder-val="{{ false }}">
+          <div class="card">
+            <div style="display: flex; flex-direction: column; gap: 2px;"><h2 class="h3">Cardápio</h2><span class="sub">Esgotou? Desligue e o item some do iFood, do cardápio e do WhatsApp.</span></div>
+            <sc-for list="{{menu}}" as="m" hint-placeholder-count="6">
+              <div class="row">
+                <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">{{m.name}}</span><span class="sub" style="color: {{m.stColor}};">{{m.status}}</span></div>
+                <button type="button" role="switch" aria-checked="{{m.aria}}" aria-label="{{m.ariaLabel}}" onClick="{{m.toggle}}" style="{{m.track}}"><span style="{{m.knob}}"></span></button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{gPrecos}}" hint-placeholder-val="{{ false }}">
+          <div class="card">
+            <div style="display: flex; flex-direction: column; gap: 2px;"><h2 class="h3">Preços</h2><span class="sub">Muda em todos os canais. A margem é recalculada pelo custo atual.</span></div>
+            <sc-for list="{{prices}}" as="p" hint-placeholder-count="3">
+              <div class="row">
+                <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">{{p.name}}</span><span class="num sub">margem <span style="color: {{p.mColor}}; font-weight: 700;">{{p.margin}}</span></span></div>
+                <button type="button" class="step" aria-label="{{p.downLabel}}" onClick="{{p.down}}">−</button>
+                <span class="num" style="min-width: 70px; text-align: center; font-weight: 800;">{{p.price}}</span>
+                <button type="button" class="step" aria-label="{{p.upLabel}}" onClick="{{p.up}}">+</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{gCampanhas}}" hint-placeholder-val="{{ false }}">
+          <div class="card">
+            <h2 class="h3">Campanhas</h2>
+            <sc-for list="{{camps}}" as="c" hint-placeholder-count="2">
+              <div class="row">
+                <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">{{c.name}}</span><span class="sub">{{c.text}}</span></div>
+                <button type="button" role="switch" aria-checked="{{c.aria}}" aria-label="{{c.name}}" onClick="{{c.toggle}}" style="{{c.track}}"><span style="{{c.knob}}"></span></button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{gAvaliacoes}}" hint-placeholder-val="{{ false }}">
+          <div class="card">
+            <div class="row" style="justify-content: space-between;"><h2 class="h3">Avaliações para responder</h2><span class="num" style="font-weight: 800; color: #FBBF24;">★ 4,7</span></div>
+            <sc-for list="{{reviews}}" as="r" hint-placeholder-count="2">
+              <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 12px; background: #202024;">
+                <div class="row" style="justify-content: space-between;"><span style="font-size: 13px; font-weight: 700;">{{r.name}}</span><span style="color: {{r.starColor}}; font-size: 13px;">{{r.stars}}</span></div>
+                <span style="font-size: 13px; color: #D4D4D8;">“{{r.text}}”</span>
+                <sc-if value="{{r.open}}" hint-placeholder-val="{{ true }}">
+                  <button type="button" class="btn2" onClick="{{r.reply}}">{{r.replyLabel}}</button>
+                </sc-if>
+                <sc-if value="{{r.done}}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size: 12px; color: #86EFAC;">✓ Respondida: {{r.answer}}</span>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+  </div>
+
+  <nav aria-label="Seções" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 6px 6px 16px; background: #0A0A0A; border-top: 1px solid rgba(255,255,255,.08);">
+    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+      <button type="button" onClick="{{t.pick}}" aria-label="{{t.label}}" style="{{t.style}}">
+        <span style="position: relative; display: flex;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>
+          <sc-if value="{{t.hasBadge}}" hint-placeholder-val="{{ false }}">
+            <span class="num" style="position: absolute; top: -6px; right: -10px; min-width: 16px; height: 16px; border-radius: 99px; background: #EF4444; color: #FFF; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center;">{{t.badge}}</span>
+          </sc-if>
+        </span>
+        <span>{{t.label}}</span>
+      </button>
+    </sc-for>
+  </nav>
+</div>
+</template>
+<script>
+/* Mini motor de telas do protótipo: lê o <template id="tpl"> e redesenha a cada setState.
+   Suporta {{valor}}, <sc-if value>, <sc-for list as> e onClick/onChange. */
+(function () {
+  var EXACT = /^\s*\{\{\s*([^}]+?)\s*\}\}\s*$/;
+  function get(scope, expr) {
+    expr = expr.trim();
+    if (expr === 'true') return true;
+    if (expr === 'false') return false;
+    if (/^-?\d+(\.\d+)?$/.test(expr)) return +expr;
+    var parts = expr.split('.');
+    for (var i = scope.length - 1; i >= 0; i--) {
+      var s = scope[i];
+      if (s && Object.prototype.hasOwnProperty.call(s, parts[0])) {
+        var v = s[parts[0]];
+        for (var j = 1; j < parts.length; j++) v = v == null ? undefined : v[parts[j]];
+        return v;
+      }
+    }
+    return undefined;
+  }
+  function interp(str, scope) {
+    return str.replace(/\{\{([^}]+)\}\}/g, function (_, e) { var v = get(scope, e); return v == null ? '' : String(v); });
+  }
+  function exprOf(attr) { var m = EXACT.exec(attr || ''); return m ? m[1] : null; }
+  var EVENTS = { onclick: 'click', onchange: 'input', oninput: 'input' };
+  function build(node, scope, out) {
+    if (node.nodeType === 3) { out.push(document.createTextNode(interp(node.nodeValue, scope))); return; }
+    if (node.nodeType !== 1) return;
+    var tag = node.localName;
+    if (tag === 'sc-if') {
+      if (get(scope, exprOf(node.getAttribute('value')) || 'false')) node.childNodes.forEach(function (c) { build(c, scope, out); });
+      return;
+    }
+    if (tag === 'sc-for') {
+      var list = get(scope, exprOf(node.getAttribute('list')) || '') || [], as = node.getAttribute('as');
+      list.forEach(function (item) { var o = {}; o[as] = item; var sc = scope.concat([o]); node.childNodes.forEach(function (c) { build(c, sc, out); }); });
+      return;
+    }
+    var el = node.namespaceURI === 'http://www.w3.org/1999/xhtml' ? document.createElement(tag) : document.createElementNS(node.namespaceURI, node.tagName);
+    for (var i = 0; i < node.attributes.length; i++) {
+      var a = node.attributes[i], name = a.name.toLowerCase();
+      if (name.indexOf('hint-') === 0) continue;
+      var ex = exprOf(a.value);
+      if (EVENTS[name] && ex) { (function (fn) { if (typeof fn === 'function') el.addEventListener(EVENTS[name], function (e) { fn(e); }); })(get(scope, ex)); continue; }
+      el.setAttribute(a.name, interp(a.value, scope));
+    }
+    var kids = [];
+    node.childNodes.forEach(function (c) { build(c, scope, kids); });
+    kids.forEach(function (k) { el.appendChild(k); });
+    out.push(el);
+  }
+  var SCROLLERS = '[style*="overflow-y: auto"],[style*="overflow: auto"],[style*="overflow-x: auto"]';
+  window.DCLogic = function DCLogic(props) { this.props = props || {}; this.state = {}; };
+  window.DCLogic.prototype.setState = function (o) {
+    Object.assign(this.state, typeof o === 'function' ? o(this.state) : o);
+    if (this.__render && !this.__queued) { var self = this; this.__queued = true; Promise.resolve().then(function () { self.__queued = false; self.__render(); }); }
+  };
+  window.DC = {
+    mount: function (Component) {
+      var app = document.getElementById('app'), tpl = document.getElementById('tpl').content, comp = new Component({});
+      comp.__render = function () {
+        var scrolls = Array.prototype.map.call(app.querySelectorAll(SCROLLERS), function (e) { return [e.scrollTop, e.scrollLeft]; });
+        var fields = app.querySelectorAll('input,textarea,select'), act = document.activeElement, fi = Array.prototype.indexOf.call(fields, act), sel = fi >= 0 && act.selectionStart != null ? [act.selectionStart, act.selectionEnd] : null;
+        var vals = comp.renderVals(), out = [];
+        tpl.childNodes.forEach(function (c) { build(c, [vals], out); });
+        app.replaceChildren.apply(app, out);
+        app.querySelectorAll(SCROLLERS).forEach(function (e, i) { if (scrolls[i]) { e.scrollTop = scrolls[i][0]; e.scrollLeft = scrolls[i][1]; } });
+        if (fi >= 0) { var nf = app.querySelectorAll('input,textarea,select')[fi]; if (nf) { nf.focus(); if (sel && nf.setSelectionRange) try { nf.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
+      };
+      comp.__render();
+    }
+  };
+})();
+
+</script>
+<script>
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'inicio', done: {}, paid: {}, open: true, pause: 0, eta: 40, prio: {}, warned: {}, off: { toscano: true }, prices: { xalves: 32.9, duplo: 38.9, batm: 24.9 }, staffOff: {}, camps: { volta10: true, terca: false }, replied: {}, gsec: 'equipe', role: 'Caixa', permOv: {}, invRole: 'Motoboy', pinReset: {}, tick: 0, sel: '', wItem: 'pao', wReason: 'Estragou', wQty: 4, wasteAdd: 0, buyOk: false, toast: '' };
+  }
+  brl(n, dec) {
+    return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 });
+  }
+  sw(on) {
+    return {
+      track: 'width:52px;height:32px;border-radius:99px;border:none;padding:3px;flex:0 0 auto;display:flex;align-items:center;justify-content:' + (on ? 'flex-end' : 'flex-start') + ';background:' + (on ? '#22C55E' : '#3F3F46') + ';',
+      knob: 'width:26px;height:26px;border-radius:99px;background:#FFF;display:block;', aria: on ? 'true' : 'false'
+    };
+  }
+  mapData(tick, sel) {
+    var defs = [
+      { id: 'leo', name: 'Léo', ini: 'LE', color: '#F59E0B', order: '#1038', where: 'Vila da Penha · Carla', mins: 14, km: 2.8, start: 0.35, pts: [[180, 130], [180, 80], [262, 80], [300, 42]] },
+      { id: 'diego', name: 'Diego', ini: 'DI', color: '#22C55E', order: '#1041', where: 'Ipase · Rodrigo', mins: 12, km: 2.3, start: 0.6, pts: [[180, 130], [118, 130], [118, 192], [58, 212]] },
+      { id: 'marcos', name: 'Marcos', ini: 'MA', color: '#F5E9D7', order: 'voltando', where: 'entregou #1036 no Quitungo', mins: 8, km: 1.6, start: 0.25, back: true, pts: [[300, 206], [246, 206], [246, 130], [180, 130]] }
+    ];
+    function segLen(a, b) { return Math.sqrt(Math.pow(b[0] - a[0], 2) + Math.pow(b[1] - a[1], 2)); }
+    function fmt(p) { return p[0].toFixed(0) + ',' + p[1].toFixed(0); }
+    return defs.map(function (d) {
+      var t = Math.min(1, d.start + tick * 0.15), total = 0, i;
+      for (i = 1; i < d.pts.length; i++) total += segLen(d.pts[i - 1], d.pts[i]);
+      var goal = t * total, acc = 0, pos = d.pts[d.pts.length - 1], done = [d.pts[0]], rest = [];
+      for (i = 1; i < d.pts.length; i++) {
+        var L = segLen(d.pts[i - 1], d.pts[i]);
+        if (acc + L >= goal) {
+          var f = L ? (goal - acc) / L : 0;
+          pos = [d.pts[i - 1][0] + (d.pts[i][0] - d.pts[i - 1][0]) * f, d.pts[i - 1][1] + (d.pts[i][1] - d.pts[i - 1][1]) * f];
+          done.push(pos); rest = [pos].concat(d.pts.slice(i)); break;
+        }
+        acc += L; done.push(d.pts[i]);
+      }
+      if (!rest.length) rest = [pos, pos];
+      var left = Math.max(0, Math.round((1 - t) * d.mins)), on = !sel || sel === d.id, end = d.pts[d.pts.length - 1];
+      var status = t >= 1 ? (d.back ? 'Chegou na loja' : 'Entregue') : (d.back ? 'Voltando para a loja · ' + left + ' min' : 'Chega em ' + left + ' min');
+      return { id: d.id, name: d.name, ini: d.ini, color: d.color, order: d.order, where: d.where, status: status,
+        km: (Math.max(0, (1 - t) * d.km)).toFixed(1).replace('.', ',') + ' km', x: pos[0].toFixed(1), y: pos[1].toFixed(1), tx: pos[0].toFixed(1), ty: (pos[1] + 3.5).toFixed(1),
+        done: done.map(fmt).join(' '), rest: rest.map(fmt).join(' '), dx: end[0], dy: end[1], hasDest: !d.back, op: on ? 1 : 0.25, statusColor: t >= 1 ? '#86EFAC' : (left <= 3 ? '#FBBF24' : '#E4E4E7') };
+    });
+  }
+  renderVals() {
+    var self = this, st = this.state, t = st.tab;
+    function set(o) { self.setState(o); }
+    function toast(msg) { self.setState({ toast: msg }); }
+    function mark(key, obj, msg) { var n = Object.assign({}, self.state[obj]); n[key] = true; var o = { toast: msg }; o[obj] = n; self.setState(o); }
+    var chipBase = 'min-height:40px;border-radius:10px;font-weight:700;font-size:13px;padding:0 6px;';
+    function chip(on) { return chipBase + (on ? 'border:none;background:#F59E0B;color:#0F0F0F;' : 'border:1px solid rgba(255,255,255,.12);background:#202024;color:#E4E4E7;'); }
+
+    var ICON = {
+      home: 'M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10',
+      op: 'M12 7v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z',
+      fin: 'M4 20V10M10 20V4M16 20v-7M22 20H2',
+      est: 'M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7M12 11v10',
+      gest: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z',
+      off: 'M4 4l16 16M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18',
+      pause: 'M10 5v14M14 5v14',
+      nf: 'M6 3h9l3 3v15H6zM9 9h6M9 13h6M9 17h4',
+      trash: 'M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14',
+      tag: 'M20 12l-8 8-9-9V3h8zM7.5 7.5h.01',
+      cash: 'M3 7h18v12H3zM3 11h18M7 15h3',
+      team: 'M16 19v-1a4 4 0 0 0-8 0v1M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6',
+      gift: 'M4 11h16v9H4zM2 7h20v4H2zM12 7v13M12 7c-2-4-6-3-5 0M12 7c2-4 6-3 5 0'
+    };
+
+    // ---------- prioridades ----------
+    var todoDefs = [
+      { id: 'late', color: '#EF4444', title: 'Pedido #1045 com 17 min no preparo', text: 'iFood · Duplo Onion + Batata M. Meta de preparo é 15 min.', action: 'Avisar o cliente', msg: 'Mensagem de atraso enviada ao cliente do #1045.', go: 'operacao', goLabel: 'Ver' },
+      { id: 'moto', color: '#FB923C', title: '2 pedidos prontos esperando motoboy', text: '#1042 e #1043 estão prontos há 6 min. Léo e Caio estão na rua.', action: 'Chamar iFood Entrega', msg: 'Entregador do iFood chamado para #1042 e #1043.', go: 'operacao', goLabel: 'Ver' },
+      { id: 'embal', color: '#EF4444', title: 'Boleto vencido: Embalagens Rio Pack', text: 'R$ 610,00 · venceu ontem (26/11).', action: 'Marcar como pago', msg: 'Boleto da Rio Pack marcado como pago.', go: 'fin', goLabel: 'Contas', paidKey: 'embal' },
+      { id: 'buy', color: '#FB923C', title: 'Lista de compras pronta', text: 'Pão, bacon, queijo e embalagens · R$ 486,30.', action: 'Aprovar compra', msg: 'Compra aprovada e enviada aos fornecedores.', go: 'estoque', goLabel: 'Ver lista', buy: true },
+      { id: 'fix', color: '#F59E0B', title: 'Rita pediu correção do ponto', text: 'Quarta 25/11: esqueceu a saída, diz que saiu 00:05.', action: 'Aprovar correção', msg: 'Correção do ponto da Rita aprovada e anotada.', go: 'gestao:ponto', goLabel: 'Ver ponto' },
+      { id: 'pix', color: '#F59E0B', title: 'Pix de R$ 47,90 sem pedido', text: 'Recebido 21:14. Provável pedido #1039 (WhatsApp).', action: 'Vincular ao #1039', msg: 'Pix vinculado ao pedido #1039.', go: 'fin', goLabel: 'Ver' }
+    ];
+    function isDone(d) { return d.paidKey ? !!st.paid[d.paidKey] : (d.buy ? st.buyOk : !!st.done[d.id]); }
+    var todos = todoDefs.filter(function (d) { return !isDone(d); }).map(function (d) {
+      return { color: d.color, title: d.title, text: d.text, action: d.action, goLabel: d.goLabel,
+        go: function () { var g = d.go.split(':'); var o = { tab: g[0] }; if (g[1]) o.gsec = g[1]; set(o); },
+        act: function () {
+          if (d.paidKey) mark(d.paidKey, 'paid', d.msg);
+          else if (d.buy) set({ buyOk: true, toast: d.msg });
+          else mark(d.id, 'done', d.msg);
+        } };
+    });
+    var todoCount = todos.length;
+
+    var quick = [
+      ['Esgotar item', ICON.off, 'gestao:cardapio', 'rgba(239,68,68,.16)', '#FCA5A5'],
+      ['Pausar iFood', ICON.pause, 'operacao', 'rgba(244,63,94,.16)', '#FDA4AF'],
+      ['Lançar nota', ICON.nf, 'estoque', 'rgba(245,158,11,.16)', '#FBBF24'],
+      ['Desperdício', ICON.trash, 'estoque', 'rgba(251,146,60,.16)', '#FDBA74'],
+      ['Preços', ICON.tag, 'gestao:precos', 'rgba(245,158,11,.16)', '#FBBF24'],
+      ['Contas', ICON.cash, 'fin', 'rgba(34,197,94,.16)', '#86EFAC'],
+      ['Equipe', ICON.team, 'gestao:equipe', 'rgba(245,233,215,.12)', '#F5E9D7'],
+      ['Cupons', ICON.gift, 'gestao:campanhas', 'rgba(167,139,250,.16)', '#C4B5FD']
+    ].map(function (q) { return { label: q[0], icon: q[1], bg: q[3], fg: q[4], go: function () { var p = q[2].split(':'); var o = { tab: p[0] }; if (p[1]) o.gsec = p[1]; set(o); } }; });
+
+    // ---------- operação ----------
+    var o1 = this.sw(st.open);
+    var pauseOpts = [[0, 'Recebendo'], [15, 'Pausar 15 min'], [30, 'Pausar 30 min']].map(function (p) {
+      return { label: p[1], style: chip(st.pause === p[0]), pick: function () { set({ pause: p[0], toast: p[0] ? 'iFood pausado por ' + p[0] + ' min. Volta sozinho.' : 'iFood recebendo pedidos de novo.' }); } };
+    });
+    var CH = { ifood: '#F43F5E', cardapio: '#F59E0B', whatsapp: '#22C55E', balcao: '#F5E9D7' };
+    var orders = [
+      ['a', '#1045', 17, 15, 'iFood', 'ifood', 'Em preparo', 'Duplo Onion + Batata M'],
+      ['g', '#1042', 6, 5, 'iFood', 'ifood', 'Pronto, esperando motoboy', 'Combo Família'],
+      ['b', '#1047', 12, 15, 'Cardápio', 'cardapio', 'Em preparo', 'Combo Casal + Batata Maluca'],
+      ['c', '#1048', 9, 15, 'WhatsApp', 'whatsapp', 'Em preparo', 'P2 Duplo Picanha'],
+      ['d', '#1051', 2, 2, 'WhatsApp', 'whatsapp', 'Aguardando aceite', '2× X-Alves']
+    ].map(function (o) {
+      var r = o[2] / o[3], color = r <= 1 ? '#22C55E' : (r <= 1.2 ? '#FB923C' : '#EF4444');
+      return { num: o[1], min: o[2] + ' min', color: color, channel: o[4], chColor: CH[o[5]], stage: o[6], items: o[7], late: r > 1.2,
+        prioLabel: st.prio[o[0]] ? '✓ Priorizado' : 'Priorizar na cozinha', warnLabel: st.warned[o[0]] ? '✓ Cliente avisado' : 'Avisar cliente',
+        prio: function () { mark(o[0], 'prio', o[1] + ' foi para o topo da fila da cozinha.'); },
+        warn: function () { mark(o[0], 'warned', 'Mensagem de atraso enviada ao cliente do ' + o[1] + '.'); } };
+    });
+    var stages = [
+      { label: 'Aceite da cozinha', avg: '1:48', target: '2:00', within: 86, color: '#22C55E' },
+      { label: 'Preparo', avg: '16:30', target: '15:00', within: 64, color: '#FB923C' },
+      { label: 'Espera do motoboy', avg: '7:12', target: '5:00', within: 48, color: '#EF4444' },
+      { label: 'Rota até o cliente', avg: '14:06', target: '15:00', within: 71, color: '#22C55E' }
+    ];
+
+    // ---------- finanças ----------
+    var billD = [
+      ['embal', '26', 'nov', 'Embalagens Rio Pack', 610, 'Vencida', '#FCA5A5'],
+      ['pao', '27', 'nov', 'Padaria Bom Gosto', 486.3, 'Vence hoje', '#FDBA74'],
+      ['gas', '30', 'nov', 'Gás (2 botijões)', 420, 'Esta semana', '#D4D4D8'],
+      ['carne', '01', 'dez', 'Frigorífico Serra', 2140, 'Esta semana', '#D4D4D8'],
+      ['light', '03', 'dez', 'Energia (Light)', 780, 'Débito automático', '#D4D4D8']
+    ];
+    var openBills = 0;
+    var bills = billD.map(function (b) {
+      var paid = !!st.paid[b[0]];
+      if (!paid) openBills += b[4];
+      return { day: b[1], month: b[2], label: b[3], value: self.brl(b[4], 2), status: paid ? 'Paga' : b[5], stColor: paid ? '#86EFAC' : b[6], op: paid ? 0.55 : 1,
+        dayColor: paid ? '#A1A1AA' : (b[5] === 'Vencida' ? '#FCA5A5' : (b[5] === 'Vence hoje' ? '#FDBA74' : '#FAFAF9')),
+        btn: paid ? 'Desfazer' : 'Pagar',
+        btnStyle: 'min-height:38px;padding:0 12px;border-radius:10px;font-weight:800;font-size:13px;flex:0 0 auto;' + (paid ? 'border:1px solid rgba(255,255,255,.12);background:transparent;color:#A1A1AA;' : 'border:none;background:#F59E0B;color:#0F0F0F;'),
+        toggle: function () { var np = Object.assign({}, self.state.paid); np[b[0]] = !np[b[0]]; set({ paid: np, toast: np[b[0]] ? b[3] + ' marcada como paga.' : 'Pagamento desfeito.' }); } };
+    });
+    var concD = [
+      ['pix', 'Pix sem pedido', 'R$ 47,90', 'Recebido 21:14. Provável pedido #1039 (WhatsApp).', 'Vincular ao #1039', 'Pix vinculado ao pedido #1039.'],
+      ['ifood2', 'Repasse iFood com diferença', 'R$ 3,20', 'Repasse de 25/11 veio menor que o esperado.', 'Contestar no iFood', 'Contestação aberta no portal do iFood.']
+    ];
+    var conc = concD.filter(function (c) { return !st.done[c[0]]; }).map(function (c) {
+      return { label: c[1], value: c[2], text: c[3], action: c[4], act: function () { mark(c[0], 'done', c[5]); } };
+    });
+    var trend = [['Jun', 9100], ['Jul', 9800], ['Ago', 10100], ['Set', 10400], ['Out', 10900], ['Nov', 11530]].map(function (x, i) {
+      return { label: x[0], h: Math.round(x[1] / 11530 * 60), bg: i === 5 ? '#F59E0B' : 'rgba(245,158,11,.38)' };
+    });
+
+    // ---------- estoque ----------
+    var buy = [['Pão brioche', '120 un', '#FB923C'], ['Bacon fatiado', '5 kg', '#FB923C'], ['Queijo cheddar', '4 kg', '#F59E0B'], ['Embalagem burger', '300 un', '#F59E0B']].map(function (b) { return { name: b[0], qty: b[1], color: b[2] }; });
+    var wDefs = { pao: ['Pão brioche', 'un', 1.18, 1], blend: ['Blend 180 g', 'un', 6.4, 1], bacon: ['Bacon', 'kg', 38.5, 0.1], batata: ['Batata', 'kg', 14.2, 0.5] };
+    var wItems = Object.keys(wDefs).map(function (k) { return { label: wDefs[k][0], style: chip(st.wItem === k), pick: function () { set({ wItem: k, wQty: wDefs[k][3] * (k === 'pao' ? 4 : 1) }); } }; });
+    var wReasons = ['Estragou', 'Vencido', 'Queimou', 'Erro de pedido'].map(function (r) { return { label: r, style: chip(st.wReason === r), pick: function () { set({ wReason: r }); } }; });
+    var wd = wDefs[st.wItem], wCostN = st.wQty * wd[2];
+    function q(n) { return (Math.round(n * 10) / 10).toString().replace('.', ','); }
+
+    // ---------- gestão ----------
+    var menuDefs = [['xalves', 'X-Alves'], ['duplo', 'Duplo Onion Artesanal'], ['picanha', 'P2 Duplo Picanha'], ['toscano', 'Toscano'], ['batm', 'Batata M'], ['casal', 'Combo Casal']];
+    var menu = menuDefs.map(function (m) {
+      var on = !st.off[m[0]], s = self.sw(on);
+      return { name: m[1], status: on ? 'Disponível em todos os canais' : 'Esgotado · escondido em todos os canais', stColor: on ? '#A1A1AA' : '#FCA5A5', track: s.track, knob: s.knob, aria: s.aria, ariaLabel: m[1] + ' disponível',
+        toggle: function () { var no = Object.assign({}, self.state.off); no[m[0]] = !no[m[0]]; set({ off: no, toast: m[1] + (no[m[0]] ? ' esgotado no iFood, cardápio e WhatsApp.' : ' voltou para todos os canais.') }); } };
+    });
+    var costs = { xalves: 10.2, duplo: 13.9, batm: 6.1 };
+    var prices = [['xalves', 'X-Alves'], ['duplo', 'Duplo Onion'], ['batm', 'Batata M']].map(function (p) {
+      var v = st.prices[p[0]], m = (v - costs[p[0]]) / v * 100;
+      function setP(nv) { var np = Object.assign({}, self.state.prices); np[p[0]] = Math.round(nv * 100) / 100; set({ prices: np }); }
+      return { name: p[1], price: self.brl(v, 2), margin: Math.round(m) + '%', mColor: m >= 65 ? '#86EFAC' : '#FDBA74',
+        down: function () { setP(Math.max(1, v - 1)); }, up: function () { setP(v + 1); }, downLabel: 'Baixar preço de ' + p[1], upLabel: 'Subir preço de ' + p[1] };
+    });
+    var team = [
+      ['ana', 'Ana', 'AN', 'Gerente', 'No turno desde 17h', 'entra com e-mail e senha'],
+      ['bruno', 'Bruno', 'BR', 'Caixa', 'No turno desde 17h52 · caixa aberto', 'entra com PIN'],
+      ['julia', 'Júlia', 'JU', 'Atendente', 'No turno desde 18h', 'entra com PIN'],
+      ['rita', 'Rita', 'RI', 'Cozinha', 'No turno desde 17h30', 'entra com PIN'],
+      ['leo', 'Léo', 'LE', 'Motoboy', 'Na rua com o #1038', 'app do motoboy'],
+      ['marcos', 'Marcos', 'MA', 'Motoboy', 'Convite enviado ontem', 'ainda não criou o PIN']
+    ].map(function (m) {
+      var on = !st.staffOff[m[0]], s = self.sw(on), reset = !!st.pinReset[m[0]];
+      return { name: m[1], initials: m[2], role: m[3], status: on ? m[4] : 'Acesso bloqueado', stColor: on ? (m[4].indexOf('Convite') === 0 ? '#FDBA74' : '#86EFAC') : '#FCA5A5',
+        avatarBg: on ? '#7A1F1F' : '#3F3F46', login: m[5], track: s.track, knob: s.knob, aria: s.aria, ariaLabel: 'Acesso de ' + m[1],
+        pinLabel: reset ? '✓ Link enviado' : (m[3] === 'Gerente' ? 'Trocar senha' : 'Novo PIN'),
+        pin: function () { mark(m[0], 'pinReset', m[1] + ' recebeu um link no WhatsApp para criar ' + (m[3] === 'Gerente' ? 'uma nova senha.' : 'um novo PIN.')); },
+        toggle: function () { var ns = Object.assign({}, self.state.staffOff); ns[m[0]] = !ns[m[0]]; set({ staffOff: ns, toast: ns[m[0]] ? 'Acesso de ' + m[1] + ' bloqueado em todos os aparelhos.' : 'Acesso de ' + m[1] + ' liberado.' }); } };
+    });
+    var onShift = team.filter(function (x) { return x.status.indexOf('turno') >= 0 || x.status.indexOf('Na rua') === 0; }).length + ' no turno agora';
+    var ROLES = ['Gerente', 'Caixa', 'Atendente', 'Cozinha', 'Motoboy'];
+    var PERMS = [
+      ['pdv', 'Lançar pedido no PDV', 'balcão e telefone'],
+      ['desc', 'Dar desconto', 'até 10%; acima disso pede o gerente'],
+      ['cancel', 'Cancelar pedido', 'sempre com motivo registrado'],
+      ['caixa', 'Abrir e fechar caixa', 'sangria, suprimento e conferência'],
+      ['esgotar', 'Esgotar item', 'some de todos os canais'],
+      ['preco', 'Mudar preço', 'vale para todos os canais'],
+      ['fin', 'Ver financeiro', 'lucro, contas e conciliação'],
+      ['rel', 'Ver relatórios e tempos', 'painel, gargalos e vendas'],
+      ['equipe', 'Gerenciar equipe', 'convidar, bloquear e mudar cargos']
+    ];
+    var DEF = { Gerente: ['pdv', 'desc', 'cancel', 'caixa', 'esgotar', 'preco', 'fin', 'rel'], Caixa: ['pdv', 'desc', 'caixa', 'esgotar'], Atendente: ['pdv', 'esgotar'], Cozinha: ['esgotar'], Motoboy: [] };
+    function chip3(on) { return 'min-height:40px;border-radius:10px;font-weight:700;font-size:12px;padding:0 4px;' + (on ? 'border:none;background:#F59E0B;color:#0F0F0F;' : 'border:1px solid rgba(255,255,255,.12);background:#202024;color:#E4E4E7;'); }
+    var roles = ROLES.map(function (r) { return { label: r, style: chip3(st.role === r), pick: function () { set({ role: r }); } }; });
+    var perms = PERMS.map(function (p) {
+      var key = st.role + ':' + p[0], on = key in st.permOv ? st.permOv[key] : DEF[st.role].indexOf(p[0]) >= 0, s = self.sw(on);
+      return { label: p[1], note: p[2], track: s.track, knob: s.knob, aria: s.aria,
+        toggle: function () { var no = Object.assign({}, self.state.permOv); no[key] = !on; set({ permOv: no, toast: (on ? 'Removido: ' : 'Liberado: ') + p[1].toLowerCase() + ' para ' + st.role + '.' }); } };
+    });
+    var inviteRoles = ROLES.map(function (r) { return { label: r, style: chip3(st.invRole === r), pick: function () { set({ invRole: r }); } }; });
+    var audit = [
+      ['19:42', '#EF4444', 'Júlia cancelou o pedido #1028 · motivo: cliente desistiu'],
+      ['19:15', '#F59E0B', 'Bruno deu 10% de desconto no #1031'],
+      ['18:40', '#FB923C', '3 PINs errados no PDV do balcão · aparelho travado por 5 min'],
+      ['17:52', '#22C55E', 'Bruno abriu o caixa com R$ 200,00'],
+      ['17:40', '#22C55E', 'Ana entrou pelo computador da loja'],
+      ['17:30', '#22C55E', 'Rita entrou no KDS da cozinha']
+    ].map(function (a) { return { time: a[0], color: a[1], text: a[2] }; });
+    var GS = [['equipe', 'Equipe e acessos', ICON.team], ['cardapio', 'Cardápio', ICON.off], ['precos', 'Preços', ICON.tag], ['campanhas', 'Campanhas', ICON.gift], ['avaliacoes', 'Avaliações', 'M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z'], ['ponto', 'Ponto e RH', ICON.op]];
+    var pKpis = [{ label: 'No turno', value: '5 de 6', color: '#FAFAF9' }, { label: 'Atrasos hoje', value: '1', color: '#FDBA74' }, { label: 'Loja abriu', value: '17:58', color: '#86EFAC' }];
+    var punches = [['Rita', '17h30', 'entrada 17:26', 'No horário', 0], ['Bruno', '17h45', 'entrada 17:41 · abriu a loja 17:58', 'No horário', 0], ['Ana', '17h45', 'entrada 17:40', 'No horário', 0], ['Júlia', '18h00', 'entrada 17:59', 'No horário', 0], ['Léo', '18h00', 'entrada 18:09', '9 min atraso', 1], ['Marcos', '19h00', 'sem registro', 'Não chegou', 2]].map(function (p) {
+      var c = [['#86EFAC', 'rgba(34,197,94,.14)'], ['#FDBA74', 'rgba(251,146,60,.16)'], ['#D4D4D8', '#27272A']][p[4]];
+      return { name: p[0], shift: p[1], times: p[2], status: p[3], fg: c[0], bg: c[1] };
+    });
+    var staffMetrics = [
+      ['AN', 'Ana', 'Gerente', 98, '182h', '+ 4h10', 0, [['Turnos que fechou', '12'], ['Diferença de caixa', 'R$ 0,00'], ['Descontos aprovados', '9'], ['Avaliação dos turnos', '★ 4,8']], 'Turnos dela têm o menor tempo total de pedido (36 min).'],
+      ['BR', 'Bruno', 'Caixa', 94, '176h', '+ 1h12', 0, [['Pedidos lançados', '612'], ['Ticket médio', 'R$ 39,10'], ['Diferença de caixa', '− R$ 3,50'], ['Cancelamentos', '2']], 'Abriu a loja no horário em 19 de 20 dias.'],
+      ['RI', 'Rita', 'Cozinha', 100, '168h', '0h', 0, [['Pedidos preparados', '1.180'], ['Preparo médio', '14:10 · meta 15'], ['Dentro da meta', '78%'], ['Refeitos por erro', '3']], 'Desperdício registrado por ela: R$ 140 (queimou).'],
+      ['JU', 'Júlia', 'Atendente', 88, '158h', '− 2h', 1, [['Conversas atendidas', '734'], ['1ª resposta', '1 min 40 s'], ['Viraram pedido', '61%'], ['Avaliação', '★ 4,6']], '2 atrasos e 1 falta no mês; 2 tentativas fora da loja.'],
+      ['LE', 'Léo', 'Motoboy', 82, '150h', '0h', 0, [['Entregas', '412'], ['Rota média', '14 min'], ['No prazo', '86%'], ['A receber', 'R$ 2.884']], '4 atrasos na entrada; entregas bem avaliadas (★ 4,7).'],
+      ['MA', 'Marcos', 'Motoboy', 90, '96h', '0h', 0, [['Entregas', '198'], ['Rota média', '16 min'], ['No prazo', '79%'], ['A receber', 'R$ 1.386']], 'Começou há 3 semanas.']
+    ].map(function (m) {
+      var pc = m[3] >= 95 ? '#22C55E' : (m[3] >= 88 ? '#FB923C' : '#EF4444');
+      return { ini: m[0], name: m[1], role: m[2], pont: m[3] + '%', pontW: m[3], pontColor: pc, hours: m[4], extra: m[5], faltas: m[6] ? m[6] + ' falta' : 'sem faltas', faltaColor: m[6] ? '#FDBA74' : '#86EFAC',
+        stats: m[7].map(function (s) { return { label: s[0], value: s[1] }; }), note: m[8] };
+    });
+    var gsecs = GS.map(function (g) {
+      var on = st.gsec === g[0];
+      return { label: g[1], icon: g[2], pick: function () { if (g[0] === 'motoboys') set({ tab: 'operacao' }); else set({ gsec: g[0] }); },
+        style: 'min-height:76px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:6px 4px;' + (on ? 'border:1px solid #F59E0B;background:rgba(245,158,11,.14);color:#FBBF24;' : 'border:1px solid rgba(255,255,255,.08);background:#18181B;color:#E4E4E7;') };
+    });
+    var riders = this.mapData(st.tick, st.sel).map(function (r) {
+      var on = st.sel === r.id;
+      r.pick = function () { set({ sel: self.state.sel === r.id ? '' : r.id }); };
+      r.rowStyle = 'display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:12px;color:#FAFAF9;' + (on ? 'border:1px solid ' + r.color + ';background:#202024;' : 'border:1px solid transparent;background:#202024;');
+      return r;
+    });
+    var camps = [['volta10', 'Cupom VOLTA10', '10% para quem não pede há 30 dias · 23 usos'], ['terca', 'Terça do combo', 'Combo Casal por R$ 59,90 às terças']].map(function (c) {
+      var on = !!st.camps[c[0]], s = self.sw(on);
+      return { name: c[1], text: c[2], track: s.track, knob: s.knob, aria: s.aria,
+        toggle: function () { var nc = Object.assign({}, self.state.camps); nc[c[0]] = !nc[c[0]]; set({ camps: nc, toast: c[1] + (nc[c[0]] ? ' ligada.' : ' desligada.') }); } };
+    });
+    var reviews = [['r1', 'Marcos · iFood', 2, 'Chegou frio e demorou mais de uma hora.', 'Pedimos desculpas, Marcos. Vamos te mandar um cupom.'], ['r2', 'Patrícia · Cardápio', 5, 'Melhor X-Alves da região!', 'Obrigado, Patrícia! Volte sempre.']].map(function (r) {
+      var done = !!st.replied[r[0]];
+      return { name: r[1], stars: '★★★★★'.slice(0, r[2]) + '☆☆☆☆☆'.slice(0, 5 - r[2]), starColor: r[2] >= 4 ? '#FBBF24' : '#FB923C', text: r[3], open: !done, done: done, answer: r[4],
+        replyLabel: r[2] >= 4 ? 'Agradecer' : 'Pedir desculpas e enviar cupom', reply: function () { mark(r[0], 'replied', 'Resposta enviada para ' + r[1].split(' ·')[0] + '.'); } };
+    });
+
+    // ---------- navegação ----------
+    var defs = [
+      { id: 'inicio', label: 'Início', title: 'Seu Alves', icon: ICON.home, badge: todoCount },
+      { id: 'operacao', label: 'Operação', title: 'Operação ao vivo', icon: ICON.op, badge: 1 },
+      { id: 'fin', label: 'Finanças', title: 'Finanças', icon: ICON.fin, badge: 0 },
+      { id: 'estoque', label: 'Estoque', title: 'Estoque e compras', icon: ICON.est, badge: 0 },
+      { id: 'gestao', label: 'Gestão', title: 'Gestão da loja', icon: ICON.gest, badge: 0 }
+    ];
+    var cur = defs.filter(function (d) { return d.id === t; })[0];
+    var tabs = defs.map(function (d) {
+      var on = d.id === t;
+      return { label: d.label, icon: d.icon, hasBadge: d.badge > 0 && d.id !== 'inicio' ? true : false, badge: d.badge, pick: function () { set({ tab: d.id }); },
+        style: 'min-height:56px;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;font-weight:600;color:' + (on ? '#FBBF24' : '#A1A1AA') + ';' };
+    });
+    var storeLine = !st.open ? 'Loja fechada' : (st.pause ? 'Aberta · iFood pausado ' + st.pause + ' min' : 'Aberta · Vila Kosmos');
+
+    return {
+      title: cur.title, tabs: tabs, storeLine: storeLine, storeDot: !st.open ? '#EF4444' : (st.pause ? '#FB923C' : '#22C55E'),
+      hasTodo: todoCount > 0, todoCount: todoCount, bellLabel: todoCount + ' itens precisam de você', goHome: function () { set({ tab: 'inicio' }); },
+      toastOn: !!st.toast, toast: st.toast, closeToast: function () { set({ toast: '' }); },
+      isInicio: t === 'inicio', isOperacao: t === 'operacao', isFin: t === 'fin', isEstoque: t === 'estoque', isGestao: t === 'gestao',
+      todos: todos, noTodo: todoCount === 0, todoPill: todoCount ? todoCount + ' pendentes' : 'em dia', todoPillFg: todoCount ? '#FCA5A5' : '#86EFAC', todoPillBg: todoCount ? 'rgba(239,68,68,.16)' : 'rgba(34,197,94,.14)', todoBorder: todoCount ? 'rgba(239,68,68,.35)' : 'rgba(255,255,255,.08)',
+      quick: quick,
+      kpis: [
+        { label: 'Pedidos', value: '92', hint: '▲ 8% vs. sexta', color: '#FAFAF9' },
+        { label: 'Ticket médio', value: 'R$ 37,83', hint: '▲ 3%', color: '#FAFAF9' },
+        { label: 'Lucro estimado', value: 'R$ 1.120', hint: '32% do faturamento', color: '#FBBF24' },
+        { label: 'Tempo de preparo', value: '14 min', hint: 'meta 15 min', color: '#22C55E' }
+      ],
+      now: [
+        { label: 'Novos', count: 3, color: '#F5E9D7' },
+        { label: 'Preparo', count: 7, color: '#F59E0B' },
+        { label: 'Prontos', count: 2, color: '#22C55E' },
+        { label: 'Na rua', count: 5, color: '#FAFAF9' }
+      ],
+      openTrack: o1.track, openKnob: o1.knob, openAria: o1.aria,
+      toggleOpen: function () { set({ open: !self.state.open, toast: self.state.open ? 'Loja fechada em todos os canais.' : 'Loja aberta em todos os canais.' }); },
+      pauseOpts: pauseOpts, eta: st.eta,
+      etaDown: function () { set({ eta: Math.max(20, self.state.eta - 5) }); }, etaUp: function () { set({ eta: Math.min(90, self.state.eta + 5) }); },
+      orders: orders, stages: stages,
+      bills: bills, billsPill: openBills ? self.brl(openBills, 2) + ' em aberto' : 'tudo pago', billsColor: openBills ? '#FDBA74' : '#86EFAC',
+      conc: conc, hasConc: conc.length > 0, trend: trend,
+      cash: [
+        { label: 'Em conta', value: 'R$ 18,4 mil', color: '#FAFAF9' },
+        { label: 'Entra em 7 dias', value: 'R$ 13,2 mil', color: '#86EFAC' },
+        { label: 'Sai em 7 dias', value: 'R$ 6,9 mil', color: '#FCA5A5' }
+      ],
+      dre: [
+        { label: 'Receita bruta', value: 'R$ 48.200', w: 100, color: '#F59E0B', textColor: '#FAFAF9' },
+        { label: 'CMV (PEPS)', value: '− R$ 15.400', w: 32, color: '#B4413C', textColor: '#FCA5A5' },
+        { label: 'Despesas fixas', value: '− R$ 9.800', w: 20, color: '#B4413C', textColor: '#FCA5A5' },
+        { label: 'Taxas e comissões', value: '− R$ 5.350', w: 11, color: '#B4413C', textColor: '#FCA5A5' },
+        { label: 'Entregas', value: '− R$ 3.600', w: 7, color: '#B4413C', textColor: '#FCA5A5' },
+        { label: 'Descontos e perdas', value: '− R$ 2.520', w: 5, color: '#B4413C', textColor: '#FCA5A5' },
+        { label: 'Lucro líquido', value: 'R$ 11.530', w: 24, color: '#22C55E', textColor: '#86EFAC' }
+      ],
+      fees: [
+        { label: 'iFood', pct: '26,9%', w: 100, color: '#F43F5E', pctColor: '#FCA5A5' },
+        { label: 'Balcão', pct: '3,8%', w: 14, color: '#F5E9D7', pctColor: '#86EFAC' },
+        { label: 'Cardápio próprio', pct: '2,7%', w: 10, color: '#F59E0B', pctColor: '#86EFAC' },
+        { label: 'WhatsApp', pct: '2,5%', w: 9, color: '#22C55E', pctColor: '#86EFAC' }
+      ],
+      buy: buy, buyBtn: st.buyOk ? '✓ Compra aprovada e enviada' : 'Aprovar e enviar aos fornecedores',
+      buyBtnStyle: 'min-height:48px;border-radius:12px;font-weight:800;font-size:14px;' + (st.buyOk ? 'border:1px solid rgba(34,197,94,.4);background:rgba(34,197,94,.12);color:#86EFAC;' : 'border:none;background:#F59E0B;color:#0F0F0F;'),
+      approveBuy: function () { if (!self.state.buyOk) set({ buyOk: true, toast: 'Compra aprovada e enviada aos fornecedores.' }); },
+      wItems: wItems, wReasons: wReasons, wQty: q(st.wQty) + ' ' + wd[1], wCost: self.brl(wCostN, 2),
+      wDown: function () { set({ wQty: Math.max(wd[3], Math.round((self.state.wQty - wd[3]) * 10) / 10) }); },
+      wUp: function () { set({ wQty: Math.round((self.state.wQty + wd[3]) * 10) / 10 }); },
+      wSave: function () { set({ wasteAdd: self.state.wasteAdd + wCostN, toast: q(self.state.wQty) + ' ' + wd[1] + ' de ' + wd[0] + ' (' + self.state.wReason.toLowerCase() + ') saiu do estoque.' }); },
+      wasteTotal: self.brl(620 + st.wasteAdd, 2),
+      scanNf: function () { toast('Câmera aberta: aponte para o QR da nota. Custo e estoque atualizam sozinhos.'); },
+      stock: [
+        { name: 'Pão brioche', qty: '18 un · mín. 40', w: 15, color: '#FB923C' },
+        { name: 'Bacon fatiado', qty: '1,1 kg · mín. 1,5', w: 18, color: '#FB923C' },
+        { name: 'Queijo cheddar', qty: '3,2 kg · mín. 2', w: 40, color: '#F59E0B' },
+        { name: 'Blend 180 g', qty: '64 un · mín. 30', w: 43, color: '#F59E0B' },
+        { name: 'Batata congelada', qty: '22 kg · mín. 10', w: 55, color: '#F59E0B' },
+        { name: 'Molho especial', qty: '2,4 L · mín. 1', w: 48, color: '#F59E0B' }
+      ],
+      menu: menu, prices: prices, team: team, camps: camps, reviews: reviews, onShift: onShift, roles: roles, perms: perms, inviteRoles: inviteRoles, inviteRole: st.invRole.toLowerCase(), audit: audit, gsecs: gsecs, riders: riders, tickMap: function () { set({ tick: self.state.tick + 1 }); },
+      sendInvite: function () { toast('Convite de ' + self.state.invRole.toLowerCase() + ' pronto para enviar pelo WhatsApp.'); },
+      gEquipe: st.gsec === 'equipe', gPonto: st.gsec === 'ponto', staffMetrics: staffMetrics, pKpis: pKpis, punches: punches, fixOpen: !st.done.fix, fixClosed: !!st.done.fix, fixOk: function () { mark('fix', 'done', 'Correção do ponto da Rita aprovada e anotada.'); }, fixNo: function () { mark('fix', 'done', 'Correção recusada. A Rita foi avisada.'); }, gCardapio: st.gsec === 'cardapio', gPrecos: st.gsec === 'precos', gCampanhas: st.gsec === 'campanhas', gAvaliacoes: st.gsec === 'avaliacoes'
+    };
+  }
+}
+
+DC.mount(Component);
+</script>
+</body>
+</html>

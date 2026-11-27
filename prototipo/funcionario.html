@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seu Alves · Área do funcionário</title>
+<link rel="icon" href="https://assets.olaclick.app/companies/logos/01bf6473-9273-413d-93dd-c51f71faf7b4.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0F0F}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid #FBBF24;outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;margin:0}
+.card{background:#18181B;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;align-items:center;gap:10px}
+.sub{font-size:12px;color:#A1A1AA}
+.btn2{min-height:40px;padding:0 12px;border-radius:10px;border:1px solid rgba(245,158,11,.5);background:transparent;color:#FBBF24;font-weight:700;font-size:13px}
+</style>
+<style>*{box-sizing:border-box}
+html,body{height:100%}
+body{display:flex;justify-content:center;align-items:center;min-height:100dvh;background:radial-gradient(circle at 50% 0%,#2a1212 0%,#0F0F0F 60%)}
+#app>div{width:min(430px,100vw) !important;height:min(900px,100dvh) !important}
+@media (min-width:500px){#app>div{border-radius:28px;border:1px solid rgba(245,158,11,.25);box-shadow:0 30px 80px rgba(0,0,0,.6)}}
+.proto-back{position:fixed;left:12px;bottom:12px;z-index:50;padding:8px 12px;border-radius:99px;background:rgba(15,15,15,.85);border:1px solid rgba(245,158,11,.4);color:#FBBF24;font:600 12px Inter,system-ui,sans-serif;text-decoration:none}
+@media (max-width:499px){.proto-phone .proto-back{display:none}}</style>
+</head>
+<body class="proto-phone">
+<div id="app"></div>
+<a class="proto-back" href="./">← Todas as telas</a>
+<template id="tpl">
+<div style="position: relative; width: 390px; height: 844px; box-sizing: border-box; background: #0F0F0F; color: #FAFAF9; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden;">
+  <header style="padding: 18px 16px 12px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,.06);">
+    <span style="width: 40px; height: 40px; border-radius: 99px; background: #7A1F1F; border: 1px solid rgba(245,158,11,.5); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: #F5E9D7; flex: 0 0 auto;">{{ini}}</span>
+    <div style="flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0;">
+      <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 17px;">{{title}}</span>
+      <span class="sub">{{who}}</span>
+    </div>
+    <button type="button" onClick="{{switchUser}}" class="btn2" style="min-height: 36px; font-size: 12px;">Trocar pessoa</button>
+  </header>
+
+  <sc-if value="{{toastOn}}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: absolute; left: 16px; right: 16px; bottom: 96px; z-index: 5; padding: 12px 14px; border-radius: 12px; background: #F5E9D7; color: #0F0F0F; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,.4); display: flex; align-items: center; gap: 10px;">
+      <span style="flex: 1 1 auto;">{{toast}}</span>
+      <button type="button" onClick="{{closeToast}}" aria-label="Fechar aviso" style="border: none; background: transparent; font-size: 16px; font-weight: 800; color: #0F0F0F;">×</button>
+    </div>
+  </sc-if>
+
+  <div style="flex: 1 1 auto; overflow-y: auto; overflow-x: hidden; padding: 14px 16px 24px; display: flex; flex-direction: column; gap: 14px;">
+    <sc-if value="{{isPonto}}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div class="card" style="border-color: {{locBorder}}; background: {{locBg}};">
+          <div class="row">
+            <span style="width: 40px; height: 40px; border-radius: 12px; background: {{locIconBg}}; color: {{locColor}}; display: flex; align-items: center; justify-content: center; flex: 0 0 auto;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12zM12 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4"></path></svg>
+            </span>
+            <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 700; color: {{locColor}};">{{locTitle}}</span><span class="sub">{{locText}}</span></div>
+          </div>
+          <sc-for list="{{checks}}" as="c" hint-placeholder-count="3">
+            <div class="row" style="font-size: 13px;"><span style="width: 18px; color: {{c.color}}; font-weight: 800;">{{c.mark}}</span><span style="color: #E4E4E7;">{{c.label}}</span></div>
+          </sc-for>
+          <button type="button" onClick="{{toggleLoc}}" style="align-self: flex-start; border: none; background: transparent; color: #A1A1AA; font-size: 12px; text-decoration: underline; padding: 0;">{{locDemo}}</button>
+        </div>
+
+        <div class="card" style="align-items: center; gap: 6px; padding: 20px 16px;">
+          <span class="sub">Sexta, 27 de novembro</span>
+          <span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 48px; letter-spacing: -0.02em;">{{clock}}</span>
+          <span class="sub">Escala de hoje: {{shift}}</span>
+          <button type="button" onClick="{{punch}}" aria-disabled="{{punchDisabled}}" style="{{punchStyle}}">{{punchLabel}}</button>
+          <span style="font-size: 12px; color: {{hintColor}}; text-align: center; line-height: 1.4;">{{punchHint}}</span>
+        </div>
+
+        <div class="card">
+          <h2 class="h3">Registros de hoje</h2>
+          <sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+            <div class="row" style="align-items: flex-start;">
+              <div style="display: flex; flex-direction: column; align-items: center; flex: 0 0 auto;">
+                <span style="width: 22px; height: 22px; border-radius: 99px; border: 2px solid {{s.dot}}; background: {{s.dotBg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #0F0F0F;">{{s.mark}}</span>
+                <sc-if value="{{s.notLast}}" hint-placeholder-val="{{ true }}"><span style="width: 2px; height: 26px; background: #27272A;"></span></sc-if>
+              </div>
+              <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-size: 14px; font-weight: 600; color: {{s.labelColor}};">{{s.label}}</span>
+                <span class="sub">{{s.note}}</span>
+              </div>
+              <span class="num" style="font-weight: 800; color: {{s.timeColor}};">{{s.time}}</span>
+            </div>
+          </sc-for>
+          <span class="sub" style="line-height: 1.45;">Cada registro gera um comprovante com data, hora e local, enviado no seu WhatsApp. Ninguém pode apagar um registro; correções ficam anotadas com quem fez.</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isHoras}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+          <sc-for list="{{hourKpis}}" as="k" hint-placeholder-count="3">
+            <div class="card" style="padding: 12px; gap: 2px;"><span style="font-size: 11px; color: #A1A1AA;">{{k.label}}</span><span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 18px; color: {{k.color}};">{{k.value}}</span></div>
+          </sc-for>
+        </div>
+        <div class="card">
+          <h2 class="h3">Esta semana</h2>
+          <sc-for list="{{week}}" as="w" hint-placeholder-count="6">
+            <div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 12px; background: #202024;">
+              <div class="row" style="justify-content: space-between;"><span style="font-size: 14px; font-weight: 700;">{{w.day}}</span><span class="num" style="font-weight: 800; color: {{w.color}};">{{w.total}}</span></div>
+              <span class="num sub">{{w.detail}}</span>
+              <sc-if value="{{w.hasFlag}}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; color: #FDBA74;">{{w.flag}}</span></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <button type="button" class="btn2" onClick="{{askFix}}" style="min-height: 48px;">Pedir correção de um registro</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isEscala}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div class="card">
+          <h2 class="h3">Minha escala</h2>
+          <sc-for list="{{scale}}" as="e" hint-placeholder-count="7">
+            <div class="row" style="padding: 10px 12px; border-radius: 12px; background: {{e.bg}};">
+              <div style="width: 44px; flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; line-height: 1.1;"><span style="font-size: 11px; color: #A1A1AA;">{{e.wd}}</span><span class="num" style="font-weight: 800; font-size: 16px;">{{e.d}}</span></div>
+              <span style="flex: 1 1 auto; font-size: 14px; font-weight: 600; color: {{e.color}};">{{e.shift}}</span>
+              <span class="sub">{{e.role}}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div class="card" style="gap: 8px;">
+          <h2 class="h3">Avisos da loja</h2>
+          <span style="font-size: 13px; color: #E4E4E7; line-height: 1.45;">Sábado vai ter movimento forte (jogo às 21h). Chegar 15 min antes.</span>
+          <span class="sub">enviado por Felipe · ontem</span>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <nav aria-label="Seções" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 6px 6px 16px; background: #0A0A0A; border-top: 1px solid rgba(255,255,255,.08);">
+    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+      <button type="button" onClick="{{t.pick}}" style="{{t.style}}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>
+        <span>{{t.label}}</span>
+      </button>
+    </sc-for>
+  </nav>
+</div>
+</template>
+<script>
+/* Mini motor de telas do protótipo: lê o <template id="tpl"> e redesenha a cada setState.
+   Suporta {{valor}}, <sc-if value>, <sc-for list as> e onClick/onChange. */
+(function () {
+  var EXACT = /^\s*\{\{\s*([^}]+?)\s*\}\}\s*$/;
+  function get(scope, expr) {
+    expr = expr.trim();
+    if (expr === 'true') return true;
+    if (expr === 'false') return false;
+    if (/^-?\d+(\.\d+)?$/.test(expr)) return +expr;
+    var parts = expr.split('.');
+    for (var i = scope.length - 1; i >= 0; i--) {
+      var s = scope[i];
+      if (s && Object.prototype.hasOwnProperty.call(s, parts[0])) {
+        var v = s[parts[0]];
+        for (var j = 1; j < parts.length; j++) v = v == null ? undefined : v[parts[j]];
+        return v;
+      }
+    }
+    return undefined;
+  }
+  function interp(str, scope) {
+    return str.replace(/\{\{([^}]+)\}\}/g, function (_, e) { var v = get(scope, e); return v == null ? '' : String(v); });
+  }
+  function exprOf(attr) { var m = EXACT.exec(attr || ''); return m ? m[1] : null; }
+  var EVENTS = { onclick: 'click', onchange: 'input', oninput: 'input' };
+  function build(node, scope, out) {
+    if (node.nodeType === 3) { out.push(document.createTextNode(interp(node.nodeValue, scope))); return; }
+    if (node.nodeType !== 1) return;
+    var tag = node.localName;
+    if (tag === 'sc-if') {
+      if (get(scope, exprOf(node.getAttribute('value')) || 'false')) node.childNodes.forEach(function (c) { build(c, scope, out); });
+      return;
+    }
+    if (tag === 'sc-for') {
+      var list = get(scope, exprOf(node.getAttribute('list')) || '') || [], as = node.getAttribute('as');
+      list.forEach(function (item) { var o = {}; o[as] = item; var sc = scope.concat([o]); node.childNodes.forEach(function (c) { build(c, sc, out); }); });
+      return;
+    }
+    var el = node.namespaceURI === 'http://www.w3.org/1999/xhtml' ? document.createElement(tag) : document.createElementNS(node.namespaceURI, node.tagName);
+    for (var i = 0; i < node.attributes.length; i++) {
+      var a = node.attributes[i], name = a.name.toLowerCase();
+      if (name.indexOf('hint-') === 0) continue;
+      var ex = exprOf(a.value);
+      if (EVENTS[name] && ex) { (function (fn) { if (typeof fn === 'function') el.addEventListener(EVENTS[name], function (e) { fn(e); }); })(get(scope, ex)); continue; }
+      el.setAttribute(a.name, interp(a.value, scope));
+    }
+    var kids = [];
+    node.childNodes.forEach(function (c) { build(c, scope, kids); });
+    kids.forEach(function (k) { el.appendChild(k); });
+    out.push(el);
+  }
+  var SCROLLERS = '[style*="overflow-y: auto"],[style*="overflow: auto"],[style*="overflow-x: auto"]';
+  window.DCLogic = function DCLogic(props) { this.props = props || {}; this.state = {}; };
+  window.DCLogic.prototype.setState = function (o) {
+    Object.assign(this.state, typeof o === 'function' ? o(this.state) : o);
+    if (this.__render && !this.__queued) { var self = this; this.__queued = true; Promise.resolve().then(function () { self.__queued = false; self.__render(); }); }
+  };
+  window.DC = {
+    mount: function (Component) {
+      var app = document.getElementById('app'), tpl = document.getElementById('tpl').content, comp = new Component({});
+      comp.__render = function () {
+        var scrolls = Array.prototype.map.call(app.querySelectorAll(SCROLLERS), function (e) { return [e.scrollTop, e.scrollLeft]; });
+        var fields = app.querySelectorAll('input,textarea,select'), act = document.activeElement, fi = Array.prototype.indexOf.call(fields, act), sel = fi >= 0 && act.selectionStart != null ? [act.selectionStart, act.selectionEnd] : null;
+        var vals = comp.renderVals(), out = [];
+        tpl.childNodes.forEach(function (c) { build(c, [vals], out); });
+        app.replaceChildren.apply(app, out);
+        app.querySelectorAll(SCROLLERS).forEach(function (e, i) { if (scrolls[i]) { e.scrollTop = scrolls[i][0]; e.scrollLeft = scrolls[i][1]; } });
+        if (fi >= 0) { var nf = app.querySelectorAll('input,textarea,select')[fi]; if (nf) { nf.focus(); if (sel && nf.setSelectionRange) try { nf.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
+      };
+      comp.__render();
+    }
+  };
+})();
+
+</script>
+<script>
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'ponto', who: 'bruno', inStore: true, done: { bruno: 1, rita: 1, julia: 0 }, toast: '' };
+  }
+  renderVals() {
+    var self = this, st = this.state;
+    function set(o) { self.setState(o); }
+    var PEOPLE = {
+      bruno: { name: 'Bruno', ini: 'BR', role: 'Caixa', shift: '17h45 às 00h30', opens: true, times: ['17:41', '17:58', '00:34', '00:41'] },
+      rita: { name: 'Rita', ini: 'RI', role: 'Cozinha', shift: '17h30 às 00h00', opens: false, times: ['17:26', '', '', '00:06'] },
+      julia: { name: 'Júlia', ini: 'JU', role: 'Atendente', shift: '18h00 às 00h00', opens: false, times: ['17:59', '', '', '00:02'] }
+    };
+    var order = ['bruno', 'rita', 'julia'];
+    var p = PEOPLE[st.who], n = st.done[st.who] || 0;
+    var kinds = p.opens
+      ? [['in', 'Entrada', 'chegou na loja'], ['open', 'Abertura da loja', 'loja aberta para pedidos'], ['close', 'Fechamento da loja', 'últimos pedidos encerrados'], ['out', 'Saída', 'foi embora']]
+      : [['in', 'Entrada', 'chegou na loja'], ['out', 'Saída', 'foi embora']];
+    var storeInfo = p.opens ? '' : 'Loja aberta hoje às 17:58 por Bruno.';
+    var steps = kinds.map(function (k, i) {
+      var done = i < n, next = i === n;
+      return { label: k[1], note: done ? k[2] + ' · na loja (12 m)' : (next ? 'próximo registro' : 'pendente'), time: done ? p.times[p.opens ? i : (i === 0 ? 0 : 3)] : '--:--',
+        mark: done ? '✓' : '', dot: done ? '#22C55E' : (next ? '#F59E0B' : '#3F3F46'), dotBg: done ? '#22C55E' : 'transparent', notLast: i < kinds.length - 1,
+        labelColor: done || next ? '#FAFAF9' : '#71717A', timeColor: done ? '#FAFAF9' : '#52525B' };
+    });
+    var allDone = n >= kinds.length, nextK = kinds[Math.min(n, kinds.length - 1)];
+    var nextTime = allDone ? '' : p.times[p.opens ? n : (n === 0 ? 0 : 3)];
+    var canPunch = st.inStore && !allDone;
+    var checks = st.inStore
+      ? [['✓', '#22C55E', 'Localização: 12 m da loja (limite 80 m)'], ['✓', '#22C55E', 'Conectado ao Wi‑Fi da loja'], ['✓', '#22C55E', 'Celular autorizado para ' + p.name]]
+      : [['✕', '#EF4444', 'Localização: 1,4 km da loja (limite 80 m)'], ['✕', '#EF4444', 'Fora do Wi‑Fi da loja'], ['✓', '#22C55E', 'Celular autorizado para ' + p.name]];
+    var week = [
+      ['Sex 27', 'em andamento', 'entrada 17:41', '#FBBF24', ''],
+      ['Qui 26', '6h52', '17:44 → 00:36 · abriu 17:59 · fechou 00:31', '#FAFAF9', ''],
+      ['Qua 25', '6h31', '17:58 → 00:29 · abriu 18:06 · fechou 00:24', '#FDBA74', 'Entrada 13 min depois da escala · loja abriu 6 min atrasada'],
+      ['Ter 24', 'folga', '', '#71717A', ''],
+      ['Seg 23', '6h47', '17:43 → 00:30 · abriu 17:57 · fechou 00:26', '#FAFAF9', ''],
+      ['Dom 22', '7h36', '17:40 → 01:16 · abriu 17:56 · fechou 01:05', '#86EFAC', '+ 46 min de hora extra (movimento forte)']
+    ].map(function (w) { return { day: w[0], total: w[1], detail: w[2], color: w[3], flag: w[4], hasFlag: !!w[4] }; });
+    var scale = [['Sex', '27', '17h45 às 00h30', 'Caixa', 1], ['Sáb', '28', '17h00 às 01h00', 'Caixa', 0], ['Dom', '29', '17h00 às 00h30', 'Caixa', 0], ['Seg', '30', 'Folga', '', 2], ['Ter', '01', '17h45 às 00h30', 'Caixa', 0], ['Qua', '02', '17h45 às 00h30', 'Caixa', 0], ['Qui', '03', '17h45 às 00h30', 'Caixa', 0]].map(function (e) {
+      return { wd: e[0], d: e[1], shift: e[2], role: e[3], bg: e[4] === 1 ? 'rgba(245,158,11,.12)' : '#202024', color: e[4] === 2 ? '#71717A' : '#FAFAF9' };
+    });
+    var defs = [['ponto', 'Ponto', 'M12 7v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z'], ['horas', 'Minhas horas', 'M4 20V10M10 20V4M16 20v-7M22 20H2'], ['escala', 'Escala', 'M3 5h18v16H3zM3 10h18M8 3v4M16 3v4']];
+    var tabs = defs.map(function (d) {
+      var on = st.tab === d[0];
+      return { label: d[1], icon: d[2], pick: function () { set({ tab: d[0] }); },
+        style: 'min-height:56px;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;font-weight:600;color:' + (on ? '#FBBF24' : '#A1A1AA') + ';' };
+    });
+    var titles = { ponto: 'Meu ponto', horas: 'Minhas horas', escala: 'Minha escala' };
+    return {
+      ini: p.ini, title: titles[st.tab], who: p.name + ' · ' + p.role + ' · Vila Kosmos', tabs: tabs,
+      isPonto: st.tab === 'ponto', isHoras: st.tab === 'horas', isEscala: st.tab === 'escala',
+      switchUser: function () { var i = order.indexOf(self.state.who); set({ who: order[(i + 1) % order.length], toast: '' }); },
+      toastOn: !!st.toast, toast: st.toast, closeToast: function () { set({ toast: '' }); },
+      locTitle: st.inStore ? 'Você está na loja' : 'Você está fora da loja',
+      locText: st.inStore ? 'Pode bater o ponto.' : 'O ponto só pode ser batido dentro da loja.',
+      locColor: st.inStore ? '#86EFAC' : '#FCA5A5', locIconBg: st.inStore ? 'rgba(34,197,94,.16)' : 'rgba(239,68,68,.16)',
+      locBorder: st.inStore ? 'rgba(34,197,94,.35)' : 'rgba(239,68,68,.45)', locBg: st.inStore ? '#18181B' : 'rgba(239,68,68,.06)',
+      checks: checks.map(function (c) { return { mark: c[0], color: c[1], label: c[2] }; }),
+      locDemo: st.inStore ? 'Simular: estou fora da loja' : 'Simular: cheguei na loja',
+      toggleLoc: function () { set({ inStore: !self.state.inStore }); },
+      clock: allDone ? '00:41' : (nextTime || '17:41'), shift: p.shift,
+      punchLabel: allDone ? '✓ Dia encerrado' : (st.inStore ? 'Registrar ' + nextK[1].toLowerCase() : 'Bloqueado fora da loja'),
+      punchDisabled: canPunch ? 'false' : 'true',
+      punchStyle: 'margin-top:10px;width:100%;min-height:64px;border-radius:16px;font-weight:800;font-size:18px;' + (canPunch ? 'border:none;background:#F59E0B;color:#0F0F0F;' : (allDone ? 'border:1px solid rgba(34,197,94,.4);background:rgba(34,197,94,.12);color:#86EFAC;cursor:default;' : 'border:1px solid rgba(239,68,68,.4);background:rgba(239,68,68,.1);color:#FCA5A5;cursor:not-allowed;')),
+      punchHint: allDone ? 'Todos os registros de hoje foram feitos.' : (st.inStore ? (storeInfo || 'Abertura e fechamento da loja ficam registrados no seu nome.') : 'Tentativa registrada para o gestor: ' + p.name + ' tentou bater o ponto a 1,4 km da loja.'),
+      hintColor: st.inStore || allDone ? '#A1A1AA' : '#FCA5A5',
+      punch: function () {
+        if (!canPunch) { if (!allDone) set({ toast: 'Fora da loja: o ponto não foi registrado. O gestor foi avisado da tentativa.' }); return; }
+        var nd = Object.assign({}, self.state.done); nd[self.state.who] = n + 1;
+        set({ done: nd, toast: nextK[1] + ' registrada às ' + nextTime + '. Comprovante enviado no seu WhatsApp.' });
+      },
+      steps: steps,
+      hourKpis: [{ label: 'Horas na semana', value: '28h06', color: '#FAFAF9' }, { label: 'Banco de horas', value: '+ 1h12', color: '#86EFAC' }, { label: 'Atrasos no mês', value: '2', color: '#FDBA74' }],
+      week: week, askFix: function () { set({ toast: 'Pedido de correção enviado para o gestor aprovar.' }); },
+      scale: scale
+    };
+  }
+}
+
+DC.mount(Component);
+</script>
+</body>
+</html>

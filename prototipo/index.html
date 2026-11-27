@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seu Alves · Protótipo do sistema</title>
+<link rel="icon" href="https://assets.olaclick.app/companies/logos/01bf6473-9273-413d-93dd-c51f71faf7b4.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--base:#0F0F0F;--surface:#18181B;--gold:#F59E0B;--gold-soft:#FBBF24;--wine:#7A1F1F;--cream:#F5E9D7}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% -10%,#3a1515 0%,var(--base) 55%);color:#FAFAF9;font-family:Inter,system-ui,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:40px 16px 56px}
+header{display:flex;align-items:center;gap:16px;margin-bottom:28px}
+.logo{width:68px;height:68px;border-radius:50%;object-fit:cover;border:2px solid rgba(245,158,11,.6);background:var(--wine);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font:800 22px 'Plus Jakarta Sans',sans-serif;color:var(--cream);overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:cover}
+h1{margin:0;font:800 clamp(24px,4vw,34px)/1.1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em}
+h1 span{color:var(--gold)}
+.lead{margin:6px 0 0;color:#D4D4D8;font-size:15px;line-height:1.5;max-width:640px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+a.card{display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:18px;background:var(--surface);border:1px solid rgba(255,255,255,.08);color:inherit;text-decoration:none;transition:border-color .15s,transform .15s}
+a.card:hover{border-color:rgba(245,158,11,.55);transform:translateY(-2px)}
+a.card:focus-visible{outline:2px solid var(--gold-soft);outline-offset:3px}
+.ic{width:44px;height:44px;border-radius:12px;background:rgba(245,158,11,.14);color:var(--gold-soft);display:flex;align-items:center;justify-content:center}
+.card h2{margin:0;font:700 18px 'Plus Jakarta Sans',sans-serif}
+.card p{margin:0;color:#A1A1AA;font-size:14px;line-height:1.5}
+.tag{align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--cream);background:rgba(122,31,31,.6);padding:4px 8px;border-radius:6px}
+.note{margin-top:28px;padding:16px 18px;border-radius:14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);color:#FDE68A;font-size:14px;line-height:1.55}
+.note b{color:#FBBF24}
+footer{margin-top:24px;color:#71717A;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo"><img src="https://assets.olaclick.app/companies/logos/01bf6473-9273-413d-93dd-c51f71faf7b4.webp" alt="Seu Alves Lanches" onerror="this.replaceWith('SA')"></div>
+    <div>
+      <h1>Sistema <span>Seu Alves</span></h1>
+      <p class="lead">Protótipo navegável do novo sistema: pedidos de todos os canais, cozinha, entregas, finanças, equipe e ponto. Clique em qualquer tela para testar.</p>
+    </div>
+  </header>
+
+  <div class="grid">
+    <a class="card" href="painel.html">
+      <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18v12H3zM8 20h8M12 16v4"></path></svg></span>
+      <span class="tag">Computador</span>
+      <h2>Painel de gestão</h2>
+      <p>Login por funcionário, painel do dia, PDV, caixa, cozinha, tempos e gargalos, finanças, estoque, entregas ao vivo, equipe e ponto.</p>
+    </a>
+    <a class="card" href="app-dono.html">
+      <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 2h10v20H7zM11 18h2"></path></svg></span>
+      <span class="tag">Celular</span>
+      <h2>App do dono</h2>
+      <p>O que precisa de você no topo, ações rápidas, operação ao vivo, contas, estoque, equipe e acessos.</p>
+    </a>
+    <a class="card" href="funcionario.html">
+      <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"></path></svg></span>
+      <span class="tag">Celular</span>
+      <h2>Área do funcionário</h2>
+      <p>Ponto só dentro da loja: entrada, abertura, fechamento e saída. Horas, banco de horas e escala.</p>
+    </a>
+    <a class="card" href="cliente.html">
+      <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2l1.5 4h9L18 2M4 6h16l-1.5 14h-13zM9 10v6M15 10v6"></path></svg></span>
+      <span class="tag">Cliente</span>
+      <h2>Cardápio e acompanhamento</h2>
+      <p>Cardápio do cliente e a linha do tempo do pedido até a entrega, com avaliação no final.</p>
+    </a>
+  </div>
+
+  <div class="note"><b>Protótipo com dados de exemplo.</b> Os números, nomes e pedidos são fictícios, só para mostrar como cada tela funciona. Nada aqui envia mensagens ou altera pedidos de verdade.</div>
+  <footer>Seu Alves Lanches · Vila Kosmos, Rio de Janeiro</footer>
+</div>
+</body>
+</html>
