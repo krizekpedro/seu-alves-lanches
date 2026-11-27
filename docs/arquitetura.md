@@ -280,6 +280,31 @@ Recursos que entram no núcleo, desenhados junto com o protótipo:
 
 ---
 
+### 1.12 Ponto e RH dos funcionários
+
+Cada funcionário tem a sua área (no celular dele ou no aparelho da loja) com **Meu ponto**, **Minhas horas** e **Minha escala**.
+
+**Registros do dia.** Todo funcionário registra **entrada** e **saída**. Quem abre e fecha a loja (caixa ou gerente, conforme o cargo) registra também **abertura da loja** e **fechamento da loja**. Assim o dono sabe a que horas cada um chegou, a que horas a loja abriu, a que horas fechou e quando cada um foi embora.
+
+**Só bate dentro da loja.** O registro só é aceito quando o aparelho prova que está na loja:
+
+| Verificação | Como funciona | Padrão |
+|---|---|---|
+| Distância (GPS) | o celular precisa estar dentro do raio da loja (ajustável, padrão 80 m) | ligado |
+| Wi‑Fi da loja | o celular precisa estar conectado à rede da loja (o Hub da Loja confirma o aparelho na rede local) | ligado |
+| Aparelho autorizado | cada pessoa cadastra o próprio celular uma vez; o tablet do balcão também serve | ligado |
+| Selfie | foto no momento do registro, para ninguém bater pelo colega | opcional |
+
+Fora da loja, o botão fica bloqueado e a **tentativa é registrada** para o gestor (quem, quando, a que distância). O GPS sozinho pode ser falsificado; por isso o padrão combina GPS com a rede da loja.
+
+**Garantias.** Ninguém apaga um registro. Correções são pedidas pelo funcionário e aprovadas ou recusadas pelo gestor, e ficam anotadas (quem pediu, quem aprovou, quando). Cada registro gera um comprovante com data, hora e local, enviado no WhatsApp do funcionário. No fim do mês o sistema gera o espelho de ponto em PDF.
+
+**Visão do dono** (painel e celular): quem está no turno, atrasos contra a escala, horário de abertura e fechamento da loja por dia, horas e horas extras da semana, tentativas bloqueadas e correções pendentes. Pedidos de correção aparecem em "Precisa de você".
+
+> Registro de ponto eletrônico tem regras próprias na legislação trabalhista. O sistema guarda os dados de forma íntegra e gera o espelho; como usar isso (e qualquer obrigação legal) é decisão do gestor com o contador.
+
+Tabelas: `time_clock_entries` (id, store_id, user_id, tipo: entrada, abertura_loja, fechamento_loja, saída; registrado_em, lat, lng, distância_m, wifi_ok, device_id, selfie_url, status: aceito ou bloqueado), `time_clock_adjustments` (entry_id ou dia, pedido_por, motivo, novo_horário, decidido_por, decisão, decidido_em), `work_schedules` (user_id, dia, início, fim), `store_geofence` (store_id, lat, lng, raio_m, wifi_ssid/bssid).
+
 ## 2. Stack tecnológica
 
 ### 2.1 Backend
