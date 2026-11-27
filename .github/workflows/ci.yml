@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: seualves
+          POSTGRES_PASSWORD: seualves
+          POSTGRES_DB: seualves_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U seualves" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://seualves:seualves@localhost:5432/seualves_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @seu-alves/shared --filter @seu-alves/db run build
+      - run: pnpm --filter @seu-alves/db exec prisma migrate deploy
+      - run: pnpm -r run typecheck
+      - run: pnpm -r run test
+      - run: pnpm --filter @seu-alves/web build

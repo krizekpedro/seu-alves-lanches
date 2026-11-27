@@ -1,0 +1,410 @@
+// Esquema inicial (Fase 0/1). Convenções: dinheiro em centavos (Int), ids uuid,
+// store_id em toda tabela de negócio, nomes de tabela em snake_case.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Organização e acesso ----------
+
+model Organization {
+  id              String     @id @default(uuid()) @db.Uuid
+  name            String
+  cnpj            String?
+  taxRegime       TaxRegime  @default(MEI) @map("tax_regime")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+  stores          Store[]
+  customers       Customer[]
+
+  @@map("organizations")
+}
+
+enum TaxRegime {
+  MEI
+  SIMPLES
+  OUTRO
+}
+
+model Store {
+  id             String          @id @default(uuid()) @db.Uuid
+  organizationId String          @map("organization_id") @db.Uuid
+  organization   Organization    @relation(fields: [organizationId], references: [id])
+  name           String
+  timezone       String          @default("America/Sao_Paulo")
+  autoAccept     Boolean         @default(false) @map("auto_accept")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  members        StoreUser[]
+  categories     Category[]
+  products       Product[]
+  optionGroups   OptionGroup[]
+  deliveryZones  DeliveryZone[]
+  orders         Order[]
+  serviceTargets ServiceTarget[]
+  devices        StoreDevice[]
+
+  @@map("stores")
+}
+
+model User {
+  id           String        @id @default(uuid()) @db.Uuid
+  name         String
+  email        String?       @unique
+  phone        String?       @unique
+  passwordHash String?       @map("password_hash")
+  pinHash      String?       @map("pin_hash")
+  active       Boolean       @default(true)
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  stores       StoreUser[]
+  sessions     UserSession[]
+
+  @@map("users")
+}
+
+enum Role {
+  DONO
+  GERENTE
+  CAIXA
+  ATENDENTE
+  COZINHA
+  MOTOBOY
+}
+
+model StoreUser {
+  userId  String @map("user_id") @db.Uuid
+  storeId String @map("store_id") @db.Uuid
+  role    Role
+  user    User   @relation(fields: [userId], references: [id])
+  store   Store  @relation(fields: [storeId], references: [id])
+
+  @@id([userId, storeId])
+  @@map("store_users")
+}
+
+model StoreDevice {
+  id        String        @id @default(uuid()) @db.Uuid
+  storeId   String        @map("store_id") @db.Uuid
+  store     Store         @relation(fields: [storeId], references: [id])
+  kind      DeviceKind
+  name      String
+  driver    String?       // impressora: escpos_rede, escpos_usb, serial, bluetooth, navegador
+  config    Json          @default("{}")
+  active    Boolean       @default(true)
+  createdAt DateTime      @default(now()) @map("created_at")
+  sessions  UserSession[]
+
+  @@map("store_devices")
+}
+
+enum DeviceKind {
+  PDV
+  KDS
+  IMPRESSORA
+}
+
+model UserSession {
+  id        String       @id @default(uuid()) @db.Uuid
+  userId    String       @map("user_id") @db.Uuid
+  user      User         @relation(fields: [userId], references: [id])
+  deviceId  String?      @map("device_id") @db.Uuid
+  device    StoreDevice? @relation(fields: [deviceId], references: [id])
+  startedAt DateTime     @default(now()) @map("started_at")
+  endedAt   DateTime?    @map("ended_at")
+
+  @@map("user_sessions")
+}
+
+// ---------- Catálogo ----------
+
+model Category {
+  id       String    @id @default(uuid()) @db.Uuid
+  storeId  String    @map("store_id") @db.Uuid
+  store    Store     @relation(fields: [storeId], references: [id])
+  name     String
+  position Int       @default(0)
+  active   Boolean   @default(true)
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id             String               @id @default(uuid()) @db.Uuid
+  storeId        String               @map("store_id") @db.Uuid
+  store          Store                @relation(fields: [storeId], references: [id])
+  categoryId     String               @map("category_id") @db.Uuid
+  category       Category             @relation(fields: [categoryId], references: [id])
+  name           String
+  description    String?
+  photoUrl       String?              @map("photo_url")
+  basePriceCents Int                  @map("base_price_cents")
+  kitchenStation String?              @map("kitchen_station")
+  available      Boolean              @default(true) // esgotar em todos os canais
+  active         Boolean              @default(true)
+  createdAt      DateTime             @default(now()) @map("created_at")
+  updatedAt      DateTime             @updatedAt @map("updated_at")
+  optionGroups   ProductOptionGroup[]
+  channelPrices  ChannelPrice[]
+  orderItems     OrderItem[]
+
+  @@map("products")
+}
+
+model OptionGroup {
+  id       String               @id @default(uuid()) @db.Uuid
+  storeId  String               @map("store_id") @db.Uuid
+  store    Store                @relation(fields: [storeId], references: [id])
+  name     String
+  min      Int                  @default(0)
+  max      Int                  @default(1)
+  options  Option[]
+  products ProductOptionGroup[]
+
+  @@map("option_groups")
+}
+
+model Option {
+  id            String            @id @default(uuid()) @db.Uuid
+  optionGroupId String            @map("option_group_id") @db.Uuid
+  group         OptionGroup       @relation(fields: [optionGroupId], references: [id])
+  name          String
+  priceCents    Int               @default(0) @map("price_cents")
+  active        Boolean           @default(true)
+  orderOptions  OrderItemOption[]
+
+  @@map("options")
+}
+
+model ProductOptionGroup {
+  productId     String      @map("product_id") @db.Uuid
+  optionGroupId String      @map("option_group_id") @db.Uuid
+  position      Int         @default(0)
+  product       Product     @relation(fields: [productId], references: [id])
+  group         OptionGroup @relation(fields: [optionGroupId], references: [id])
+
+  @@id([productId, optionGroupId])
+  @@map("product_option_groups")
+}
+
+enum Channel {
+  IFOOD
+  CARDAPIO
+  WHATSAPP
+  BALCAO
+  OLACLICK
+}
+
+model ChannelPrice {
+  id         String  @id @default(uuid()) @db.Uuid
+  productId  String  @map("product_id") @db.Uuid
+  product    Product @relation(fields: [productId], references: [id])
+  channel    Channel
+  priceCents Int     @map("price_cents")
+
+  @@unique([productId, channel])
+  @@map("channel_prices")
+}
+
+model DeliveryZone {
+  id            String @id @default(uuid()) @db.Uuid
+  storeId       String @map("store_id") @db.Uuid
+  store         Store  @relation(fields: [storeId], references: [id])
+  name          String
+  feeCents      Int    @map("fee_cents")
+  etaMinutes    Int?   @map("eta_minutes")
+
+  @@unique([storeId, name])
+  @@map("delivery_zones")
+}
+
+// ---------- Clientes ----------
+
+model Customer {
+  id             String               @id @default(uuid()) @db.Uuid
+  organizationId String               @map("organization_id") @db.Uuid
+  organization   Organization         @relation(fields: [organizationId], references: [id])
+  name           String
+  phone          String?
+  createdAt      DateTime             @default(now()) @map("created_at")
+  identities     CustomerIdentity[]
+  orders         Order[]
+
+  @@unique([organizationId, phone])
+  @@map("customers")
+}
+
+model CustomerIdentity {
+  id         String   @id @default(uuid()) @db.Uuid
+  customerId String   @map("customer_id") @db.Uuid
+  customer   Customer @relation(fields: [customerId], references: [id])
+  kind       String   // whatsapp, ifood, email, chatwoot_contact
+  value      String
+
+  @@unique([kind, value])
+  @@map("customer_identities")
+}
+
+// ---------- Pedidos ----------
+
+enum OrderStatus {
+  CRIADO
+  CONFIRMADO
+  EM_PREPARO
+  PRONTO
+  SAIU_PARA_ENTREGA
+  RETIRADO
+  ENTREGUE
+  CONCLUIDO
+  CANCELADO
+}
+
+enum OrderType {
+  ENTREGA
+  RETIRADA
+  MESA
+  BALCAO
+}
+
+model Order {
+  id                 String               @id @db.Uuid // gerado na origem (idempotente)
+  storeId            String               @map("store_id") @db.Uuid
+  store              Store                @relation(fields: [storeId], references: [id])
+  shortNumber        Int                  @map("short_number")
+  channel            Channel
+  externalId         String?              @map("external_id")
+  type               OrderType
+  status             OrderStatus          @default(CRIADO)
+  customerId         String?              @map("customer_id") @db.Uuid
+  customer           Customer?            @relation(fields: [customerId], references: [id])
+  subtotalCents      Int                  @map("subtotal_cents")
+  deliveryFeeCents   Int                  @default(0) @map("delivery_fee_cents")
+  discountStoreCents Int                  @default(0) @map("discount_store_cents")
+  discountMarketCents Int                 @default(0) @map("discount_marketplace_cents")
+  totalCents         Int                  @map("total_cents")
+  note               String?
+  offlineOrigin      Boolean              @default(false) @map("offline_origin")
+  externalPayload    Json?                @map("external_payload")
+  createdAt          DateTime             @default(now()) @map("created_at")
+  acceptedAt         DateTime?            @map("accepted_at")
+  readyAt            DateTime?            @map("ready_at")
+  pickedUpAt         DateTime?            @map("picked_up_at")
+  deliveredAt        DateTime?            @map("delivered_at")
+  concludedAt        DateTime?            @map("concluded_at")
+  cancelledAt        DateTime?            @map("cancelled_at")
+  updatedAt          DateTime             @updatedAt @map("updated_at")
+  items              OrderItem[]
+  history            OrderStatusHistory[]
+
+  @@unique([storeId, channel, externalId])
+  @@index([storeId, status])
+  @@index([storeId, createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id             String            @id @default(uuid()) @db.Uuid
+  orderId        String            @map("order_id") @db.Uuid
+  order          Order             @relation(fields: [orderId], references: [id])
+  productId      String?           @map("product_id") @db.Uuid
+  product        Product?          @relation(fields: [productId], references: [id])
+  name           String            // snapshot
+  quantity       Int
+  unitPriceCents Int               @map("unit_price_cents")
+  totalCents     Int               @map("total_cents")
+  note           String?
+  cmvCents       Int?              @map("cmv_cents") // preenchido na baixa PEPS
+  options        OrderItemOption[]
+
+  @@map("order_items")
+}
+
+model OrderItemOption {
+  id          String    @id @default(uuid()) @db.Uuid
+  orderItemId String    @map("order_item_id") @db.Uuid
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id])
+  optionId    String?   @map("option_id") @db.Uuid
+  option      Option?   @relation(fields: [optionId], references: [id])
+  name        String
+  quantity    Int       @default(1)
+  priceCents  Int       @map("price_cents")
+
+  @@map("order_item_options")
+}
+
+model OrderStatusHistory {
+  id      String       @id @default(uuid()) @db.Uuid
+  orderId String       @map("order_id") @db.Uuid
+  order   Order        @relation(fields: [orderId], references: [id])
+  from    OrderStatus?
+  to      OrderStatus
+  source  String       // cozinha, ifood, sistema, motoboy, balcao
+  userId  String?      @map("user_id") @db.Uuid
+  reason  String?
+  at      DateTime     @default(now())
+
+  @@index([orderId])
+  @@map("order_status_history")
+}
+
+// ---------- Metas de tempo (SLA) ----------
+
+model ServiceTarget {
+  id            String    @id @default(uuid()) @db.Uuid
+  storeId       String    @map("store_id") @db.Uuid
+  store         Store     @relation(fields: [storeId], references: [id])
+  orderType     OrderType @map("order_type")
+  stage         String    // ACEITE, PREPARO, ESPERA_MOTOBOY, ROTA, ENTREGA_BALCAO
+  targetMinutes Float     @map("target_minutes")
+  fromHour      Int?      @map("from_hour")
+  toHour        Int?      @map("to_hour")
+
+  @@map("service_targets")
+}
+
+// ---------- Integração e eventos ----------
+
+model InboundEvent {
+  id             String    @id @default(uuid()) @db.Uuid
+  provider       String    // ifood, chatwoot, pix, fiscal
+  idempotencyKey String    @unique @map("idempotency_key")
+  payload        Json
+  receivedAt     DateTime  @default(now()) @map("received_at")
+  processedAt    DateTime? @map("processed_at")
+  error          String?
+  attempts       Int       @default(0)
+
+  @@map("inbound_events")
+}
+
+model OutboxEvent {
+  id          String    @id @default(uuid()) @db.Uuid
+  type        String    // order.created, order.status_changed...
+  aggregateId String    @map("aggregate_id")
+  payload     Json
+  createdAt   DateTime  @default(now()) @map("created_at")
+  publishedAt DateTime? @map("published_at")
+
+  @@index([publishedAt])
+  @@map("outbox_events")
+}
+
+model AuditLog {
+  id      String   @id @default(uuid()) @db.Uuid
+  storeId String?  @map("store_id") @db.Uuid
+  userId  String?  @map("user_id") @db.Uuid
+  action  String
+  entity  String
+  entityId String? @map("entity_id")
+  before  Json?
+  after   Json?
+  at      DateTime @default(now())
+
+  @@map("audit_log")
+}
