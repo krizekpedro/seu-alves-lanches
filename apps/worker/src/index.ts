@@ -4,6 +4,8 @@ import { PrismaClient } from '@seu-alves/db';
 import { IfoodClient } from './ifood-client';
 import { pollOnce } from './ifood-poller';
 import { dispatchOutbox } from './outbox';
+import { N99EntregaAdapter } from './delivery/n99-entrega';
+import { processDeliveryWebhooks } from './delivery/webhooks';
 
 const connection = new IORedis(process.env.REDIS_URL ?? 'redis://localhost:6379', { maxRetriesPerRequest: null });
 const prisma = new PrismaClient();
@@ -21,9 +23,30 @@ const ifood = ifoodConfigured
     })
   : null;
 
+// 99 Entrega: liga sozinho quando as chaves estiverem no .env (ou na tela de integrações, numa próxima fase).
+const n99 =
+  process.env.N99_CLIENT_ID && process.env.N99_CLIENT_SECRET && process.env.N99_API_BASE
+    ? new N99EntregaAdapter({
+        baseUrl: process.env.N99_API_BASE,
+        clientId: process.env.N99_CLIENT_ID,
+        clientSecret: process.env.N99_CLIENT_SECRET,
+        paths: {
+          ...(process.env.N99_PATH_TOKEN ? { token: process.env.N99_PATH_TOKEN } : {}),
+          ...(process.env.N99_PATH_QUOTE ? { quote: process.env.N99_PATH_QUOTE } : {}),
+          ...(process.env.N99_PATH_CREATE ? { create: process.env.N99_PATH_CREATE } : {}),
+          ...(process.env.N99_PATH_GET ? { get: process.env.N99_PATH_GET } : {}),
+          ...(process.env.N99_PATH_CANCEL ? { cancel: process.env.N99_PATH_CANCEL } : {}),
+        },
+      })
+    : null;
+export const deliveryAdapters = { n99 };
+
 async function main() {
   // Jobs repetitivos. O BullMQ garante uma execução por intervalo, mesmo com vários workers.
   await schedules.upsertJobScheduler('outbox', { every: 2_000 }, { name: 'outbox' });
+  // Avisos automáticos dos provedores de entrega (gravados pela API em inbound_events).
+  await schedules.upsertJobScheduler('delivery-webhooks', { every: 3_000 }, { name: 'delivery-webhooks' });
+  console.log(n99 ? '99 Entrega: ligada' : '99 Entrega: credenciais ausentes (preencha N99_* no .env)');
   if (ifood) {
     await schedules.upsertJobScheduler('ifood-polling', { every: 30_000 }, { name: 'ifood-polling' });
     console.log('iFood: polling a cada 30 s ativado');
@@ -36,6 +59,7 @@ async function main() {
     'schedules',
     async (job) => {
       if (job.name === 'outbox') return dispatchOutbox(prisma, events);
+      if (job.name === 'delivery-webhooks') return processDeliveryWebhooks(prisma);
       if (job.name === 'ifood-polling' && ifood) {
         const r = await pollOnce(ifood, prisma);
         await connection.set('health:ifood-polling', new Date().toISOString());

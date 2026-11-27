@@ -48,6 +48,9 @@ model Store {
   orders         Order[]
   serviceTargets ServiceTarget[]
   devices        StoreDevice[]
+  notifyRadiusM  Int             @default(800) @map("notify_radius_m") // raio para avisar o cliente que o entregador está chegando
+  latitude       Float?
+  longitude      Float?
 
   @@map("stores")
 }
@@ -304,6 +307,7 @@ model Order {
   updatedAt          DateTime             @updatedAt @map("updated_at")
   items              OrderItem[]
   history            OrderStatusHistory[]
+  deliveries         Delivery[]
 
   @@unique([storeId, channel, externalId])
   @@index([storeId, status])
@@ -371,11 +375,64 @@ model ServiceTarget {
   @@map("service_targets")
 }
 
+// ---------- Entregas ----------
+
+enum DeliveryProvider {
+  PROPRIO
+  IFOOD
+  N99
+}
+
+enum DeliveryStatus {
+  COTADA
+  SOLICITADA
+  ENTREGADOR_ATRIBUIDO
+  NA_LOJA
+  COLETADA
+  CHEGANDO
+  ENTREGUE
+  CANCELADA
+  FALHOU
+}
+
+/// Uma tentativa de entrega de um pedido. Se o entregador terceirizado falhar, nasce outra linha para o mesmo pedido.
+model Delivery {
+  id               String           @id @default(uuid()) @db.Uuid
+  orderId          String           @map("order_id") @db.Uuid
+  order            Order            @relation(fields: [orderId], references: [id])
+  provider         DeliveryProvider
+  externalId       String?          @map("external_id")
+  status           DeliveryStatus   @default(SOLICITADA)
+  feeCents         Int?             @map("fee_cents") // quanto a loja paga ao provedor
+  courierName      String?          @map("courier_name")
+  courierPhone     String?          @map("courier_phone")
+  courierUserId    String?          @map("courier_user_id") @db.Uuid // motoboy próprio
+  courierLat       Float?           @map("courier_lat")
+  courierLng       Float?           @map("courier_lng")
+  destLat          Float?           @map("dest_lat")
+  destLng          Float?           @map("dest_lng")
+  trackingUrl      String?          @map("tracking_url")
+  customerNotifiedAt DateTime?      @map("customer_notified_at") // aviso "está chegando" enviado
+  requestedAt      DateTime         @default(now()) @map("requested_at")
+  assignedAt       DateTime?        @map("assigned_at")
+  arrivedStoreAt   DateTime?        @map("arrived_store_at") // horário em que o motoboy chegou na loja
+  pickedUpAt       DateTime?        @map("picked_up_at")
+  deliveredAt      DateTime?        @map("delivered_at")
+  cancelledAt      DateTime?        @map("cancelled_at")
+  lastPayload      Json?            @map("last_payload")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+
+  @@unique([provider, externalId])
+  @@index([orderId])
+  @@index([status])
+  @@map("deliveries")
+}
+
 // ---------- Integração e eventos ----------
 
 model InboundEvent {
   id             String    @id @default(uuid()) @db.Uuid
-  provider       String    // ifood, chatwoot, pix, fiscal
+  provider       String    // ifood, n99, chatwoot, pix, fiscal
   idempotencyKey String    @unique @map("idempotency_key")
   payload        Json
   receivedAt     DateTime  @default(now()) @map("received_at")

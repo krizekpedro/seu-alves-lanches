@@ -103,6 +103,9 @@ importers:
       '@seu-alves/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@seu-alves/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       bullmq:
         specifier: 5.81.6
         version: 5.81.6

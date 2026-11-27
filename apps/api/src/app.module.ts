@@ -9,6 +9,7 @@ import { OrdersController } from './orders/orders.controller';
 import { OrdersService } from './orders/orders.service';
 import { MetricsController } from './metrics/metrics.controller';
 import { MetricsService } from './metrics/metrics.service';
+import { WebhooksController } from './webhooks/webhooks.controller';
 
 const jwtSecret = process.env.JWT_SECRET;
 if (!jwtSecret && process.env.NODE_ENV === 'production') {
@@ -17,7 +18,7 @@ if (!jwtSecret && process.env.NODE_ENV === 'production') {
 
 @Module({
   imports: [JwtModule.register({ global: true, secret: jwtSecret ?? 'dev-only-secret', signOptions: { expiresIn: '12h' } })],
-  controllers: [HealthController, AuthController, CatalogController, OrdersController, MetricsController],
+  controllers: [HealthController, AuthController, CatalogController, OrdersController, MetricsController, WebhooksController],
   providers: [PrismaService, AuthService, OrdersService, MetricsService],
 })
 export class AppModule {}

@@ -9,6 +9,8 @@ export interface IfoodEvent {
   orderId: string;
   merchantId?: string;
   createdAt: string;
+  /** Eventos de logística trazem dados do entregador aqui (nome, telefone, posição). */
+  metadata?: Record<string, unknown>;
 }
 
 export interface IfoodConfig {
@@ -23,7 +25,7 @@ type FetchLike = typeof fetch;
 export class IfoodClient {
   private token: { value: string; expiresAt: number } | null = null;
 
-  constructor(private readonly cfg: IfoodConfig, private readonly http: FetchLike = fetch) {}
+  constructor(readonly cfg: IfoodConfig, private readonly http: FetchLike = fetch) {}
 
   /** Token em cache, renovado 60 s antes de expirar. */
   async accessToken(): Promise<string> {
@@ -44,7 +46,8 @@ export class IfoodClient {
     return json.accessToken;
   }
 
-  private async call(path: string, init: RequestInit = {}) {
+  /** Chamada autenticada; usada também pelo adaptador de entregas (iFood Shipping). */
+  async call(path: string, init: RequestInit = {}) {
     const token = await this.accessToken();
     const res = await this.http(`${this.cfg.baseUrl}${path}`, {
       ...init,
