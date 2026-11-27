@@ -1,6 +1,6 @@
 # Seu Alves — Plano Arquitetural do Sistema Unificado de Delivery
 
-> Versão 0.2 · 27/11/2026 · Documento de desenho (ainda sem código de aplicação)
+> Versão 0.3 · 27/11/2026 · Documento de desenho (ainda sem código de aplicação)
 
 Este documento une os quatro pilares (WhatsApp/atendimento, cardápio + PDV + KDS, iFood e financeiro) em um único sistema próprio, já considerando as respostas do questionário inicial. Onde algo ainda depende de uma informação sua, está marcado com **⚠ A confirmar**.
 
@@ -19,6 +19,7 @@ Este documento une os quatro pilares (WhatsApp/atendimento, cardápio + PDV + KD
 | Firefly III / ERPNext | **Não rodar; usar como referência de modelagem** | São sistemas grandes e genéricos. O seu financeiro precisa nascer ligado ao pedido, ao estoque PEPS e às taxas por canal, o que é mais simples de construir no núcleo. |
 | Banco, maquininha, impressora, fiscal | **Adaptadores genéricos** (seção 1.9) | Nada fica amarrado a um fornecedor; vários modelos convivem e cada loja escolhe os seus. |
 | NFC-e | **Fora do MVP** (empresa é MEI), módulo previsto para ligar depois | MEI é dispensado em vendas ao consumidor final (seção 5). |
+| Visual | **Identidade do Seu Alves em todas as telas**, design system único, dashboards com gráficos (seção 2.6) | Tudo com a mesma cara do cardápio, limpo e fácil de ler no celular, tablet ou TV. |
 | Hospedagem | **1 VPS (8 GB RAM) com Coolify**, backups automáticos externos | Roda 24/7 sem você online, custo estimado de R$ 100 a R$ 200/mês com tudo. Detalhes na seção 2.5. |
 | Offline | **PWA no balcão/KDS + "Hub da Loja"** (mini PC na loja) | Se a internet cair, balcão, impressão e KDS continuam e sincronizam depois. |
 | Multi-loja | Toda tabela tem `store_id` desde o dia 1 | Abrir a segunda loja vira cadastro, não reescrita. |
@@ -243,7 +244,7 @@ flowchart LR
 
 | App | Escolha |
 |---|---|
-| Admin + PDV + KDS | **React + Vite + TypeScript**, PWA (funciona offline), TanStack Query, Tailwind + shadcn/ui |
+| Admin + PDV + KDS | **React + Vite + TypeScript**, PWA (funciona offline), TanStack Query, Tailwind + shadcn/ui com o tema da marca, Recharts para gráficos |
 | Cardápio digital | React + Vite (mesmo stack), reaproveitando o visual do `index.html` atual |
 | Hub da Loja | Node.js + SQLite (`better-sqlite3`) + biblioteca ESC/POS |
 
@@ -258,6 +259,7 @@ apps/
   hub/          Agente local da loja
 packages/
   shared/       Tipos, esquemas Zod, enums de status, utilitários de dinheiro
+  ui/           Design system: cores, fontes, componentes e gráficos da marca
   db/           Esquema Prisma e migrations
 infra/
   docker-compose.yml   ambiente local completo
@@ -305,6 +307,77 @@ Observação: o plano gratuito do Supabase pausa projetos parados e não serve p
 Total estimado com tudo, inclusive domínio e backups: **R$ 100 a R$ 200/mês**, fora custos de Meta, emissor fiscal e taxas bancárias.
 
 **Dimensionamento (pergunta 1):** o volume de pedidos **não muda o desenho**, só o tamanho do servidor. Este plano assume loja pequena/média, até ~300 pedidos/dia (picos de ~60 pedidos/hora em sexta e sábado). Uma única VPS de 8 GB aguenta folgadamente esse volume, e também as primeiras lojas novas.
+
+### 2.6 Identidade visual, telas e dashboards
+
+**Decisão:** todas as telas (cardápio, painel do dono, PDV, KDS, financeiro) seguem **a identidade do Seu Alves** que já existe no cardápio atual, com um **design system único** (`packages/ui`) compartilhado por todos os apps. Muda a cor ou a fonte num lugar só e tudo acompanha.
+
+#### Identidade (tirada do cardápio atual)
+
+| Token | Cor | Uso |
+|---|---|---|
+| `base` | `#0F0F0F` | fundo principal (tema escuro) |
+| `surface` / `surface2` | `#18181B` / `#202024` | cartões, painéis, tabelas |
+| `gold` (soft / deep) | `#F59E0B` (`#FBBF24` / `#D97706`) | cor de destaque: botões principais, número mais importante, série principal dos gráficos |
+| `wine` (deep) | `#7A1F1F` (`#5A1616`) | bordô da marca: cabeçalhos, selos, detalhes |
+| `cream` (deep) | `#F5E9D7` (`#E7D2B3`) | bege da marca: textos de destaque sobre escuro, tema claro do financeiro |
+
+- **Fontes:** *Plus Jakarta Sans* (títulos e números grandes) + *Inter* (textos e tabelas). Números financeiros com algarismos tabulares, para alinhar colunas.
+- **Logo:** hoje está hospedado no servidor da OlaClick. Ele será copiado para o nosso próprio armazenamento já na Fase 0, para não sumir quando a OlaClick for cancelada.
+- **Temas:** escuro como padrão (PDV e KDS ficam mais legíveis na cozinha e cansam menos a vista); tema claro opcional para o financeiro e relatórios impressos.
+- **Cores com significado fixo, separadas da marca:** verde = ok/pago, laranja = atenção, vermelho = atrasado/erro. O dourado da marca **não** é usado como alerta, para não confundir.
+- **Cores fixas por canal** em todos os gráficos: Balcão (creme), Cardápio próprio (dourado), WhatsApp (verde), iFood (vermelho). Bate o olho e já sabe de qual canal é.
+
+#### Princípios de tela (limpo e visual)
+
+1. **Uma tela, uma pergunta:** "como está o dia?", "quanto lucrei?", "o que está acabando?". Nada de telas com tudo ao mesmo tempo.
+2. **No máximo 4 ou 5 indicadores no topo**, com número grande, comparação ("+12% vs. sexta passada") e minigráfico.
+3. **Gráfico antes de tabela;** a tabela fica um clique abaixo para quem quiser detalhe.
+4. **Celular primeiro para o dono:** o painel funciona no celular para acompanhar de qualquer lugar. PDV e KDS são pensados para tablet/TV com botões grandes.
+5. **Tempo real:** pedidos, faturamento do dia e alertas atualizam sozinhos (WebSocket), sem recarregar.
+6. **Filtros sempre no mesmo lugar:** período, canal e loja (já pronto para multi-loja).
+
+#### Biblioteca de gráficos
+
+**Recharts** (React, simples, combina com Tailwind) com componentes de dashboard no estilo **Tremor** (cartões de KPI, barras, donut, sparklines), todos com as cores da marca. Para o mapa de calor de entregas: **MapLibre** (mapas gratuitos, sem custo de Google Maps).
+
+#### Telas e gráficos previstos
+
+| Tela | O que mostra | Gráficos |
+|---|---|---|
+| **Painel do dia** (tela inicial) | faturamento, pedidos, ticket médio, lucro estimado, tempo médio de preparo; pedidos em andamento; alertas | KPIs com sparkline, barras de pedidos por hora (pico), donut de faturamento por canal, minikanban de status |
+| **Financeiro / DRE** | quanto entrou, quanto saiu e para onde foi | **cascata** (receita bruta → taxas → CMV → entrega → lucro), linha faturamento × lucro por dia, margem por canal, taxas pagas por canal, fila "a conciliar" |
+| **Produtos** | o que vende e o que dá lucro | ranking curva ABC, **matriz margem × volume** (bolhas: estrelas, carros-chefe com margem baixa, itens a rever), CMV % por produto |
+| **Estoque** | o que está acabando e quanto custa | barras de nível até o mínimo, lotes perto do vencimento, evolução do custo de cada insumo (ex.: preço do pão subindo), valor parado em estoque |
+| **Desperdício** | o que estragou e quanto custou | perdas por motivo e por insumo, valor perdido no mês × meta, tendência semanal |
+| **Entregas** | de onde vêm os pedidos e quanto custa entregar | **mapa de calor por bairro**, tempo médio de entrega, custo por entrega, acerto de cada motoboy |
+| **Clientes** | quem compra e quem sumiu | novos × recorrentes, frequência, top clientes, lista de "sumidos há 30 dias" para campanha no WhatsApp |
+| **MEI** | quanto falta para o teto anual | medidor (gauge) com projeção de quando o teto será atingido |
+| **KDS (cozinha)** | fila de preparo | cartões grandes legíveis a 2 m, cor muda com o tempo de espera (verde → laranja → vermelho), ícone do canal |
+| **PDV (balcão)** | venda rápida | grade de produtos com foto, botões grandes, adicionais em um toque, total sempre visível |
+
+#### Esboço do Painel do dia
+
+```
+┌───────────────────────────────────────────────────────────────────┐
+│  SEU ALVES        Hoje ▾   Todos os canais ▾   Loja Vila Kosmos ▾ │
+├──────────────┬──────────────┬──────────────┬──────────────────────┤
+│ Faturamento  │ Pedidos      │ Ticket médio │ Lucro estimado       │
+│ R$ 3.480     │ 92           │ R$ 37,80     │ R$ 1.120  (32%)      │
+│ ▲ 12% ╱╲╱▔   │ ▲ 8%  ╱╲_╱▔  │ ▲ 3%  ▔╲╱▔   │ ▲ 9%  _╱╲╱▔          │
+├──────────────┴──────────────┴────┬─────────┴──────────────────────┤
+│ Pedidos por hora                 │ Faturamento por canal          │
+│        ▆                         │        ◔  iFood       41%      │
+│     ▃ ▇ █ ▅                      │           Cardápio    27%      │
+│  ▁ ▄ █ █ █ █ ▃ ▁                 │           WhatsApp    19%      │
+│ 18  19  20  21  22  23           │           Balcão      13%      │
+├──────────────────────────────────┼────────────────────────────────┤
+│ Em andamento                     │ Alertas                        │
+│ Novos 3 · Preparo 7 · Prontos 2  │ ⚠ Pão brioche: 18 un (mín 40)  │
+│ Saiu p/ entrega 5                │ ⚠ 2 recebíveis a conciliar     │
+└──────────────────────────────────┴────────────────────────────────┘
+```
+(números ilustrativos)
 
 ---
 
@@ -628,6 +701,8 @@ A ideia é rodar o sistema novo **em paralelo** à OlaClick, assumindo um canal 
 - Emitir o certificado digital e-CNPJ A1 (útil para baixar NF de compra pela chave e, no futuro, para NFC-e).
 - Contratar VPS, instalar Coolify, domínio, Cloudflare, backups.
 - Criar o monorepo, CI, esquema inicial do banco (organização, loja, usuários, catálogo).
+- Design system da marca (`packages/ui`) e protótipo visual das telas principais para aprovação antes de construir.
+- Copiar o logo e as fotos dos produtos da OlaClick para o nosso armazenamento.
 
 ### Fase 1 — Núcleo de pedidos, PDV, KDS e impressão (3 a 4 semanas)
 - Cadastro do cardápio (importar os produtos do `index.html` atual), adicionais, zonas de entrega por bairro.
