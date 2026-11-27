@@ -1,6 +1,6 @@
 # Seu Alves — Plano Arquitetural do Sistema Unificado de Delivery
 
-> Versão 0.4 · 27/11/2026 · Documento de desenho (ainda sem código de aplicação)
+> Versão 0.5 · 27/11/2026 · Documento de desenho (ainda sem código de aplicação)
 
 Este documento une os quatro pilares (WhatsApp/atendimento, cardápio + PDV + KDS, iFood e financeiro) em um único sistema próprio, já considerando as respostas do questionário inicial. Onde algo ainda depende de uma informação sua, está marcado com **⚠ A confirmar**.
 
@@ -270,7 +270,7 @@ Objetivo: saber **onde o pedido está demorando** e se cada etapa está dentro d
 | Validação / contratos | **Zod** em pacote compartilhado | Os mesmos esquemas validam API e formulários. |
 | Filas | **BullMQ + Redis** | Jobs repetitivos (polling 30 s), retentativa com backoff, painel Bull Board. |
 | Tempo real | Socket.IO | KDS, PDV, alertas de pedido novo. |
-| Autenticação | JWT + papéis (dono, gerente, caixa, cozinha, atendente, motoboy) | |
+| Autenticação | JWT + papéis (dono, gerente, caixa, cozinha, atendente, motoboy) | Detalhes na seção 2.7. |
 
 ### 2.2 Frontend
 
@@ -411,6 +411,36 @@ Total estimado com tudo, inclusive domínio e backups: **R$ 100 a R$ 200/mês**,
 └──────────────────────────────────┴────────────────────────────────┘
 ```
 (números ilustrativos)
+
+### 2.7 Login e permissões por funcionário
+
+Cada pessoa tem o **próprio acesso**. Isso permite saber quem aceitou, preparou, vendeu, deu desconto ou cancelou, e mostrar a cada um só as telas da sua função.
+
+**Duas formas de entrar:**
+
+| Quem | Onde | Como entra |
+|---|---|---|
+| Equipe da loja (caixa, cozinha, atendente) | tablet do KDS, computador do PDV (aparelhos compartilhados) | toca no próprio nome e digita um **PIN de 4 números**; "Trocar usuário" na troca de turno; bloqueio automático após inatividade no PDV |
+| Dono e gerentes | qualquer lugar (celular, computador) | **e-mail ou celular + senha**, com código de confirmação no WhatsApp ao entrar de um aparelho novo |
+| Motoboy | app do motoboy no celular dele | celular + código recebido no WhatsApp (sem senha para decorar) |
+
+Os aparelhos da loja (PDV, KDS) são **cadastrados** uma vez pelo dono (`store_devices`). Só nesses aparelhos o login por PIN funciona, então um PIN vazado não dá acesso de fora da loja.
+
+**Permissões por papel (padrão, ajustáveis):**
+
+| Tela | Dono | Gerente | Caixa | Atendente | Cozinha | Motoboy |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|
+| Painel do dia, Tempos | ✓ | ✓ | | | | |
+| PDV, Pedidos | ✓ | ✓ | ✓ | ✓ | | |
+| Cozinha (KDS) | ✓ | ✓ | ✓ | | ✓ | |
+| Financeiro, Integrações | ✓ | | | | | |
+| Produtos, Estoque, Entregas | ✓ | ✓ | | | | |
+| Clientes | ✓ | ✓ | | ✓ | | |
+| App do motoboy | | | | | | ✓ |
+
+Ações sensíveis pedem o PIN de um gerente na hora, mesmo para quem está logado: cancelar pedido, dar desconto acima de um limite, estornar pagamento e ajustar estoque. Tudo isso fica no `audit_log`.
+
+Tabelas envolvidas: `users` (com `pin_hash` além de `senha_hash`), `store_users` (papel por loja), `role_permissions` (permissões ajustáveis por papel), `user_sessions` (aparelho, início e fim do turno), `audit_log`.
 
 ---
 
@@ -553,8 +583,10 @@ Convenções: chaves primárias `uuid` (v7, ordenável), dinheiro em centavos `b
 |---|---|
 | `organizations` | id, nome, cnpj, regime_tributario |
 | `stores` | id, organization_id, nome, endereço, lat/lng, fuso, horários, config (auto-aceite, tempo de preparo) |
-| `users` | id, nome, e-mail, telefone, senha_hash |
+| `users` | id, nome, e-mail, telefone, senha_hash, pin_hash (login rápido na loja), ativo |
 | `store_users` | user_id, store_id, papel (dono, gerente, caixa, cozinha, atendente, motoboy) |
+| `role_permissions` | store_id, papel, permissão (tela ou ação, ex.: `pedido.cancelar`, `desconto.acima_limite`) |
+| `user_sessions` | id, user_id, store_device_id, início, fim, motivo do fim (saiu, troca de usuário, inatividade) |
 
 ### 4.2 Catálogo
 
