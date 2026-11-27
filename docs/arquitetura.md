@@ -1,6 +1,6 @@
 # Seu Alves — Plano Arquitetural do Sistema Unificado de Delivery
 
-> Versão 0.3 · 27/11/2026 · Documento de desenho (ainda sem código de aplicação)
+> Versão 0.4 · 27/11/2026 · Documento de desenho (ainda sem código de aplicação)
 
 Este documento une os quatro pilares (WhatsApp/atendimento, cardápio + PDV + KDS, iFood e financeiro) em um único sistema próprio, já considerando as respostas do questionário inicial. Onde algo ainda depende de uma informação sua, está marcado com **⚠ A confirmar**.
 
@@ -226,6 +226,38 @@ flowchart LR
 
 ---
 
+### 1.10 Tempos por etapa e gargalos (SLA)
+
+Objetivo: saber **onde o pedido está demorando** e se cada etapa está dentro da média, tanto no delivery quanto no balcão.
+
+**Etapas medidas e quem marca cada uma:**
+
+| Etapa | Começa | Termina | Quem marca o fim |
+|---|---|---|---|
+| Aceite da cozinha | pedido chega (`created_at`) | `accepted_at` | cozinha toca **Aceitar** no KDS (no balcão pode ser automático) |
+| Preparo | `accepted_at` | `ready_at` | cozinha toca **Pronto** no KDS |
+| Espera do motoboy (delivery) | `ready_at` | `picked_up_at` | motoboy toca **Peguei** no app ou lê o **QR code do ticket** |
+| Rota até o cliente (delivery) | `picked_up_at` | `delivered_at` | motoboy toca **Entreguei** (com horário e localização) |
+| Entrega ao cliente (balcão/retirada) | `ready_at` | `delivered_at` | balcão chama a senha e toca **Entregue** |
+
+- **App do motoboy:** uma tela simples em PWA (abre pelo navegador do celular, sem instalar loja de apps), com login por telefone, lista dos pedidos prontos, botões *Peguei* e *Entreguei* e a rota no mapa. O QR code impresso no ticket abre o pedido direto, para o motoboy não esquecer de marcar.
+- **iFood Entrega:** os horários de coleta e entrega vêm dos eventos do próprio iFood, sem toque do motoboy.
+- **Pedido do iFood com aceite automático:** o tempo de aceite passa a medir até a cozinha visualizar o pedido no KDS.
+- Cada mudança fica em `order_status_history` (quem, quando, de qual aparelho), e os horários principais ficam em colunas do pedido para os relatórios serem rápidos.
+
+**Metas:** tabela `service_targets` com a meta em minutos por loja, tipo de pedido (delivery, balcão, retirada), etapa e, opcionalmente, faixa de horário (ex.: preparo de 15 min normal e 18 min no pico de sexta). Cada etapa fica **verde** (dentro da meta), **laranja** (até 20% acima) ou **vermelha** (mais que isso).
+
+**O que o painel mostra (tela "Tempos e gargalos"):**
+- média de cada etapa contra a meta e o percentual de pedidos dentro dela;
+- barra "para onde vai o tempo" (quanto do tempo total cada etapa consome);
+- tempo total por horário, empilhado por etapa, com a linha da meta, para ver em que hora o gargalo aparece;
+- pedidos mais demorados com a etapa culpada destacada;
+- uma frase automática apontando o maior gargalo (ex.: "espera do motoboy entre 20h e 22h");
+- tempos por motoboy e por cozinheiro/turno, para acompanhamento;
+- alerta em tempo real no KDS e no painel quando um pedido passa da meta numa etapa.
+
+---
+
 ## 2. Stack tecnológica
 
 ### 2.1 Backend
@@ -257,6 +289,7 @@ apps/
   web/          Admin, PDV, KDS (PWA)
   cardapio/     Cardápio digital público
   hub/          Agente local da loja
+  motoboy/      App do motoboy (PWA): Peguei / Entreguei, rota, acerto
 packages/
   shared/       Tipos, esquemas Zod, enums de status, utilitários de dinheiro
   ui/           Design system: cores, fontes, componentes e gráficos da marca
@@ -550,7 +583,7 @@ O telefone é a chave principal de unificação. Clientes do iFood muitas vezes 
 
 | Tabela | Campos principais |
 |---|---|
-| `orders` | id, store_id, número_curto (senha do dia), canal (`IFOOD`, `CARDAPIO`, `WHATSAPP`, `BALCAO`, `OLACLICK`…), id_externo, número_externo, tipo (entrega, retirada, mesa, balcão), status, customer_id, endereço (snapshot), subtotal_cents, taxa_entrega_cents, desconto_loja_cents, desconto_marketplace_cents, total_cents, troco_para_cents, observações, chatwoot_conversation_id, origem_offline (bool), timestamps de cada etapa, payload_externo (jsonb) |
+| `orders` | id, store_id, número_curto (senha do dia), canal (`IFOOD`, `CARDAPIO`, `WHATSAPP`, `BALCAO`, `OLACLICK`…), id_externo, número_externo, tipo (entrega, retirada, mesa, balcão), status, customer_id, endereço (snapshot), subtotal_cents, taxa_entrega_cents, desconto_loja_cents, desconto_marketplace_cents, total_cents, troco_para_cents, observações, chatwoot_conversation_id, origem_offline (bool), timestamps de cada etapa (`accepted_at`, `ready_at`, `picked_up_at`, `delivered_at`, `concluded_at`), payload_externo (jsonb) |
 | `order_items` | id, order_id, product_id, nome (snapshot), quantidade, preço_unit_cents, total_cents, observação, cmv_cents (preenchido na baixa) |
 | `order_item_options` | id, order_item_id, option_id, nome (snapshot), quantidade, preço_cents |
 | `order_status_history` | order_id, de, para, origem (cozinha, iFood, sistema), user_id, em |
@@ -631,6 +664,7 @@ Receita bruta (por canal: iFood | Cardápio | WhatsApp | Balcão)
 | `inbound_events` | id, provedor, chave_idempotência (única), payload (jsonb), recebido_em, processado_em, erro, tentativas |
 | `outbox_events` | id, tipo (order.created, order.status_changed…), agregado_id, payload, criado_em, publicado_em |
 | `store_devices` | id, store_id, tipo (impressora, kds, pdv), nome, driver (escpos_rede, escpos_usb, serial, bluetooth, navegador), conexão (IP/porta, caminho), largura_papel, perfil_codepage, roteamento (praças e tipos de ticket), ativo |
+| `service_targets` | id, store_id, tipo_pedido (delivery, balcão, retirada), etapa (aceite, preparo, espera_motoboy, rota, entrega_balcao), meta_minutos, faixa_horario (opcional), dias_semana (opcional) |
 | `sync_cursors` | provedor, store_id, cursor, atualizado_em |
 | `fiscal_documents` | id, order_id, tipo (NFC-e), chave, status, xml, danfe_url, protocolo |
 | `audit_log` | quem, o quê, quando, antes/depois (para cancelamentos, descontos, ajustes de estoque) |
@@ -706,7 +740,8 @@ A ideia é rodar o sistema novo **em paralelo** à OlaClick, assumindo um canal 
 
 ### Fase 1 — Núcleo de pedidos, PDV, KDS e impressão (3 a 4 semanas)
 - Cadastro do cardápio (importar os produtos do `index.html` atual), adicionais, zonas de entrega por bairro.
-- PDV de balcão (online) e KDS em tempo real; impressão térmica via Hub da Loja.
+- PDV de balcão (online) e KDS em tempo real com Aceitar/Pronto; impressão térmica via Hub da Loja.
+- App do motoboy (Peguei/Entreguei, QR no ticket) e tela de tempos e gargalos com metas por etapa.
 - Pedido único multicanal com máquina de estados; motoboys e entregas.
 - Financeiro básico automático: receita bruta por canal e meios de pagamento, fechamento de caixa do dia.
 - **Marco:** balcão roda no sistema novo; OlaClick continua para o delivery.
