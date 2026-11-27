@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+/* Identidade do Seu Alves (mesmos tokens do cardápio e do protótipo). */
+@theme {
+  --color-base: #0F0F0F;
+  --color-surface: #18181B;
+  --color-surface2: #202024;
+  --color-gold: #F59E0B;
+  --color-gold-soft: #FBBF24;
+  --color-gold-deep: #D97706;
+  --color-wine: #7A1F1F;
+  --color-wine-deep: #5A1616;
+  --color-cream: #F5E9D7;
+  --color-cream-deep: #E7D2B3;
+  --color-ok: #22C55E;
+  --color-warn: #FB923C;
+  --color-late: #EF4444;
+  --color-ch-ifood: #F43F5E;
+  --color-ch-cardapio: #F59E0B;
+  --color-ch-whatsapp: #22C55E;
+  --color-ch-balcao: #F5E9D7;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Inter", sans-serif;
+}
+
+html, body { background: var(--color-base); color: #FAFAF9; }
+.num { font-variant-numeric: tabular-nums; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--color-gold-soft); outline-offset: 2px; }

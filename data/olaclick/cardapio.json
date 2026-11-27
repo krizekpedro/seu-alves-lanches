@@ -1,0 +1,1920 @@
+{
+ "fonte": "Painel OlaClick, exportado em 2026-11-27 (somente leitura)",
+ "categorias": [
+  {
+   "id": "c11050ee-a582-45fe-8278-6f7741611556",
+   "nome": "Destaques",
+   "posicao": -10,
+   "destaque": true,
+   "produtos": [
+    {
+     "id": "9fa6a2b1-31dd-4876-a3c0-e604af20870d",
+     "nome": "AÇAÍ",
+     "descricao": "Açaí natural batido todo dia (sempre fresco)",
+     "visivel": true,
+     "posicao": 0,
+     "foto": "996c790c-a8cc-48c7-84d3-4c5a9ddd9b67",
+     "variacoes": [
+      {
+       "nome": "200ml",
+       "preco": 6,
+       "esgotado": false
+      },
+      {
+       "nome": "300ml",
+       "preco": 9,
+       "esgotado": false
+      },
+      {
+       "nome": "500ml",
+       "preco": 14,
+       "esgotado": false
+      },
+      {
+       "nome": "700ml",
+       "preco": 17,
+       "esgotado": true
+      }
+     ],
+     "grupos": [
+      "9fa04843-43fb-48d1-8380-ebcb5bed12c6",
+      "9fa8607f-ffa6-4fdb-8328-f93828086a86"
+     ]
+    },
+    {
+     "id": "a22a8770-954b-414f-a72e-d5434f6f6e09",
+     "nome": "PROMOÇÃO DO DIA - QUINTA",
+     "descricao": "1 Duplo Alves + Batata P + Refri Lata",
+     "visivel": false,
+     "posicao": 1,
+     "foto": "e60b5f08-c70e-4dcf-bef5-9a2038977541",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 25,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "a228e861-7a1d-40f5-af7b-bff1ea7fb7a6",
+     "nome": "Duplo Onion Artesanal",
+     "descricao": "2 Carnes Artesanais 90g, \n2 Queijos, Bacon, Anel de Cebola \nEmpanado, Barbecue, Alface, \ntomate e molho alves.",
+     "visivel": true,
+     "posicao": 2,
+     "foto": "1cf8c0cd-f889-4281-afc9-3a78c32c0548",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 28,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32",
+      "9facbe03-7588-4447-b97b-c6697a396f67"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "9fa4b508-8e4d-43b0-a5d2-4f93862db7e9",
+   "nome": "PROMOÇÕES",
+   "posicao": 0,
+   "destaque": false,
+   "produtos": [
+    {
+     "id": "a347fa38-e3f9-4a6a-9c12-20713a516d9e",
+     "nome": "COMBO CASAL",
+     "descricao": "1 SEU CHEDDAR, 1 DUPLO ALVES, BATATA P E 2 GUARAVITAS",
+     "visivel": true,
+     "posicao": 0,
+     "foto": "038e2a3f-6631-4266-affd-13f252333dcc",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 42,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "a250b3d1-e889-44f0-b68b-ffa1276a7a7e",
+     "nome": "PROMOÇÃO DO DIA - Terça-Feira",
+     "descricao": "1 Triplo Alves + Batata P + Refri Lata",
+     "visivel": false,
+     "posicao": 1,
+     "foto": "0fb9d239-efd3-4c19-b155-8abd34d30a76",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 25,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "a22a8770-954b-414f-a72e-d5434f6f6e09",
+     "nome": "PROMOÇÃO DO DIA - QUINTA",
+     "descricao": "1 Duplo Alves + Batata P + Refri Lata",
+     "visivel": false,
+     "posicao": 2,
+     "foto": "e60b5f08-c70e-4dcf-bef5-9a2038977541",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 25,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "9fc914ed-dead-446b-a949-90bf7c9410a4",
+     "nome": "PROMOÇÃO SEU CHEDDAR",
+     "descricao": "2 SEU CHEDDAR + 2 BATATAS P + GUARANA KUAT 2 LITROS",
+     "visivel": false,
+     "posicao": 3,
+     "foto": "ab7b150f-2e6f-4111-ae34-b99d9b7513fe",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 45,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "a1d82a42-9617-4008-9c41-bf774456478c",
+     "nome": "COMBO FAMILIA ALVES",
+     "descricao": "4 X-tudos, Maluca com Cream Cheese, cheddar e frango, 8 Nuggets e molho",
+     "visivel": true,
+     "posicao": 4,
+     "foto": "2b903f6f-3e7f-477b-abd8-4176a4fb49e2",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 89.9,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    }
+   ]
+  },
+  {
+   "id": "9fb2b5e0-3339-4d39-8222-ed5278129427",
+   "nome": "COMBO NA CAIXA",
+   "posicao": 1,
+   "destaque": false,
+   "produtos": [
+    {
+     "id": "9fc924a9-c80b-4335-8845-a6f36b433f57",
+     "nome": "COMBO 01",
+     "descricao": "4 MINI ALVES, 10 NUGGETS, BATATA MÉDIA C/ CHEDDAR E BACON E REFRI 1 LITRO",
+     "visivel": true,
+     "posicao": 0,
+     "foto": "91d554f1-2ff1-4ab5-ae54-09a87fb0c506",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 55,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fb2b6a1-0c15-40b5-81ef-8ea70a4ab0ba"
+     ]
+    },
+    {
+     "id": "9fb2b5e1-5b79-42e0-bb2d-ca4b3b918a70",
+     "nome": "COMBO 02",
+     "descricao": "3 Duplos Alves, Batata c/ Cheddar e Bacon, 10 Nuggers e Convenção 2L",
+     "visivel": true,
+     "posicao": 1,
+     "foto": "11e3cf33-678b-49a4-be40-fc942ecc190c",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 65,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fb2b6a1-0c15-40b5-81ef-8ea70a4ab0ba"
+     ]
+    },
+    {
+     "id": "9fc92528-f5dd-4307-b545-99d6bb8decea",
+     "nome": "COMBO 03",
+     "descricao": "1 SEU CHEDDAR, 1 SEU CHEESE, 1 MINI ALVES, 10 NUGGET, BATATA C/ CHEDDAR E BACON E REFRI 1L",
+     "visivel": true,
+     "posicao": 2,
+     "foto": "532b90d9-ab81-4eaa-94f9-a51cd1d2cf0e",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 65,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fb2b6a1-0c15-40b5-81ef-8ea70a4ab0ba"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "9fa04842-e31b-4a20-8c7c-c660170003d8",
+   "nome": "Hambúrgueres",
+   "posicao": 2,
+   "destaque": false,
+   "produtos": [
+    {
+     "id": "a228e920-40a3-4bfb-9f1d-84b25c323ad6",
+     "nome": "X-Alves",
+     "descricao": "2 Carnes, presunto, calabresa, bacon, ovo, 2 queijos, milho, ervilha, \nqueijo ralado, batata palha, alface, tomate e cebola",
+     "visivel": true,
+     "posicao": 0,
+     "foto": "bd64864e-7adb-4188-b9e4-831d32dbba71",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 25,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32"
+     ]
+    },
+    {
+     "id": "a228e908-d9a3-4206-b23d-7cffcf160cd4",
+     "nome": "X-Tudo",
+     "descricao": "Carne, calabresa, presunto, bacon, ovo, queijo, milho, ervilha, \nqueijo ralado, batata palha, alface, tomate e cebola",
+     "visivel": true,
+     "posicao": 1,
+     "foto": "6619a978-e672-4055-a594-6af8143c376a",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 20,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32"
+     ]
+    },
+    {
+     "id": "a228e8ed-fe21-4a8d-86a2-1092c1830b67",
+     "nome": "Burger Clássico",
+     "descricao": "Carne Artesanal 150g, Queijo,\nAlface, Tomate, Cebola, Picles\ne Molho Alves",
+     "visivel": true,
+     "posicao": 2,
+     "foto": "4856c0e0-46a7-4760-8eae-b05e0a61f62f",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 20,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32",
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9facbe03-7588-4447-b97b-c6697a396f67"
+     ]
+    },
+    {
+     "id": "a228e83a-88cf-4360-b996-8d8c9117f49c",
+     "nome": "Toscano Artesanal",
+     "descricao": "Bland de Linguiça Toscana, Carne \nArtesanal 90g, Queijo Branco, \nQueijo Coalho, Cebola e Tomate \nPicadinho e Maionese Temperada",
+     "visivel": true,
+     "posicao": 3,
+     "foto": "5ffdb9ed-912b-45e9-9093-75cd439fcf2a",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 30,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32",
+      "9facbe03-7588-4447-b97b-c6697a396f67"
+     ]
+    },
+    {
+     "id": "a228e861-7a1d-40f5-af7b-bff1ea7fb7a6",
+     "nome": "Duplo Onion Artesanal",
+     "descricao": "2 Carnes Artesanais 90g, \n2 Queijos, Bacon, Anel de Cebola \nEmpanado, Barbecue, Alface, \ntomate e molho alves.",
+     "visivel": true,
+     "posicao": 4,
+     "foto": "1cf8c0cd-f889-4281-afc9-3a78c32c0548",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 28,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32",
+      "9facbe03-7588-4447-b97b-c6697a396f67"
+     ]
+    },
+    {
+     "id": "a228e8d2-89be-430d-85b7-84846a22bf85",
+     "nome": "CT2 - Contra Filé",
+     "descricao": "Iscas de Carne Acebolado,\nMussarela, Cream Cheese\ne Maionese de Alho.",
+     "visivel": true,
+     "posicao": 5,
+     "foto": "bec91678-231c-4d43-87fa-18ef1fb023a9",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 22,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9facbe03-7588-4447-b97b-c6697a396f67",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32",
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a"
+     ]
+    },
+    {
+     "id": "9fa04842-efb3-44c1-99c8-3061d3e06b98",
+     "nome": "C1 - Mini Alves",
+     "descricao": "Hambúrguer, queijo\ne katchup",
+     "visivel": true,
+     "posicao": 6,
+     "foto": "6223c409-664c-4267-896b-4aa10d8d9917",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 9,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32",
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a"
+     ]
+    },
+    {
+     "id": "9fa04843-1ff1-45ed-9e33-9d3f64889004",
+     "nome": "C2 - Duplo Alves",
+     "descricao": "2 Hambúrgueres, 2 queijos,\nalface, tomate, cebola, picles e molho american burgers",
+     "visivel": true,
+     "posicao": 7,
+     "foto": "b4ee9c32-a5d3-41c7-bed2-fdea94dd8a57",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 14,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32"
+     ]
+    },
+    {
+     "id": "9fa48f4f-daad-4198-b636-8bb60dd4d502",
+     "nome": "C3 - Triplo Alves",
+     "descricao": "3 Hambúrgueres, 3 queijos,\nalface, tomate, cebola, picles e molho american burgers",
+     "visivel": true,
+     "posicao": 8,
+     "foto": "5ded3b99-defc-49a8-92d2-bdd9bf596901",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 18,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32"
+     ]
+    },
+    {
+     "id": "9fa490a0-8d59-4e4f-a39b-620809668d59",
+     "nome": "C4 - Monstrão",
+     "descricao": "4 Carnes, 4 queijos,\nalface, tomate, cebola, picles e molho american burgers",
+     "visivel": true,
+     "posicao": 9,
+     "foto": "679af8e2-b3ce-4be0-a93b-2d9733f7e38f",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 20,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32"
+     ]
+    },
+    {
+     "id": "9fa4952b-7fd1-457b-a17f-57dfc03476da",
+     "nome": "HB2 - Seu Cheddar",
+     "descricao": "2 Carnes, 2 Queijos Cheddar, Bacon, Molho Cheddar Melt, Alface, Picles e Molho American Burgers",
+     "visivel": true,
+     "posicao": 10,
+     "foto": "611d000f-e109-410f-9723-f430a85a8240",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 16,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32"
+     ]
+    },
+    {
+     "id": "9fa496a7-aec2-45a3-a630-a3a5aeedf24b",
+     "nome": "HB4 - Seu Cheese",
+     "descricao": "2 Carnes, Bacon, Creaam Cheese, Cebola Caremelizada no Barbecue, 2 Queijos, Alface, Tomate, Picles e Molho American",
+     "visivel": true,
+     "posicao": 11,
+     "foto": "6bf6fc11-ebe6-4bae-9ca3-967a181f208d",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 18,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32"
+     ]
+    },
+    {
+     "id": "9fa497d9-e18f-4433-9177-37c53923561e",
+     "nome": "P1 - Seu Picanha",
+     "descricao": "Carne sabor picanha, 2 Queijos, alface, tomate, cebola, Picles e molho american",
+     "visivel": true,
+     "posicao": 12,
+     "foto": "6e03b41c-b8b2-4582-b49f-0341952f0a33",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 15,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32"
+     ]
+    },
+    {
+     "id": "9fa498fd-b556-4737-894a-b51b012a623d",
+     "nome": "P2 - Duplo Picanha",
+     "descricao": "2 Carnes Sabor Picanha, 3 Queijos, alface, tomate, cebola, picles e molho american",
+     "visivel": true,
+     "posicao": 13,
+     "foto": "eab7ee48-4731-4c0c-a8e9-244542c45c23",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 19,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32"
+     ]
+    },
+    {
+     "id": "a228e894-3afa-4c7f-acde-029730677780",
+     "nome": "F1 - Franguinho",
+     "descricao": "Filé de Frango grelhado, Queijo,\nSalada e Maionese Temperada.",
+     "visivel": true,
+     "posicao": 14,
+     "foto": "bcb3c745-7865-4fd5-8e17-8b315ca8cd63",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 14,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32",
+      "9facbe03-7588-4447-b97b-c6697a396f67"
+     ]
+    },
+    {
+     "id": "a228e8b5-f16d-4214-a5b8-1ae0c0feb170",
+     "nome": "F4 - Crok Chicken",
+     "descricao": "Filé de Frango empanada, \nqueijo, salada e maionese \ntemperada.",
+     "visivel": false,
+     "posicao": 15,
+     "foto": "268fae00-be5c-4042-8f0e-2cdfa8d48742",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 16,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32",
+      "9facbe03-7588-4447-b97b-c6697a396f67"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "9fa4abc2-f071-4216-a070-494b9d5fb1d6",
+   "nome": "Batata Frita",
+   "posicao": 3,
+   "destaque": false,
+   "produtos": [
+    {
+     "id": "9fa4abc3-c55f-4dc3-a1ec-68158dd6c50e",
+     "nome": "Batata",
+     "descricao": "Batata frita 7mm (Corte Fino)",
+     "visivel": true,
+     "posicao": 0,
+     "foto": "b0d91043-63ed-4bd6-a540-70e07eb1549b",
+     "variacoes": [
+      {
+       "nome": "P (caixinha)",
+       "preco": 7,
+       "esgotado": false
+      },
+      {
+       "nome": "M (2 Pessoas)",
+       "preco": 14,
+       "esgotado": false
+      },
+      {
+       "nome": "G (3 a 4 Pessoas)",
+       "preco": 20,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a"
+     ]
+    },
+    {
+     "id": "9fa69ffa-1d3d-4d05-b27a-154226fe2e71",
+     "nome": "Batata Maluca",
+     "descricao": "Cheddar, Bacon e Calabresa",
+     "visivel": true,
+     "posicao": 1,
+     "foto": "9c83fd8b-b668-4242-9715-d05b61cf0206",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 35,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a"
+     ]
+    },
+    {
+     "id": "9fa6a209-438c-4927-b7b5-f89ff4e89750",
+     "nome": "MALUCA C/ FRANGO",
+     "descricao": "Frango, Bacon, Calabresa, Cheddar e Cream Cheese",
+     "visivel": true,
+     "posicao": 2,
+     "foto": "54da5494-e8fb-4c75-a64d-68ceca3c99dc",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 45,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "9fa6f0f8-b392-41af-8222-5337649a5e46",
+   "nome": "Porções",
+   "posicao": 4,
+   "destaque": false,
+   "produtos": [
+    {
+     "id": "9fa6f0f9-4c27-4f37-8787-60b4dccd6408",
+     "nome": "Nugget 6und.",
+     "descricao": "6 unidades de nuggets de frango",
+     "visivel": true,
+     "posicao": 0,
+     "foto": "4fcbb19c-b749-4fab-937f-f478f7a29b12",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 9,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32"
+     ]
+    },
+    {
+     "id": "a347f0ab-bbeb-40b8-9303-452890d7e8de",
+     "nome": "Nuggets 15Und",
+     "descricao": "",
+     "visivel": true,
+     "posicao": 1,
+     "foto": null,
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 18,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "9fa86312-a9e3-411f-a85b-b6544cb5d3e0",
+     "nome": "Anel de Cebola",
+     "descricao": "Cebola empanada + Potinho de Molho",
+     "visivel": true,
+     "posicao": 2,
+     "foto": "d1aec5b3-bf86-4fe8-ab1a-5721c285fc74",
+     "variacoes": [
+      {
+       "nome": "5 Unidades",
+       "preco": 5,
+       "esgotado": false
+      },
+      {
+       "nome": "15 Unidades",
+       "preco": 18,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+      "9fa87cc9-6e7c-46b9-b524-061ece3f4a32"
+     ]
+    },
+    {
+     "id": "9fa87806-1ec0-49e4-8979-1652b09fc822",
+     "nome": "Calabresa c/ Fritas",
+     "descricao": null,
+     "visivel": true,
+     "posicao": 3,
+     "foto": "306f0704-d85b-4fd0-bce0-183cacb1973b",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 38,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a"
+     ]
+    },
+    {
+     "id": "9fa8674b-bf8c-494e-8979-55f082298b51",
+     "nome": "Frango á Passarinho c/ Fritas",
+     "descricao": "Cerca de 1Kg de cortes de frango frito, alho torrado, limão, molho e batata frita",
+     "visivel": true,
+     "posicao": 4,
+     "foto": "59ac47df-9bde-4cd4-bb91-fa4eed781293",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 40,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a"
+     ]
+    },
+    {
+     "id": "9fa867c9-56fc-4321-8347-d29e90428732",
+     "nome": "Carne c/ Fritas",
+     "descricao": "500g de Isca de Carne Acebolada c/ Fritas + Potinho de Molho",
+     "visivel": true,
+     "posicao": 5,
+     "foto": "b5eca595-db20-4515-b3b0-d6a0cceb55d0",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 65,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a"
+     ]
+    },
+    {
+     "id": "9fa868d8-9cd0-48ca-96ea-fe47cd9428be",
+     "nome": "Churraskinho Misto",
+     "descricao": "Iscas de Carne, Frango e Calabresa acebolados c/ Fritas + Potinho de Molho",
+     "visivel": true,
+     "posicao": 6,
+     "foto": "d98cebad-b2e5-4e4f-a4c3-bcabba935ed8",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 60,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a"
+     ]
+    },
+    {
+     "id": "9fa86926-053c-4510-8a1e-186475ae55d1",
+     "nome": "Filé de Frango c/ Fritas",
+     "descricao": "Iscas de Filé de Frango acebolado com fritas + Potinho de Molho",
+     "visivel": true,
+     "posicao": 7,
+     "foto": "b2f5091a-ccce-4a98-959c-4bcb0d60037e",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 42,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+      "9fa04843-0e24-464f-a5c0-28c83ea3216a"
+     ]
+    },
+    {
+     "id": "a347f16c-8157-4a06-a873-756cf06c3993",
+     "nome": "Gurjão de Frango",
+     "descricao": "",
+     "visivel": true,
+     "posicao": 8,
+     "foto": null,
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 45,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    }
+   ]
+  },
+  {
+   "id": "9fa6a2b0-b720-4431-b51f-e10590985246",
+   "nome": "AÇAÍ",
+   "posicao": 5,
+   "destaque": false,
+   "produtos": [
+    {
+     "id": "9fa6a2b1-31dd-4876-a3c0-e604af20870d",
+     "nome": "AÇAÍ",
+     "descricao": "Açaí natural batido todo dia (sempre fresco)",
+     "visivel": true,
+     "posicao": 0,
+     "foto": "996c790c-a8cc-48c7-84d3-4c5a9ddd9b67",
+     "variacoes": [
+      {
+       "nome": "200ml",
+       "preco": 6,
+       "esgotado": false
+      },
+      {
+       "nome": "300ml",
+       "preco": 9,
+       "esgotado": false
+      },
+      {
+       "nome": "500ml",
+       "preco": 14,
+       "esgotado": false
+      },
+      {
+       "nome": "700ml",
+       "preco": 17,
+       "esgotado": true
+      }
+     ],
+     "grupos": [
+      "9fa04843-43fb-48d1-8380-ebcb5bed12c6",
+      "9fa8607f-ffa6-4fdb-8328-f93828086a86"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "9fa4b626-ef81-45ca-8fd0-f9b28ba55798",
+   "nome": "Bebidas",
+   "posicao": 6,
+   "destaque": false,
+   "produtos": [
+    {
+     "id": "9fa4ba9d-781c-422f-8579-7584c0d84e6d",
+     "nome": "Refri 2L",
+     "descricao": "coca 2l\nfanta2l\nsprit 2l",
+     "visivel": true,
+     "posicao": 0,
+     "foto": "1b08db59-656f-4f6a-8dd8-49f3427aa130",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 0,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa86269-1132-4ecf-a606-1af51c70df5d"
+     ]
+    },
+    {
+     "id": "9fb4bd7b-544d-4682-a631-b6f2b6aecf4f",
+     "nome": "Guaraná 1L",
+     "descricao": "Antártica",
+     "visivel": false,
+     "posicao": 1,
+     "foto": "7eacea9f-7ff6-4c75-a3ad-aae3b8332642",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 9,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "9fa4b627-bd5b-4b56-a1ce-cc89fcfc68bc",
+     "nome": "Refri Lata 350ml",
+     "descricao": "Coca 350 ml",
+     "visivel": true,
+     "posicao": 2,
+     "foto": "64b58b48-240a-46f4-8e28-f87a9d215818",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 7,
+       "esgotado": false
+      }
+     ],
+     "grupos": [
+      "9fa8617d-3be1-4867-8254-2169497cad61"
+     ]
+    },
+    {
+     "id": "9fa4b90f-e7d1-4844-a91a-2e3f12fa461a",
+     "nome": "Guaravita",
+     "descricao": "Guaravita 290 ml",
+     "visivel": true,
+     "posicao": 3,
+     "foto": "344d4717-fea1-4a41-b4de-1ecd1c20b99b",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 3,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "9fe5408c-9cc6-47d1-a258-938c43b7970d",
+     "nome": "Água 500ml (Pequena)",
+     "descricao": "",
+     "visivel": true,
+     "posicao": 4,
+     "foto": "32d6afe5-9859-4834-b065-f0b6aefa6508",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 3,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "a07a8a19-6917-4291-8736-1d860fae2a51",
+     "nome": "Água de 1,5 L (Grande)",
+     "descricao": "",
+     "visivel": true,
+     "posicao": 5,
+     "foto": "9b34160c-5328-4ba4-99bf-dba354318d23",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 6,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "9fa4be57-8ea1-4c15-9da7-cfc553f8fdd0",
+     "nome": "Heineken latão",
+     "descricao": "Heineken",
+     "visivel": false,
+     "posicao": 6,
+     "foto": null,
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 8,
+       "esgotado": true
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "9fb2ca4f-a481-49ee-bd7d-4a5aa4cb9a1e",
+     "nome": "Império GOLD",
+     "descricao": "Long Neck",
+     "visivel": false,
+     "posicao": 7,
+     "foto": "2c01e121-39e3-4dd2-b001-1b03d6601f5a",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 6,
+       "esgotado": true
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "9fbcc546-c92d-4c22-92cb-de619c9ebd84",
+     "nome": "coquinha 200ml",
+     "descricao": null,
+     "visivel": false,
+     "posicao": 8,
+     "foto": "83b48235-73be-482c-a3b3-7c48b7045182",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 3,
+       "esgotado": true
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "9fbd06ab-7ba6-4ace-8e10-adba2afc0640",
+     "nome": "Água com Gás",
+     "descricao": "500ml",
+     "visivel": false,
+     "posicao": 9,
+     "foto": null,
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 4,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "a00746f5-b8fe-4cd6-a1b6-e5f3515fe12a",
+     "nome": "Brahma latão",
+     "descricao": null,
+     "visivel": false,
+     "posicao": 10,
+     "foto": null,
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 7,
+       "esgotado": true
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "a007478f-522b-4331-b478-510121a3911a",
+     "nome": "Imperio latão",
+     "descricao": null,
+     "visivel": false,
+     "posicao": 11,
+     "foto": null,
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 7,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "a0075e9d-0b85-4a7c-8500-7ff83fa21396",
+     "nome": "Antarctica latão",
+     "descricao": null,
+     "visivel": false,
+     "posicao": 12,
+     "foto": null,
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 7,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "a01b96c0-6d9b-4bb4-9e04-d9aee8ca2680",
+     "nome": "Guaraviton",
+     "descricao": null,
+     "visivel": false,
+     "posicao": 13,
+     "foto": "44368a06-948a-4802-8a40-cf0d184df301",
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 7,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "a1595bf4-540a-4f3d-a4c2-b73955b414a0",
+     "nome": "Chop de vinho",
+     "descricao": null,
+     "visivel": false,
+     "posicao": 14,
+     "foto": null,
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 12,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    },
+    {
+     "id": "a3505abe-81ed-4b26-b74a-67251ebe8fed",
+     "nome": "Produto 16",
+     "descricao": null,
+     "visivel": true,
+     "posicao": 15,
+     "foto": null,
+     "variacoes": [
+      {
+       "nome": null,
+       "preco": 0,
+       "esgotado": false
+      }
+     ],
+     "grupos": []
+    }
+   ]
+  }
+ ],
+ "grupos": [
+  {
+   "id": "a2c18cc0-5f63-44d8-90cd-917eae0cd021",
+   "nome": "Sem nome",
+   "min": 1,
+   "max": 1,
+   "obrigatorio": false,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "pepsi",
+     "preco": 14,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Sem nome",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": true
+    }
+   ]
+  },
+  {
+   "id": "a2c18caf-0886-45fc-b50c-f7b4654b507b",
+   "nome": "Sem nome",
+   "min": 1,
+   "max": 1,
+   "obrigatorio": false,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Sem nome",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Sem nome",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  },
+  {
+   "id": "a2835131-2d5f-4db5-8abb-05ff1fadd948",
+   "nome": "Sem nome",
+   "min": 1,
+   "max": 1,
+   "obrigatorio": false,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Sem nome",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Sem nome",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  },
+  {
+   "id": "a270ea82-65d9-4b74-8333-87113e94e0a4",
+   "nome": "Sem nome",
+   "min": 1,
+   "max": 1,
+   "obrigatorio": false,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Sem nome",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Sem nome",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  },
+  {
+   "id": "a05dd927-942b-45f2-9dee-a835d091e0d5",
+   "nome": "Escolha 2 Por 39,99",
+   "min": 2,
+   "max": 2,
+   "obrigatorio": true,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "X-Tudo",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Toscano",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Duplo Onion",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  },
+  {
+   "id": "a05dd84e-bf29-4802-8418-eea5d4b1345f",
+   "nome": "Escolha 2 por 27,99",
+   "min": 2,
+   "max": 2,
+   "obrigatorio": false,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Triplo Alves",
+     "preco": 0,
+     "maxPorItem": 2,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Seu Cheddar",
+     "preco": 0,
+     "maxPorItem": 2,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Seu Cheese",
+     "preco": 0,
+     "maxPorItem": 2,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  },
+  {
+   "id": "a05dcfb4-302f-4ef2-ab30-0206d60e8ff8",
+   "nome": "Escolha 2 Hambúrgueres",
+   "min": 2,
+   "max": 2,
+   "obrigatorio": true,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Duplo Alves",
+     "preco": 0,
+     "maxPorItem": 2,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Franguinho",
+     "preco": 0,
+     "maxPorItem": 2,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Seu Picanha",
+     "preco": 0,
+     "maxPorItem": 2,
+     "visivel": false,
+     "esgotado": true
+    }
+   ]
+  },
+  {
+   "id": "9fbccdb1-33c3-40a7-8f2d-b85b870f3a5b",
+   "nome": "Nuggets",
+   "min": 6,
+   "max": 30,
+   "obrigatorio": true,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Unidade Nugget",
+     "preco": 0,
+     "maxPorItem": 30,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Escolha o termo carne",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  },
+  {
+   "id": "9fb2b6a1-0c15-40b5-81ef-8ea70a4ab0ba",
+   "nome": "SABOR DO REFRI",
+   "min": 1,
+   "max": 1,
+   "obrigatorio": true,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Convenção Guaraná 2 L",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": true
+    },
+    {
+     "nome": "Convenção Abacaxi 2 L",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": true
+    },
+    {
+     "nome": "Guaraná Antártica 1 L",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": true
+    },
+    {
+     "nome": "Coca 2l",
+     "preco": 9,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Sukita Uva 2L",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Sukita Laranja 2L",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": true
+    },
+    {
+     "nome": "Kuat 2 l",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  },
+  {
+   "id": "9fb0d577-c85c-4db2-a3c6-f941267bc337",
+   "nome": "ESCOHA SEUS 2 BURGER'S",
+   "min": 2,
+   "max": 2,
+   "obrigatorio": true,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "SEU CHEDDAR",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "DUPLO ALVES",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "TRIPLO ALVES",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "SEU CHEESE",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  },
+  {
+   "id": "9facbe03-7588-4447-b97b-c6697a396f67",
+   "nome": "Escolha o seu pão",
+   "min": 1,
+   "max": 1,
+   "obrigatorio": false,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Pão Brioche",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": true
+    },
+    {
+     "nome": "Pão com Gergelim",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  },
+  {
+   "id": "9fa87cc9-6e7c-46b9-b524-061ece3f4a32",
+   "nome": "COMBO (BATATA P + REFRI LATA)",
+   "min": 1,
+   "max": 1,
+   "obrigatorio": false,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Batata P + Coca Lata",
+     "preco": 12,
+     "maxPorItem": 10,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Batata P + Coca Zero lata",
+     "preco": 12,
+     "maxPorItem": 10,
+     "visivel": false,
+     "esgotado": true
+    },
+    {
+     "nome": "Batata P + Fanta Laranja Lata",
+     "preco": 12,
+     "maxPorItem": 10,
+     "visivel": false,
+     "esgotado": true
+    },
+    {
+     "nome": "Batata P + Guaraná Lata",
+     "preco": 12,
+     "maxPorItem": 10,
+     "visivel": false,
+     "esgotado": true
+    }
+   ]
+  },
+  {
+   "id": "9fa87956-7e2e-4a99-923b-59d470e4abb3",
+   "nome": "ADICIONAIS",
+   "min": 1,
+   "max": 20,
+   "obrigatorio": false,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "OVO",
+     "preco": 2,
+     "maxPorItem": 2,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "BACON (50g)",
+     "preco": 3,
+     "maxPorItem": 3,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "CALABRESA (50g)",
+     "preco": 3,
+     "maxPorItem": 3,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "CHEDDAR (30g)",
+     "preco": 2,
+     "maxPorItem": 3,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Hambúruger",
+     "preco": 4,
+     "maxPorItem": 4,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Hamb. Picanha",
+     "preco": 6,
+     "maxPorItem": 4,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Carne Artesanal 90g",
+     "preco": 10,
+     "maxPorItem": 2,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Filé de Frango",
+     "preco": 7,
+     "maxPorItem": 3,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Frango Recheado c/ Queijo e Presunto",
+     "preco": 10,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  },
+  {
+   "id": "9fa86269-1132-4ecf-a606-1af51c70df5d",
+   "nome": "Sabor do Refri 2 Litros",
+   "min": 1,
+   "max": 1,
+   "obrigatorio": true,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Coca-Cola",
+     "preco": 14,
+     "maxPorItem": 5,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Convenção Guaraná",
+     "preco": 10,
+     "maxPorItem": 5,
+     "visivel": false,
+     "esgotado": false
+    },
+    {
+     "nome": "Convenção Abacaxi",
+     "preco": 10,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": true
+    },
+    {
+     "nome": "Fanta Laranja",
+     "preco": 13,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Fanta Uva",
+     "preco": 13,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": true
+    },
+    {
+     "nome": "Sprite 2L",
+     "preco": 14,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": true
+    },
+    {
+     "nome": "Sukita Uva 2L",
+     "preco": 10,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": true
+    },
+    {
+     "nome": "Sukita Laranja 2L",
+     "preco": 10,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": true
+    }
+   ]
+  },
+  {
+   "id": "9fa8617d-3be1-4867-8254-2169497cad61",
+   "nome": "SABOR DO REFRI LATA",
+   "min": 1,
+   "max": 1,
+   "obrigatorio": true,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Fanta uva",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": false
+    },
+    {
+     "nome": "Coca Zero",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": false
+    },
+    {
+     "nome": "Coca-Cola",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Fanta laranja",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Guaraná Antártica",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  },
+  {
+   "id": "9fa8607f-ffa6-4fdb-8328-f93828086a86",
+   "nome": "Escolha a calda",
+   "min": 1,
+   "max": 20,
+   "obrigatorio": true,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Uva",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": false
+    },
+    {
+     "nome": "Morango",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Chocolate",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Leite Condensado",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": false
+    },
+    {
+     "nome": "Caramelo",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": false
+    },
+    {
+     "nome": "Menta",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "SEM CALDA",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  },
+  {
+   "id": "9fa6aed9-72f3-4f26-b43d-d8f57a181707",
+   "nome": "Escolha o sabor",
+   "min": 1,
+   "max": 1,
+   "obrigatorio": true,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Só açaí",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Só morango ao leite",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "meio a meio",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  },
+  {
+   "id": "9fa04843-0e24-464f-a5c0-28c83ea3216a",
+   "nome": "MOLHO POTINHO",
+   "min": 1,
+   "max": 5,
+   "obrigatorio": false,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Molho Verde (Saquinho)",
+     "preco": 1,
+     "maxPorItem": 5,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Barbecue",
+     "preco": 2,
+     "maxPorItem": 5,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Maionese Temperada",
+     "preco": 3,
+     "maxPorItem": 5,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Rosê",
+     "preco": 2,
+     "maxPorItem": 5,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "American Burgers",
+     "preco": 2,
+     "maxPorItem": 5,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Mostada c/ Mel",
+     "preco": 2,
+     "maxPorItem": 5,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  },
+  {
+   "id": "9fa04843-43fb-48d1-8380-ebcb5bed12c6",
+   "nome": "Escolha os complementos",
+   "min": 1,
+   "max": 20,
+   "obrigatorio": true,
+   "ativo": true,
+   "itens": [
+    {
+     "nome": "Granola",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Amendoin",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Paçoca",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Sucrilhos",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": false
+    },
+    {
+     "nome": "Jujuba",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Chocoboll",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Flocos de Arroz",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Granulado de Chocolate",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Leite em Pó",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    },
+    {
+     "nome": "Aveia",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": false,
+     "esgotado": false
+    },
+    {
+     "nome": "SEM COMPLEMENTO",
+     "preco": 0,
+     "maxPorItem": 1,
+     "visivel": true,
+     "esgotado": false
+    }
+   ]
+  }
+ ]
+}
