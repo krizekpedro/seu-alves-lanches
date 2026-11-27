@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Seu Alves Lanches | Cardápio Digital · Vila Kosmos, RJ</title>
+  <meta name="description" content="Hambúrgueres artesanais, combos na caixa, porções e açaí. Peça pelo WhatsApp — Seu Alves Lanches, Vila Kosmos, Rio de Janeiro." />
+  <meta name="theme-color" content="#0F0F0F" />
+  <link rel="icon" href="https://assets.olaclick.app/companies/logos/01bf6473-9273-413d-93dd-c51f71faf7b4.webp" />
+
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            base: '#0F0F0F',
+            surface: '#18181B',
+            surface2: '#202024',
+            gold: { DEFAULT: '#F59E0B', soft: '#FBBF24', deep: '#D97706' },
+            wine: { DEFAULT: '#7A1F1F', deep: '#5A1616' },   // bordô da marca
+            cream: { DEFAULT: '#F5E9D7', deep: '#E7D2B3' },  // bege da marca
+          },
+          fontFamily: {
+            display: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            glow: '0 10px 40px -10px rgba(245,158,11,.45)',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+    body { background: #0F0F0F; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { scrollbar-width: none; }
+    .glass { background: rgba(15,15,15,.72); backdrop-filter: blur(16px) saturate(160%); -webkit-backdrop-filter: blur(16px) saturate(160%); }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.01)); border: 1px solid rgba(255,255,255,.07); }
+    .card:hover { border-color: rgba(245,158,11,.35); }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .tab-active { background: #F59E0B; color: #0F0F0F; border-color: #F59E0B; }
+    .field { width: 100%; background: #0F0F0F; border: 1px solid rgba(255,255,255,.1); border-radius: .75rem; padding: .75rem .9rem; color: #fff; font-size: .95rem; outline: none; transition: border-color .15s; }
+    .field:focus { border-color: #F59E0B; }
+    .field::placeholder { color: #71717a; }
+    .chip input:checked + span { background: rgba(245,158,11,.15); border-color: #F59E0B; color: #FBBF24; }
+    @keyframes bump { 0%,100% { transform: scale(1); } 40% { transform: scale(1.25); } }
+    .bump { animation: bump .35s ease; }
+    @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+    .pulse-dot { animation: pulseDot 1.6s infinite; }
+    .safe-bottom { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+    section[data-cat] { scroll-margin-top: 132px; }
+
+    /* ===== PADRÃO VISUAL DAS IMAGENS ("prato" da marca) =====
+       Todas as fotos ficam sobre o mesmo fundo creme/bordô da loja.
+       mix-blend-mode: multiply faz o fundo branco dos recortes sumir no creme. */
+    .plate {
+      position: relative; overflow: hidden; isolation: isolate;
+      background:
+        radial-gradient(120% 90% at 50% 18%, #FBF4E9 0%, #F5E9D7 45%, #E7D2B3 100%);
+      box-shadow: inset 0 0 0 1px rgba(122,31,31,.18), inset 0 -30px 50px -30px rgba(122,31,31,.35);
+    }
+    .plate::before { /* faixa bordô sutil no rodapé do prato */
+      content: ''; position: absolute; inset: auto 0 0 0; height: 6%;
+      background: linear-gradient(90deg, #5A1616, #7A1F1F, #5A1616); opacity: .9;
+    }
+    .plate .stage { position: relative; height: 100%; aspect-ratio: 1 / 1; margin: 0 auto; }
+    .plate .shadow {
+      position: absolute; left: 12%; right: 12%; bottom: 9%; height: 12%;
+      background: radial-gradient(closest-side, rgba(90,22,22,.38), transparent);
+      filter: blur(2px);
+    }
+    .plate .cut {
+      position: absolute; object-fit: contain; mix-blend-mode: multiply;
+      filter: saturate(1.1) contrast(1.05);
+    }
+    .plate .cut.feather { /* suaviza bordas de fotos com fundo não-branco */
+      -webkit-mask-image: radial-gradient(closest-side, #000 78%, transparent 100%);
+              mask-image: radial-gradient(closest-side, #000 78%, transparent 100%);
+    }
+    .plate .photo { /* fotos de corpo inteiro viram "prato visto de cima" */
+      position: absolute; object-fit: cover; border-radius: 9999px;
+      box-shadow: 0 0 0 4px #FBF4E9, 0 0 0 6px rgba(122,31,31,.55), 0 12px 24px -8px rgba(90,22,22,.55);
+      filter: saturate(1.1) contrast(1.05);
+    }
+    .plate .mark { /* selo da marca */
+      position: absolute; right: 5%; top: 5%; width: 15%; aspect-ratio: 1; border-radius: 9999px;
+      box-shadow: 0 0 0 2px #FBF4E9, 0 4px 10px rgba(0,0,0,.25);
+    }
+    .plate .mark.small { display: none; }
+    .plate-zoom { transition: transform .5s ease; }
+    .group:hover .plate-zoom { transform: scale(1.04); }
+  </style>
+</head>
+
+<body class="font-sans text-zinc-100 antialiased">
+
+  <!-- ============ CABEÇALHO FIXO ============ -->
+  <header class="glass fixed inset-x-0 top-0 z-40 border-b border-white/5">
+    <div class="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
+      <a href="#topo" class="flex items-center gap-3 min-w-0">
+        <img id="logo" alt="Logo Seu Alves Lanches" class="h-11 w-11 shrink-0 rounded-full object-cover ring-2 ring-gold/60" />
+        <div class="min-w-0">
+          <h1 class="font-display text-[15px] font-extrabold leading-tight tracking-tight">Seu Alves <span class="text-gold">Lanches</span></h1>
+          <div class="flex items-center gap-2 text-xs text-zinc-400">
+            <span id="statusBadge" class="inline-flex items-center gap-1 font-semibold">
+              <span class="pulse-dot h-1.5 w-1.5 rounded-full bg-zinc-500"></span><span>...</span>
+            </span>
+            <span class="hidden sm:inline">·</span>
+            <a id="mapLink" target="_blank" rel="noopener" class="hidden truncate hover:text-gold sm:inline">📍 Vila Kosmos, RJ</a>
+          </div>
+        </div>
+      </a>
+
+      <button id="cartBtnTop" class="relative ml-auto inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold transition hover:border-gold/50" aria-label="Abrir carrinho">
+        <svg class="h-5 w-5 text-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13 5.4 5M7 13l-2.3 2.3c-.6.6-.2 1.7.7 1.7H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/></svg>
+        <span class="hidden sm:inline" id="cartTopTotal">R$ 0,00</span>
+        <span id="cartCount" class="absolute -right-1 -top-1 hidden h-5 min-w-[20px] items-center justify-center rounded-full bg-gold px-1 text-[11px] font-bold text-black">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="topo" class="pt-[68px]">
+
+    <!-- ============ HERO ============ -->
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0">
+        <img id="banner" alt="" class="h-full w-full object-cover opacity-40" />
+        <div class="absolute inset-0 bg-gradient-to-t from-base via-base/80 to-base/30"></div>
+        <div class="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-gold/20 blur-3xl"></div>
+      </div>
+
+      <div class="relative mx-auto max-w-6xl px-4 pb-10 pt-10 sm:pb-16 sm:pt-16">
+        <!-- Destaque visual do hero (desktop) -->
+        <div id="heroPlate" class="pointer-events-none absolute right-6 top-1/2 hidden w-[360px] -translate-y-1/2 overflow-hidden rounded-full shadow-glow ring-4 ring-gold/30 lg:block"></div>
+        <span class="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-semibold text-gold-soft">
+          🔥 Artesanal · Feito na hora
+        </span>
+        <h2 class="mt-4 max-w-xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl">
+          O sabor da <span class="bg-gradient-to-r from-gold-soft to-gold-deep bg-clip-text text-transparent">Vila Kosmos</span> na sua casa.
+        </h2>
+        <p class="mt-4 max-w-md text-[15px] text-zinc-300">
+          Hambúrgueres suculentos, combos na caixa pra galera e porções caprichadas. Monte seu pedido e finalize em segundos pelo WhatsApp.
+        </p>
+
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a href="#cardapio" class="inline-flex items-center gap-2 rounded-2xl bg-gold px-6 py-3.5 font-display text-[15px] font-bold text-black shadow-glow transition hover:bg-gold-soft active:scale-[.98]">
+            Fazer meu pedido
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5-5 5M6 12h12"/></svg>
+          </a>
+          <a href="#cat-promocoes" class="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-5 py-3.5 text-[15px] font-semibold transition hover:border-gold/50">
+            Ver promoções
+          </a>
+        </div>
+
+        <div class="mt-8 grid max-w-lg grid-cols-3 gap-3 text-center">
+          <div class="card rounded-2xl px-2 py-3">
+            <div class="font-display text-lg font-bold text-gold">19h–2h</div>
+            <div class="text-[11px] text-zinc-400">Horário</div>
+          </div>
+          <div class="card rounded-2xl px-2 py-3">
+            <div class="font-display text-lg font-bold text-gold">R$ 5</div>
+            <div class="text-[11px] text-zinc-400">Entrega a partir de</div>
+          </div>
+          <div class="card rounded-2xl px-2 py-3">
+            <div class="font-display text-lg font-bold text-gold">Pix</div>
+            <div class="text-[11px] text-zinc-400">Cartão · Dinheiro</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ABAS DE CATEGORIAS ============ -->
+    <nav id="cardapio" class="glass sticky top-[68px] z-30 border-y border-white/5">
+      <div class="mx-auto max-w-6xl">
+        <div id="tabs" class="no-scrollbar flex gap-2 overflow-x-auto px-4 py-3"></div>
+      </div>
+    </nav>
+
+    <!-- Busca -->
+    <div class="mx-auto max-w-6xl px-4 pt-5">
+      <label class="relative block">
+        <svg class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="m20 20-3.5-3.5"/></svg>
+        <input id="search" type="search" placeholder="Buscar no cardápio (ex: cheddar, batata, açaí)" class="field !rounded-2xl !bg-surface !pl-11" />
+      </label>
+    </div>
+
+    <!-- ============ LISTA DE PRODUTOS ============ -->
+    <div id="menu" class="mx-auto max-w-6xl px-4 pb-32"></div>
+
+    <!-- ============ RODAPÉ ============ -->
+    <footer class="border-t border-white/5 bg-surface/60">
+      <div class="mx-auto grid max-w-6xl gap-6 px-4 py-10 pb-32 text-sm text-zinc-400 sm:grid-cols-3">
+        <div>
+          <div class="font-display text-base font-bold text-white">Seu Alves <span class="text-gold">Lanches</span></div>
+          <p class="mt-2" id="footerAddress"></p>
+        </div>
+        <div>
+          <div class="font-semibold text-white">Horário de funcionamento</div>
+          <ul id="hoursList" class="mt-2 space-y-1"></ul>
+        </div>
+        <div>
+          <div class="font-semibold text-white">Contato</div>
+          <a id="footerWa" target="_blank" rel="noopener" class="mt-2 inline-flex items-center gap-2 text-gold hover:underline">WhatsApp</a>
+          <p class="mt-4 text-xs text-zinc-500">© <span id="year"></span> Seu Alves Lanches. Todos os direitos reservados.</p>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ============ BARRA FLUTUANTE DO CARRINHO (mobile) ============ -->
+  <div id="floatBar" class="pointer-events-none fixed inset-x-0 bottom-0 z-40 translate-y-full px-4 transition-transform duration-300 safe-bottom">
+    <button id="floatBtn" class="pointer-events-auto mx-auto flex w-full max-w-lg items-center justify-between rounded-2xl bg-gold px-5 py-4 font-display font-bold text-black shadow-glow active:scale-[.99]">
+      <span class="flex items-center gap-3">
+        <span id="floatCount" class="flex h-7 min-w-[28px] items-center justify-center rounded-lg bg-black/15 px-1.5 text-sm">0</span>
+        Ver carrinho
+      </span>
+      <span id="floatTotal">R$ 0,00</span>
+    </button>
+  </div>
+
+  <!-- ============ MODAL DE PRODUTO ============ -->
+  <div id="productModal" class="fixed inset-0 z-50 hidden">
+    <div data-close class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+    <div class="absolute inset-x-0 bottom-0 mx-auto max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-3xl border border-white/10 bg-surface sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:rounded-3xl">
+      <div class="relative">
+        <div id="pmImg" class="aspect-[4/3] w-full"></div>
+        <button data-close class="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur" aria-label="Fechar">✕</button>
+      </div>
+      <div class="space-y-5 p-5">
+        <div>
+          <h3 id="pmName" class="font-display text-2xl font-extrabold"></h3>
+          <p id="pmDesc" class="mt-1.5 text-sm leading-relaxed text-zinc-400"></p>
+        </div>
+        <div id="pmVariants" class="space-y-2"></div>
+        <div>
+          <label for="pmObs" class="mb-2 block text-sm font-semibold">Alguma observação?</label>
+          <textarea id="pmObs" rows="2" maxlength="140" placeholder="Ex: sem cebola, ponto da carne, molho à parte..." class="field resize-none"></textarea>
+        </div>
+      </div>
+      <div class="sticky bottom-0 flex items-center gap-3 border-t border-white/5 bg-surface p-4 safe-bottom">
+        <div class="flex items-center rounded-xl border border-white/10">
+          <button id="pmMinus" class="h-12 w-11 text-xl text-gold" aria-label="Diminuir">−</button>
+          <span id="pmQty" class="w-8 text-center font-bold">1</span>
+          <button id="pmPlus" class="h-12 w-11 text-xl text-gold" aria-label="Aumentar">+</button>
+        </div>
+        <button id="pmAdd" class="flex h-12 flex-1 items-center justify-between rounded-xl bg-gold px-4 font-display font-bold text-black transition hover:bg-gold-soft active:scale-[.98]">
+          <span>Adicionar</span><span id="pmTotal"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ GAVETA DO CARRINHO + CHECKOUT ============ -->
+  <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
+    <div data-close class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+    <aside class="absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-white/10 bg-surface">
+      <div class="flex items-center justify-between border-b border-white/5 px-5 py-4">
+        <div>
+          <h3 id="drawerTitle" class="font-display text-lg font-extrabold">Seu pedido</h3>
+          <p id="drawerSub" class="text-xs text-zinc-500"></p>
+        </div>
+        <button data-close class="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 hover:bg-white/10" aria-label="Fechar">✕</button>
+      </div>
+
+      <!-- Etapa 1: itens -->
+      <div id="stepCart" class="flex min-h-0 flex-1 flex-col">
+        <div id="cartItems" class="flex-1 space-y-3 overflow-y-auto p-5"></div>
+        <div class="space-y-3 border-t border-white/5 p-5 safe-bottom">
+          <div class="flex justify-between text-sm text-zinc-400"><span>Subtotal</span><span id="cartSubtotal" class="font-semibold text-white">R$ 0,00</span></div>
+          <p class="text-xs text-zinc-500">Taxa de entrega calculada na próxima etapa, conforme o bairro.</p>
+          <button id="goCheckout" class="w-full rounded-xl bg-gold py-4 font-display font-bold text-black transition hover:bg-gold-soft disabled:cursor-not-allowed disabled:opacity-40">Continuar para entrega</button>
+        </div>
+      </div>
+
+      <!-- Etapa 2: checkout -->
+      <form id="stepCheckout" class="hidden min-h-0 flex-1 flex-col" novalidate>
+        <div class="flex-1 space-y-5 overflow-y-auto p-5">
+          <div class="grid grid-cols-2 gap-2">
+            <label class="chip cursor-pointer"><input type="radio" name="tipo" value="entrega" class="peer sr-only" checked /><span class="block rounded-xl border border-white/10 py-3 text-center text-sm font-semibold">🛵 Entrega</span></label>
+            <label class="chip cursor-pointer"><input type="radio" name="tipo" value="retirada" class="peer sr-only" /><span class="block rounded-xl border border-white/10 py-3 text-center text-sm font-semibold">🏪 Retirar no local</span></label>
+          </div>
+
+          <div class="space-y-3">
+            <input name="nome" required placeholder="Seu nome *" class="field" autocomplete="name" />
+            <input name="telefone" required type="tel" inputmode="tel" placeholder="WhatsApp / Telefone *" class="field" autocomplete="tel" />
+          </div>
+
+          <div id="addressBox" class="space-y-3">
+            <select name="bairro" class="field"></select>
+            <div class="grid grid-cols-3 gap-3">
+              <input name="rua" placeholder="Rua *" class="field col-span-2" autocomplete="address-line1" />
+              <input name="numero" placeholder="Nº *" class="field" />
+            </div>
+            <input name="complemento" placeholder="Complemento / Ponto de referência" class="field" />
+          </div>
+
+          <div id="pickupBox" class="hidden rounded-xl border border-gold/20 bg-gold/5 p-4 text-sm text-zinc-300">
+            📍 Retirada em: <span class="font-semibold text-white" id="pickupAddr"></span>
+          </div>
+
+          <div>
+            <div class="mb-2 text-sm font-semibold">Forma de pagamento</div>
+            <div class="grid grid-cols-3 gap-2">
+              <label class="chip cursor-pointer"><input type="radio" name="pagamento" value="Pix" class="sr-only" checked /><span class="block rounded-xl border border-white/10 py-3 text-center text-sm font-semibold">Pix</span></label>
+              <label class="chip cursor-pointer"><input type="radio" name="pagamento" value="Cartão" class="sr-only" /><span class="block rounded-xl border border-white/10 py-3 text-center text-sm font-semibold">Cartão</span></label>
+              <label class="chip cursor-pointer"><input type="radio" name="pagamento" value="Dinheiro" class="sr-only" /><span class="block rounded-xl border border-white/10 py-3 text-center text-sm font-semibold">Dinheiro</span></label>
+            </div>
+            <input id="trocoInput" name="troco" inputmode="decimal" placeholder="Troco para quanto? (ex: 100)" class="field mt-3 hidden" />
+          </div>
+
+          <textarea name="obsGeral" rows="2" maxlength="200" placeholder="Observações gerais do pedido (opcional)" class="field resize-none"></textarea>
+          <p id="formError" class="hidden rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-300"></p>
+        </div>
+
+        <div class="space-y-2 border-t border-white/5 p-5 safe-bottom">
+          <div class="flex justify-between text-sm text-zinc-400"><span>Subtotal</span><span id="coSubtotal">R$ 0,00</span></div>
+          <div class="flex justify-between text-sm text-zinc-400"><span>Entrega</span><span id="coFee">—</span></div>
+          <div class="flex justify-between pb-2 font-display text-lg font-extrabold"><span>Total</span><span id="coTotal" class="text-gold">R$ 0,00</span></div>
+          <div class="flex gap-2">
+            <button type="button" id="backToCart" class="rounded-xl border border-white/10 px-4 font-semibold hover:bg-white/5">Voltar</button>
+            <button type="submit" class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#25D366] py-4 font-display font-bold text-black transition hover:brightness-110 active:scale-[.98]">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-1 1.2-.4.2-.7.1a8.2 8.2 0 0 1-4-3.5c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.8.4 3.5 3.5 0 0 0-1.1 2.6 6 6 0 0 0 1.3 3.2 13.8 13.8 0 0 0 5.3 4.7c2 .8 2.7.9 3.7.8a3.1 3.1 0 0 0 2-1.4 2.5 2.5 0 0 0 .2-1.4c-.1-.1-.3-.2-.6-.3ZM12 2a10 10 0 0 0-8.6 15l-1.4 5 5.1-1.3A10 10 0 1 0 12 2Z"/></svg>
+              Enviar pedido no WhatsApp
+            </button>
+          </div>
+        </div>
+      </form>
+    </aside>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="pointer-events-none fixed left-1/2 top-20 z-[60] -translate-x-1/2 -translate-y-4 rounded-full border border-gold/30 bg-surface px-4 py-2 text-sm font-semibold opacity-0 shadow-glow transition-all duration-300"></div>
+
+<!--IMAGENS_EMBUTIDAS-->
+<script>
+/* =====================================================================
+   1. CONFIGURAÇÃO DO ESTABELECIMENTO
+   ===================================================================== */
+const LOJA = {
+  nome: 'Seu Alves Lanches',
+  whatsapp: '5521967350248', // DDI + DDD + número, só dígitos
+  endereco: 'R. Sd. Ivo de Oliveira, 64 - Vila Kosmos, Rio de Janeiro - RJ, 21210-010',
+  logo: 'https://assets.olaclick.app/companies/logos/01bf6473-9273-413d-93dd-c51f71faf7b4.webp',
+  banner: 'https://assets.olaclick.app/companies/backgrounds/f9d0f8a5-877b-4f12-b69c-3c6b1991615a.webp',
+};
+
+// Horários (0 = domingo ... 6 = sábado). "fecha" 24:00 = meia-noite.
+// Espelha a plataforma atual: abre 19h e vai até 2h da madrugada (exceto segunda à noite).
+const HORARIOS = {
+  0: [['00:00','02:00'], ['19:00','24:00']], // domingo
+  1: [['00:00','02:00']],                    // segunda (só a madrugada de dom→seg)
+  2: [['19:00','24:00']],                    // terça
+  3: [['00:00','02:00'], ['19:00','24:00']], // quarta
+  4: [['00:00','02:00'], ['19:00','24:00']], // quinta
+  5: [['00:00','02:00'], ['19:00','24:00']], // sexta
+  6: [['00:00','02:00'], ['19:00','24:00']], // sábado
+};
+
+// Taxas de entrega por bairro (R$). Adicione/edite bairros aqui.
+const BAIRROS = [
+  { nome: 'Vila Kosmos',     taxa: 5 },
+  { nome: 'Ipase',           taxa: 5 },
+  { nome: 'Vila da Penha',   taxa: 5 },
+  { nome: 'Morro da Fé',     taxa: 6 },
+  { nome: 'Praça do Carmo',  taxa: 6 },
+  { nome: 'Penha Circular',  taxa: 6 },
+  { nome: 'Largo do Bicão',  taxa: 6 },
+  { nome: 'Vaz Lobo',        taxa: 7 },
+  { nome: 'Quitungo',        taxa: 7 },
+  { nome: 'Penha',           taxa: 7 },
+  { nome: 'Irajá',           taxa: 7 },
+];
+
+/* =====================================================================
+   2. CATEGORIAS (ordem das abas)
+   ===================================================================== */
+const categorias = [
+  { id: 'promocoes',    nome: 'Promoções',       icone: '🔥' },
+  { id: 'combos',       nome: 'Combo na Caixa',  icone: '📦' },
+  { id: 'hamburgueres', nome: 'Hambúrgueres',    icone: '🍔' },
+  { id: 'batatas',      nome: 'Batata Frita',    icone: '🍟' },
+  { id: 'porcoes',      nome: 'Porções',         icone: '🍗' },
+  { id: 'acai',         nome: 'Açaí',            icone: '🍇' },
+  { id: 'bebidas',      nome: 'Bebidas',         icone: '🥤' },
+];
+
+/* =====================================================================
+   3. PRODUTOS
+   ---------------------------------------------------------------------
+   Campos:
+     id         → único (texto curto, sem espaço)
+     categoria  → um dos ids de "categorias" acima
+     nome, descricao
+     preco      → número (ex: 42 ou 89.9). Use null para "preço a confirmar".
+     img        → só o código da imagem da OlaClick (ou uma URL completa)
+     tag        → opcional: 'Mais pedido', 'Novo', etc.
+     variacoes  → opcional: [{ nome: '300ml', preco: 9 }, ...]
+                  (quando existe, o cliente escolhe o tamanho no modal)
+   ===================================================================== */
+const produtos = [
+  // ---------- PROMOÇÕES ----------
+  { id: 'combo-casal', categoria: 'promocoes', nome: 'Combo Casal', preco: 42.00, tag: 'Promoção',
+    descricao: '1 Seu Cheddar, 1 Duplo Alves, batata P e 2 Guaravitas.',
+    img: '038e2a3f-6631-4266-affd-13f252333dcc' },
+  { id: 'combo-familia', categoria: 'promocoes', nome: 'Combo Família Alves', preco: 89.90, tag: 'Serve 4',
+    descricao: '4 X-Tudos, Batata Maluca com cream cheese, cheddar e frango, 8 nuggets e molho.',
+    img: '2b903f6f-3e7f-477b-abd8-4176a4fb49e2' },
+
+  // ---------- COMBO NA CAIXA ----------
+  { id: 'combo-01', categoria: 'combos', nome: 'Combo 01', preco: 55.00,
+    descricao: '4 Mini Alves, 10 nuggets, batata média com cheddar e bacon e refri 1 litro.',
+    img: '91d554f1-2ff1-4ab5-ae54-09a87fb0c506' },
+  { id: 'combo-02', categoria: 'combos', nome: 'Combo 02', preco: 65.00, tag: 'Mais pedido',
+    descricao: '3 Duplos Alves, batata com cheddar e bacon, 10 nuggets e Convenção 2L.',
+    img: '11e3cf33-678b-49a4-be40-fc942ecc190c' },
+  { id: 'combo-03', categoria: 'combos', nome: 'Combo 03', preco: 65.00,
+    descricao: '1 Seu Cheddar, 1 Seu Cheese, 1 Mini Alves, 10 nuggets, batata com cheddar e bacon e refri 1L.',
+    img: '532b90d9-ab81-4eaa-94f9-a51cd1d2cf0e' },
+
+  // ---------- HAMBÚRGUERES ----------
+  { id: 'x-alves', categoria: 'hamburgueres', nome: 'X-Alves', preco: 25.00, tag: 'Da casa',
+    descricao: '2 carnes, presunto, calabresa, bacon, ovo, 2 queijos, milho, ervilha, queijo ralado, batata palha, alface, tomate e cebola.',
+    img: 'bd64864e-7adb-4188-b9e4-831d32dbba71' },
+  { id: 'x-tudo', categoria: 'hamburgueres', nome: 'X-Tudo', preco: 20.00,
+    descricao: 'Carne, calabresa, presunto, bacon, ovo, queijo, milho, ervilha, queijo ralado, batata palha, alface, tomate e cebola.',
+    img: '6619a978-e672-4055-a594-6af8143c376a' },
+  { id: 'burger-classico', categoria: 'hamburgueres', nome: 'Burger Clássico', preco: 20.00,
+    descricao: 'Carne artesanal 150g, queijo, alface, tomate, cebola, picles e Molho Alves.',
+    img: '4856c0e0-46a7-4760-8eae-b05e0a61f62f' },
+  { id: 'toscano', categoria: 'hamburgueres', nome: 'Toscano Artesanal', preco: 30.00,
+    descricao: 'Blend de linguiça toscana, carne artesanal 90g, queijo branco, queijo coalho, cebola e tomate picadinho e maionese temperada.',
+    img: '5ffdb9ed-912b-45e9-9093-75cd439fcf2a' },
+  { id: 'duplo-onion', categoria: 'hamburgueres', nome: 'Duplo Onion Artesanal', preco: 28.00, tag: 'Destaque',
+    descricao: '2 carnes artesanais 90g, 2 queijos, bacon, anel de cebola empanado, barbecue, alface, tomate e Molho Alves.',
+    img: '1cf8c0cd-f889-4281-afc9-3a78c32c0548' },
+  { id: 'ct2', categoria: 'hamburgueres', nome: 'CT2 - Contra Filé', preco: 22.00,
+    descricao: 'Iscas de carne acebolada, mussarela, cream cheese e maionese de alho.',
+    img: 'bec91678-231c-4d43-87fa-18ef1fb023a9' },
+  { id: 'c1', categoria: 'hamburgueres', nome: 'C1 - Mini Alves', preco: 9.00,
+    descricao: 'Hambúrguer, queijo e ketchup.',
+    img: '6223c409-664c-4267-896b-4aa10d8d9917' },
+  { id: 'c2', categoria: 'hamburgueres', nome: 'C2 - Duplo Alves', preco: 14.00,
+    descricao: '2 hambúrgueres, 2 queijos, alface, tomate, cebola, picles e molho american burgers.',
+    img: 'b4ee9c32-a5d3-41c7-bed2-fdea94dd8a57' },
+  { id: 'c3', categoria: 'hamburgueres', nome: 'C3 - Triplo Alves', preco: 18.00,
+    descricao: '3 hambúrgueres, 3 queijos, alface, tomate, cebola, picles e molho american burgers.',
+    img: '5ded3b99-defc-49a8-92d2-bdd9bf596901' },
+  { id: 'c4', categoria: 'hamburgueres', nome: 'C4 - Monstrão', preco: 20.00,
+    descricao: '4 carnes, 4 queijos, alface, tomate, cebola, picles e molho american burgers.',
+    img: '679af8e2-b3ce-4be0-a93b-2d9733f7e38f' },
+  { id: 'hb2', categoria: 'hamburgueres', nome: 'HB2 - Seu Cheddar', preco: 16.00,
+    descricao: '2 carnes, 2 queijos cheddar, bacon, molho cheddar melt, alface, picles e molho american burgers.',
+    img: '611d000f-e109-410f-9723-f430a85a8240' },
+  { id: 'hb4', categoria: 'hamburgueres', nome: 'HB4 - Seu Cheese', preco: 18.00,
+    descricao: '2 carnes, bacon, cream cheese, cebola caramelizada no barbecue, 2 queijos, alface, tomate, picles e molho american.',
+    img: '6bf6fc11-ebe6-4bae-9ca3-967a181f208d' },
+  { id: 'p1', categoria: 'hamburgueres', nome: 'P1 - Seu Picanha', preco: 15.00,
+    descricao: 'Carne sabor picanha, 2 queijos, alface, tomate, cebola, picles e molho american.',
+    img: '6e03b41c-b8b2-4582-b49f-0341952f0a33' },
+  { id: 'p2', categoria: 'hamburgueres', nome: 'P2 - Duplo Picanha', preco: 19.00,
+    descricao: '2 carnes sabor picanha, 3 queijos, alface, tomate, cebola, picles e molho american.',
+    img: 'eab7ee48-4731-4c0c-a8e9-244542c45c23' },
+  { id: 'f1', categoria: 'hamburgueres', nome: 'F1 - Franguinho', preco: 14.00,
+    descricao: 'Filé de frango grelhado, queijo, salada e maionese temperada.',
+    img: 'bcb3c745-7865-4fd5-8e17-8b315ca8cd63' },
+  // 👉 Adicione novos hambúrgueres aqui, copiando o modelo acima.
+
+  // ---------- BATATA FRITA ----------
+  { id: 'batata', categoria: 'batatas', nome: 'Batata Frita', preco: 7.00,
+    descricao: 'Batata frita 7mm, corte fino e sequinha.',
+    img: 'b0d91043-63ed-4bd6-a540-70e07eb1549b',
+    variacoes: [
+      { nome: 'P (caixinha)',        preco: 7.00 },
+      { nome: 'M (2 pessoas)',       preco: 14.00 },
+      { nome: 'G (3 a 4 pessoas)',   preco: 20.00 },
+    ] },
+  { id: 'batata-maluca', categoria: 'batatas', nome: 'Batata Maluca', preco: 35.00,
+    descricao: 'Cheddar, bacon e calabresa.',
+    img: '9c83fd8b-b668-4242-9715-d05b61cf0206' },
+  { id: 'maluca-frango', categoria: 'batatas', nome: 'Maluca c/ Frango', preco: 45.00,
+    descricao: 'Frango, bacon, calabresa, cheddar e cream cheese.',
+    img: '54da5494-e8fb-4c75-a64d-68ceca3c99dc' },
+  // 👉 Adicione novas batatas aqui.
+
+  // ---------- PORÇÕES ----------
+  { id: 'nugget-6', categoria: 'porcoes', nome: 'Nuggets 6 un.', preco: 9.00,
+    descricao: '6 unidades de nuggets de frango.',
+    img: '4fcbb19c-b749-4fab-937f-f478f7a29b12' },
+  { id: 'nugget-15', categoria: 'porcoes', nome: 'Nuggets 15 un.', preco: 18.00,
+    descricao: '15 unidades de nuggets de frango.',
+    img: '4fcbb19c-b749-4fab-937f-f478f7a29b12' },
+  { id: 'anel-cebola', categoria: 'porcoes', nome: 'Anel de Cebola', preco: 5.00,
+    descricao: 'Cebola empanada + potinho de molho.',
+    img: 'd1aec5b3-bf86-4fe8-ab1a-5721c285fc74',
+    variacoes: [
+      { nome: '5 unidades',  preco: 5.00 },
+      { nome: '15 unidades', preco: 18.00 },
+    ] },
+  { id: 'calabresa-fritas', categoria: 'porcoes', nome: 'Calabresa c/ Fritas', preco: 38.00,
+    descricao: 'Calabresa acebolada acompanhada de batata frita.',
+    img: '306f0704-d85b-4fd0-bce0-183cacb1973b' },
+  { id: 'frango-passarinho', categoria: 'porcoes', nome: 'Frango à Passarinho c/ Fritas', preco: 40.00,
+    descricao: 'Cerca de 1kg de cortes de frango frito, alho torrado, limão, molho e batata frita.',
+    img: '59ac47df-9bde-4cd4-bb91-fa4eed781293' },
+  { id: 'carne-fritas', categoria: 'porcoes', nome: 'Carne c/ Fritas', preco: 65.00,
+    descricao: '500g de isca de carne acebolada com fritas + potinho de molho.',
+    img: 'b5eca595-db20-4515-b3b0-d6a0cceb55d0' },
+  { id: 'churraskinho', categoria: 'porcoes', nome: 'Churraskinho Misto', preco: 60.00,
+    descricao: 'Iscas de carne, frango e calabresa aceboladas com fritas + potinho de molho.',
+    img: 'd98cebad-b2e5-4e4f-a4c3-bcabba935ed8' },
+  { id: 'file-frango-fritas', categoria: 'porcoes', nome: 'Filé de Frango c/ Fritas', preco: 42.00,
+    descricao: 'Iscas de filé de frango acebolado com fritas + potinho de molho.',
+    img: 'b2f5091a-ccce-4a98-959c-4bcb0d60037e' },
+  { id: 'gurjao', categoria: 'porcoes', nome: 'Gurjão de Frango', preco: 45.00,
+    descricao: 'Tiras de frango empanadas e crocantes.',
+    img: '' }, // sem foto na plataforma atual — adicione o código da imagem aqui
+  // 👉 Adicione novas porções aqui.
+
+  // ---------- AÇAÍ ----------
+  { id: 'acai', categoria: 'acai', nome: 'Açaí', preco: 6.00, tag: 'Fresquinho',
+    descricao: 'Açaí natural batido todo dia (sempre fresco).',
+    img: '996c790c-a8cc-48c7-84d3-4c5a9ddd9b67',
+    variacoes: [
+      { nome: '200ml', preco: 6.00 },
+      { nome: '300ml', preco: 9.00 },
+      { nome: '500ml', preco: 14.00 },
+      { nome: '700ml', preco: 17.00 },
+    ] },
+  // 👉 Adicione complementos/novos açaís aqui.
+
+  // ---------- BEBIDAS ----------
+  { id: 'refri-2l', categoria: 'bebidas', nome: 'Refri 2L', preco: null,
+    descricao: 'Coca-Cola, Fanta ou Sprite 2 litros.',
+    img: '1b08db59-656f-4f6a-8dd8-49f3427aa130',
+    // ⚠️ Preço não cadastrado na plataforma atual — troque null pelo valor (ex: 14.00)
+    variacoes: [
+      { nome: 'Coca-Cola 2L', preco: null },
+      { nome: 'Fanta 2L',     preco: null },
+      { nome: 'Sprite 2L',    preco: null },
+    ] },
+  { id: 'refri-lata', categoria: 'bebidas', nome: 'Refri Lata 350ml', preco: 7.00,
+    descricao: 'Coca-Cola 350ml.',
+    img: '64b58b48-240a-46f4-8e28-f87a9d215818' },
+  { id: 'guaravita', categoria: 'bebidas', nome: 'Guaravita', preco: 3.00,
+    descricao: 'Guaravita 290ml.',
+    img: '344d4717-fea1-4a41-b4de-1ecd1c20b99b' },
+  { id: 'agua-500', categoria: 'bebidas', nome: 'Água 500ml', preco: 3.00,
+    descricao: 'Água mineral sem gás (pequena).',
+    img: '32d6afe5-9859-4834-b065-f0b6aefa6508' },
+  { id: 'agua-1500', categoria: 'bebidas', nome: 'Água 1,5L', preco: 6.00,
+    descricao: 'Água mineral sem gás (grande).',
+    img: '9b34160c-5328-4ba4-99bf-dba354318d23' },
+  // 👉 Adicione novas bebidas aqui.
+];
+
+/* =====================================================================
+   3.1 PADRÃO DAS IMAGENS
+   ---------------------------------------------------------------------
+   Todas as fotos são exibidas no mesmo "prato" creme/bordô da marca.
+   Por padrão a foto é tratada como RECORTE (fundo branco some no creme).
+   Em VISUAL você ajusta produtos específicos:
+     estilo: 'foto'     → foto de corpo inteiro, vira um prato redondo
+     suave: true        → esfuma as bordas (fotos com fundo bege/cinza)
+     escala: 0.9        → tamanho do recorte dentro do prato (padrão 0.84)
+     comp: [...]        → monta a imagem com vários itens (usado nos combos)
+                          { img, x, y, w, z, foto } em % do prato
+   ===================================================================== */
+const IMG = {
+  seuCheddar:  '611d000f-e109-410f-9723-f430a85a8240',
+  seuCheese:   '6bf6fc11-ebe6-4bae-9ca3-967a181f208d',
+  miniAlves:   '6223c409-664c-4267-896b-4aa10d8d9917',
+  duploAlves:  'b4ee9c32-a5d3-41c7-bed2-fdea94dd8a57',
+  xTudo:       '6619a978-e672-4055-a594-6af8143c376a',
+  batata:      'b0d91043-63ed-4bd6-a540-70e07eb1549b',
+  maluca:      '9c83fd8b-b668-4242-9715-d05b61cf0206',
+  malucaFrango:'54da5494-e8fb-4c75-a64d-68ceca3c99dc',
+  nuggets:     '4fcbb19c-b749-4fab-937f-f478f7a29b12',
+  guaravita:   '344d4717-fea1-4a41-b4de-1ecd1c20b99b',
+  refri2l:     '1b08db59-656f-4f6a-8dd8-49f3427aa130',
+};
+
+const VISUAL = {
+  // ---- Combos remontados com os próprios itens (sem texto/preço "impresso" na foto) ----
+  'combo-casal': { comp: [
+    { img: IMG.batata,     x: 26, y: 4,  w: 40, foto: true, z: 1 },
+    { img: IMG.guaravita,  x: 70, y: 8,  w: 26, z: 1 },
+    { img: IMG.guaravita,  x: 2,  y: 10, w: 24, z: 1 },
+    { img: IMG.seuCheddar, x: 2,  y: 38, w: 54, z: 2 },
+    { img: IMG.duploAlves, x: 44, y: 40, w: 54, z: 3 },
+  ]},
+  'combo-familia': { comp: [
+    { img: IMG.malucaFrango, x: 24, y: 2,  w: 50, foto: true, z: 1 },
+    { img: IMG.nuggets,      x: 72, y: 6,  w: 26, z: 1 },
+    { img: IMG.xTudo,        x: -2, y: 32, w: 40, z: 2, suave: true },
+    { img: IMG.xTudo,        x: 62, y: 32, w: 40, z: 2, suave: true },
+    { img: IMG.xTudo,        x: 14, y: 52, w: 40, z: 3, suave: true },
+    { img: IMG.xTudo,        x: 46, y: 52, w: 40, z: 3, suave: true },
+  ]},
+  'combo-01': { comp: [
+    { img: IMG.nuggets,   x: 2,  y: 6,  w: 32, z: 1 },
+    { img: IMG.maluca,    x: 32, y: 4,  w: 36, foto: true, z: 1 },
+    { img: IMG.refri2l,   x: 70, y: 2,  w: 28, z: 1 },
+    { img: IMG.miniAlves, x: 0,  y: 46, w: 34, z: 2 },
+    { img: IMG.miniAlves, x: 66, y: 46, w: 34, z: 2 },
+    { img: IMG.miniAlves, x: 21, y: 58, w: 34, z: 3 },
+    { img: IMG.miniAlves, x: 45, y: 58, w: 34, z: 3 },
+  ]},
+  'combo-02': { comp: [
+    { img: IMG.nuggets,    x: 2,  y: 6,  w: 32, z: 1 },
+    { img: IMG.maluca,     x: 31, y: 2,  w: 38, foto: true, z: 1 },
+    { img: IMG.refri2l,    x: 70, y: 2,  w: 28, z: 1 },
+    { img: IMG.duploAlves, x: 0,  y: 44, w: 42, z: 2 },
+    { img: IMG.duploAlves, x: 58, y: 44, w: 42, z: 2 },
+    { img: IMG.duploAlves, x: 29, y: 54, w: 42, z: 3 },
+  ]},
+  'combo-03': { comp: [
+    { img: IMG.nuggets,    x: 2,  y: 6,  w: 32, z: 1 },
+    { img: IMG.maluca,     x: 31, y: 2,  w: 38, foto: true, z: 1 },
+    { img: IMG.refri2l,    x: 70, y: 2,  w: 28, z: 1 },
+    { img: IMG.seuCheddar, x: 0,  y: 44, w: 42, z: 2 },
+    { img: IMG.seuCheese,  x: 58, y: 44, w: 42, z: 2 },
+    { img: IMG.miniAlves,  x: 32, y: 58, w: 36, z: 3 },
+  ]},
+
+  // ---- Ajustes individuais ----
+  'x-tudo':        { suave: true },             // foto original com fundo bege
+  'duplo-onion':   { suave: true },
+  'c4':            { estilo: 'foto' },          // foto original com fundo bordô
+  'c2':            { suave: true },
+  'acai':          { suave: true, escala: 0.9 }, // foto original com fundo cinza
+  'batata':        { estilo: 'foto' },
+  'batata-maluca': { estilo: 'foto' },
+  'maluca-frango': { estilo: 'foto' },
+  'frango-passarinho': { suave: true, escala: 0.92 },
+  'calabresa-fritas':  { escala: 0.94 },
+  'carne-fritas':      { escala: 0.94 },
+  'churraskinho':      { escala: 0.94 },
+  'file-frango-fritas':{ escala: 0.94 },
+  'nugget-15':     { comp: [                    // 2 caixinhas = porção maior
+    { img: IMG.nuggets, x: 4,  y: 14, w: 58, z: 1 },
+    { img: IMG.nuggets, x: 38, y: 22, w: 58, z: 2 },
+  ]},
+  'guaravita':     { suave: true, escala: 0.78 },
+  'refri-2l':      { escala: 0.9 },
+  'agua-500':      { escala: 0.8 },
+  'agua-1500':     { escala: 0.9 },
+};
+
+/* =====================================================================
+   4. UTILITÁRIOS
+   ===================================================================== */
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const brl = v => v == null ? 'A confirmar' : v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+// Se houver imagens embutidas no arquivo (IMAGENS_EMBUTIDAS), usa elas — funcionam offline e em qualquer visualizador.
+const EMB = window.IMAGENS_EMBUTIDAS || {};
+const imgUrl = (code, size = 800) => !code ? '' : EMB[code] || (code.startsWith('http') ? code
+  : `https://assets.olaclick.app/companies/products/images/${size}/${code}.webp`);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#202024"/><text x="50" y="58" font-size="34" text-anchor="middle">🍔</text></svg>');
+
+/* Monta a imagem do produto no padrão da marca */
+function renderImage(p, { size = 800, mark = false } = {}) {
+  const v = VISUAL[p.id] || {};
+  const src = code => imgUrl(code, size);
+  const pos = (x, y, w, z) => `left:${x}%;top:${y}%;width:${w}%;height:${w}%;${z ? 'z-index:' + z : ''}`;
+  const cut = (code, x, y, w, z, suave) =>
+    `<img loading="lazy" src="${src(code)}" alt="" class="cut${suave ? ' feather' : ''}" style="${pos(x, y, w, z)}" onerror="this.style.display='none'">`;
+  const photo = (code, x, y, w, z) =>
+    `<img loading="lazy" src="${src(code)}" alt="" class="photo" style="${pos(x, y, w, z)}" onerror="this.style.display='none'">`;
+
+  let inner;
+  if (v.comp) {
+    inner = v.comp.map(c => c.foto ? photo(c.img, c.x, c.y, c.w, c.z) : cut(c.img, c.x, c.y, c.w, c.z, c.suave)).join('');
+  } else if (!p.img) {
+    // Sem foto cadastrada: selo da marca no centro do prato
+    inner = `<img src="${LOJA.logo}" alt="" class="photo" style="${pos(28, 24, 44)}">`;
+  } else if (v.estilo === 'foto') {
+    inner = photo(p.img, 13, 9, 74);
+  } else {
+    const w = (v.escala || 0.84) * 100, x = (100 - w) / 2, y = Math.max(0, (100 - w) / 2 - 3);
+    inner = cut(p.img, x, y, w, 0, v.suave);
+  }
+  const selo = mark && !v.comp ? `<img src="${LOJA.logo}" alt="" class="mark">` : '';
+  return `<div class="plate h-full w-full"><div class="stage"><span class="shadow"></span>${inner}</div>${selo}</div>`;
+}
+
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.remove('opacity-0', '-translate-y-4');
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.add('opacity-0', '-translate-y-4'), 1800);
+}
+
+/* =====================================================================
+   5. STATUS ABERTO / FECHADO
+   ===================================================================== */
+function toMin(hhmm) { const [h, m] = hhmm.split(':').map(Number); return h * 60 + m; }
+function getStatus(now = new Date()) {
+  const d = now.getDay(), mins = now.getHours() * 60 + now.getMinutes();
+  const aberto = (HORARIOS[d] || []).some(([a, f]) => mins >= toMin(a) && mins < toMin(f));
+  return { aberto };
+}
+function renderStatus() {
+  const { aberto } = getStatus();
+  $('#statusBadge').innerHTML = aberto
+    ? '<span class="pulse-dot h-1.5 w-1.5 rounded-full bg-emerald-400"></span><span class="text-emerald-400">Aberto agora</span>'
+    : '<span class="h-1.5 w-1.5 rounded-full bg-red-400"></span><span class="text-red-400">Fechado · abre às 19h</span>';
+}
+function renderHours() {
+  // Resumo legível (horário noturno contínuo)
+  const linhas = [
+    ['Terça a Domingo', '19h às 2h'],
+    ['Segunda', 'Fechado (só madrugada até 2h)'],
+  ];
+  $('#hoursList').innerHTML = linhas.map(([d, h]) => `<li class="flex justify-between gap-4"><span>${d}</span><span class="text-zinc-300">${h}</span></li>`).join('');
+}
+
+/* =====================================================================
+   6. RENDERIZAÇÃO DO CARDÁPIO
+   ===================================================================== */
+function renderTabs() {
+  $('#tabs').innerHTML = categorias.map(c => `
+    <a href="#cat-${c.id}" data-tab="${c.id}"
+       class="shrink-0 whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-zinc-300 transition hover:border-gold/50">
+      ${c.icone} ${c.nome}
+    </a>`).join('');
+}
+
+function priceLabel(p) {
+  if (p.variacoes?.length) {
+    const vals = p.variacoes.map(v => v.preco).filter(v => v != null);
+    return vals.length ? `<span class="text-[11px] font-medium text-zinc-500">a partir de</span> ${brl(Math.min(...vals))}` : 'A confirmar';
+  }
+  return brl(p.preco);
+}
+
+function productCard(p) {
+  return `
+  <article data-open="${p.id}" class="card group flex cursor-pointer gap-4 rounded-2xl p-3 transition sm:flex-col sm:p-0 sm:overflow-hidden">
+    <div class="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl sm:h-auto sm:w-full sm:rounded-none sm:aspect-square">
+      <div class="plate-zoom h-full w-full">${renderImage(p, { size: 800, mark: true })}</div>
+      ${p.tag ? `<span class="absolute left-2 top-2 rounded-full bg-wine px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-cream shadow">${esc(p.tag)}</span>` : ''}
+    </div>
+    <div class="flex min-w-0 flex-1 flex-col sm:p-4 sm:pt-1">
+      <h4 class="font-display text-[15px] font-bold leading-snug">${esc(p.nome)}</h4>
+      <p class="mt-1 line-clamp-2 text-[13px] leading-relaxed text-zinc-400">${esc(p.descricao)}</p>
+      <div class="mt-auto flex items-end justify-between pt-3">
+        <span class="font-display text-base font-extrabold text-gold">${priceLabel(p)}</span>
+        <button data-quick="${p.id}" aria-label="Adicionar ${esc(p.nome)}"
+          class="flex h-9 w-9 items-center justify-center rounded-xl bg-gold text-xl font-bold text-black transition hover:bg-gold-soft active:scale-90">+</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+function renderMenu(filtro = '') {
+  const q = filtro.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const match = p => !q || (p.nome + ' ' + p.descricao).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').includes(q);
+  let html = '';
+  categorias.forEach(c => {
+    const itens = produtos.filter(p => p.categoria === c.id && match(p));
+    if (!itens.length) return;
+    html += `
+    <section id="cat-${c.id}" data-cat="${c.id}" class="pt-8">
+      <div class="mb-4 flex items-baseline justify-between">
+        <h3 class="font-display text-xl font-extrabold tracking-tight">${c.icone} ${c.nome}</h3>
+        <span class="text-xs text-zinc-500">${itens.length} ${itens.length > 1 ? 'itens' : 'item'}</span>
+      </div>
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        ${itens.map(productCard).join('')}
+      </div>
+    </section>`;
+  });
+  $('#menu').innerHTML = html || `<p class="py-16 text-center text-zinc-500">Nenhum item encontrado para “${esc(filtro)}”.</p>`;
+  observeSections();
+}
+
+// Destaca a aba da categoria visível
+let sectionObserver;
+function observeSections() {
+  sectionObserver?.disconnect();
+  sectionObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) setActiveTab(e.target.dataset.cat); });
+  }, { rootMargin: '-140px 0px -60% 0px' });
+  $$('section[data-cat]').forEach(s => sectionObserver.observe(s));
+}
+function setActiveTab(id) {
+  $$('[data-tab]').forEach(t => t.classList.toggle('tab-active', t.dataset.tab === id));
+  const el = $(`[data-tab="${id}"]`);
+  el?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+}
+
+/* =====================================================================
+   7. CARRINHO (estado + persistência)
+   ===================================================================== */
+let cart = [];
+try { cart = JSON.parse(localStorage.getItem('seualves_cart') || '[]'); } catch { cart = []; }
+const saveCart = () => { try { localStorage.setItem('seualves_cart', JSON.stringify(cart)); } catch {} };
+
+const subtotal = () => cart.reduce((s, i) => s + (i.preco || 0) * i.qtd, 0);
+const totalQtd = () => cart.reduce((s, i) => s + i.qtd, 0);
+
+function addToCart(prod, variacao, qtd = 1, obs = '') {
+  const nome = prod.nome + (variacao ? ` (${variacao.nome})` : '');
+  const preco = variacao ? variacao.preco : prod.preco;
+  const key = `${prod.id}|${variacao?.nome || ''}|${obs.trim()}`;
+  const existente = cart.find(i => i.key === key);
+  if (existente) existente.qtd += qtd;
+  else cart.push({ key, id: prod.id, nome, preco, qtd, obs: obs.trim(), img: prod.img });
+  saveCart(); updateCartUI(true);
+  toast(`✓ ${nome} adicionado`);
+}
+
+function updateCartUI(bump = false) {
+  const q = totalQtd(), st = subtotal();
+  const badge = $('#cartCount');
+  badge.textContent = q;
+  badge.classList.toggle('hidden', !q); badge.classList.toggle('flex', !!q);
+  if (bump) { badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump'); }
+  $('#cartTopTotal').textContent = brl(st);
+  $('#floatCount').textContent = q;
+  $('#floatTotal').textContent = brl(st);
+  $('#floatBar').classList.toggle('translate-y-full', !q);
+  renderCartItems();
+}
+
+function renderCartItems() {
+  const box = $('#cartItems');
+  $('#drawerSub').textContent = totalQtd() ? `${totalQtd()} ${totalQtd() > 1 ? 'itens' : 'item'}` : '';
+  $('#cartSubtotal').textContent = brl(subtotal());
+  $('#goCheckout').disabled = !cart.length;
+
+  if (!cart.length) {
+    box.innerHTML = `
+      <div class="flex h-full flex-col items-center justify-center py-16 text-center">
+        <div class="text-5xl">🛒</div>
+        <p class="mt-4 font-display font-bold">Seu carrinho está vazio</p>
+        <p class="mt-1 text-sm text-zinc-500">Bora escolher um lanche caprichado?</p>
+        <button data-close class="mt-6 rounded-xl bg-gold px-5 py-3 font-semibold text-black">Ver cardápio</button>
+      </div>`;
+    return;
+  }
+  box.innerHTML = cart.map((i, idx) => `
+    <div class="card rounded-2xl p-3">
+      <div class="flex gap-3">
+        <div class="h-16 w-16 shrink-0 overflow-hidden rounded-xl">${renderImage(produtos.find(p => p.id === i.id) || {}, { size: 150 })}</div>
+        <div class="min-w-0 flex-1">
+          <div class="flex justify-between gap-2">
+            <p class="font-semibold leading-snug">${esc(i.nome)}</p>
+            <button data-remove="${idx}" class="text-zinc-500 hover:text-red-400" aria-label="Remover">✕</button>
+          </div>
+          <p class="text-sm font-bold text-gold">${i.preco == null ? 'Preço a confirmar' : brl(i.preco * i.qtd)}</p>
+        </div>
+      </div>
+      <div class="mt-3 flex items-center gap-2">
+        <div class="flex items-center rounded-lg border border-white/10">
+          <button data-dec="${idx}" class="h-9 w-9 text-lg text-gold" aria-label="Diminuir">−</button>
+          <span class="w-7 text-center text-sm font-bold">${i.qtd}</span>
+          <button data-inc="${idx}" class="h-9 w-9 text-lg text-gold" aria-label="Aumentar">+</button>
+        </div>
+        <input data-obs="${idx}" value="${esc(i.obs)}" maxlength="140" placeholder="Observação deste item"
+               class="field !py-2 !text-sm flex-1" />
+      </div>
+    </div>`).join('');
+}
+
+/* =====================================================================
+   8. MODAL DE PRODUTO
+   ===================================================================== */
+let pmState = { prod: null, variacao: null, qtd: 1 };
+
+function openProduct(id) {
+  const p = produtos.find(x => x.id === id);
+  if (!p) return;
+  pmState = { prod: p, variacao: p.variacoes?.[0] || null, qtd: 1 };
+  $('#pmImg').innerHTML = renderImage(p, { size: 800, mark: true });
+  $('#pmName').textContent = p.nome;
+  $('#pmDesc').textContent = p.descricao;
+  $('#pmObs').value = '';
+  $('#pmVariants').innerHTML = p.variacoes?.length ? `
+    <div class="mb-1 flex items-center justify-between">
+      <span class="text-sm font-semibold">Escolha uma opção</span>
+      <span class="rounded-md bg-gold/15 px-2 py-0.5 text-[11px] font-bold text-gold">OBRIGATÓRIO</span>
+    </div>
+    ${p.variacoes.map((v, i) => `
+      <label class="chip block cursor-pointer">
+        <input type="radio" name="pmVar" value="${i}" class="sr-only" ${i === 0 ? 'checked' : ''} />
+        <span class="flex items-center justify-between rounded-xl border border-white/10 px-4 py-3 text-sm font-semibold">
+          <span>${esc(v.nome)}</span><span>${brl(v.preco)}</span>
+        </span>
+      </label>`).join('')}` : '';
+  $$('input[name="pmVar"]').forEach(r => r.addEventListener('change', e => {
+    pmState.variacao = p.variacoes[+e.target.value]; updatePmTotal();
+  }));
+  updatePmTotal();
+  openLayer('#productModal');
+}
+function updatePmTotal() {
+  const unit = pmState.variacao ? pmState.variacao.preco : pmState.prod.preco;
+  $('#pmQty').textContent = pmState.qtd;
+  $('#pmTotal').textContent = unit == null ? 'A confirmar' : brl(unit * pmState.qtd);
+}
+
+/* =====================================================================
+   9. CAMADAS (modal / gaveta)
+   ===================================================================== */
+function openLayer(sel) { $(sel).classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+function closeLayer(sel) {
+  $(sel).classList.add('hidden');
+  if ($('#productModal').classList.contains('hidden') && $('#cartDrawer').classList.contains('hidden')) document.body.style.overflow = '';
+}
+function openCart() { showStep('cart'); openLayer('#cartDrawer'); }
+function showStep(step) {
+  const co = step === 'checkout';
+  $('#stepCart').classList.toggle('hidden', co); $('#stepCart').classList.toggle('flex', !co);
+  $('#stepCheckout').classList.toggle('hidden', !co); $('#stepCheckout').classList.toggle('flex', co);
+  $('#drawerTitle').textContent = co ? 'Finalizar pedido' : 'Seu pedido';
+  if (co) updateCheckoutTotals();
+}
+
+/* =====================================================================
+   10. CHECKOUT + WHATSAPP
+   ===================================================================== */
+const form = $('#stepCheckout');
+
+function deliveryFee() {
+  if (form.tipo.value !== 'entrega') return 0;
+  const b = BAIRROS.find(b => b.nome === form.bairro.value);
+  return b ? b.taxa : null;
+}
+function updateCheckoutTotals() {
+  const entrega = form.tipo.value === 'entrega';
+  $('#addressBox').classList.toggle('hidden', !entrega);
+  $('#pickupBox').classList.toggle('hidden', entrega);
+  $('#trocoInput').classList.toggle('hidden', form.pagamento.value !== 'Dinheiro');
+  const fee = deliveryFee();
+  $('#coSubtotal').textContent = brl(subtotal());
+  $('#coFee').textContent = !entrega ? 'Grátis (retirada)' : fee == null ? 'Selecione o bairro' : brl(fee);
+  $('#coTotal').textContent = brl(subtotal() + (fee || 0));
+}
+
+function buildMessage(d) {
+  const linhas = [];
+  linhas.push(`*🍔 NOVO PEDIDO — ${LOJA.nome.toUpperCase()}*`);
+  linhas.push('');
+  linhas.push(`*Cliente:* ${d.nome}`);
+  linhas.push(`*Telefone:* ${d.telefone}`);
+  linhas.push(`*Tipo:* ${d.tipo === 'entrega' ? '🛵 Entrega' : '🏪 Retirada no local'}`);
+  if (d.tipo === 'entrega') {
+    linhas.push(`*Endereço:* ${d.rua}, ${d.numero}${d.complemento ? ' — ' + d.complemento : ''}`);
+    linhas.push(`*Bairro:* ${d.bairro}`);
+  }
+  linhas.push('');
+  linhas.push('*━━━ ITENS ━━━*');
+  cart.forEach(i => {
+    linhas.push(`• ${i.qtd}x ${i.nome} — ${i.preco == null ? 'a confirmar' : brl(i.preco * i.qtd)}`);
+    if (i.obs) linhas.push(`   _Obs: ${i.obs}_`);
+  });
+  linhas.push('');
+  const fee = deliveryFee() || 0;
+  linhas.push(`Subtotal: ${brl(subtotal())}`);
+  if (d.tipo === 'entrega') linhas.push(`Entrega: ${brl(fee)}`);
+  linhas.push(`*TOTAL: ${brl(subtotal() + fee)}*`);
+  if (cart.some(i => i.preco == null)) linhas.push('_(há itens com preço a confirmar)_');
+  linhas.push('');
+  linhas.push(`*Pagamento:* ${d.pagamento}${d.pagamento === 'Dinheiro' && d.troco ? ` (troco para R$ ${d.troco})` : ''}`);
+  if (d.obsGeral) linhas.push(`*Obs. do pedido:* ${d.obsGeral}`);
+  return linhas.join('\n');
+}
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const d = Object.fromEntries(new FormData(form).entries());
+  const err = $('#formError');
+  const faltando = [];
+  if (!d.nome?.trim()) faltando.push('nome');
+  if ((d.telefone || '').replace(/\D/g, '').length < 10) faltando.push('telefone com DDD');
+  if (d.tipo === 'entrega') {
+    if (!d.bairro) faltando.push('bairro');
+    if (!d.rua?.trim()) faltando.push('rua');
+    if (!d.numero?.trim()) faltando.push('número');
+  }
+  if (faltando.length) {
+    err.textContent = 'Preencha: ' + faltando.join(', ') + '.';
+    err.classList.remove('hidden');
+    return;
+  }
+  err.classList.add('hidden');
+
+  // Lembra os dados do cliente para o próximo pedido
+  try { localStorage.setItem('seualves_cliente', JSON.stringify({ nome: d.nome, telefone: d.telefone, bairro: d.bairro, rua: d.rua, numero: d.numero, complemento: d.complemento })); } catch {}
+
+  const url = `https://wa.me/${LOJA.whatsapp}?text=${encodeURIComponent(buildMessage(d))}`;
+  window.open(url, '_blank');
+});
+
+/* =====================================================================
+   11. EVENTOS
+   ===================================================================== */
+document.addEventListener('click', e => {
+  const quick = e.target.closest('[data-quick]');
+  if (quick) {
+    e.stopPropagation();
+    const p = produtos.find(x => x.id === quick.dataset.quick);
+    // Produtos com variações abrem o modal para escolher o tamanho
+    if (p.variacoes?.length) return openProduct(p.id);
+    return addToCart(p, null, 1, '');
+  }
+  const open = e.target.closest('[data-open]');
+  if (open) return openProduct(open.dataset.open);
+
+  if (e.target.closest('#productModal [data-close]')) return closeLayer('#productModal');
+  if (e.target.closest('#cartDrawer [data-close]')) return closeLayer('#cartDrawer');
+
+  const inc = e.target.closest('[data-inc]'), dec = e.target.closest('[data-dec]'), rem = e.target.closest('[data-remove]');
+  if (inc) { cart[+inc.dataset.inc].qtd++; saveCart(); updateCartUI(); }
+  if (dec) { const i = +dec.dataset.dec; cart[i].qtd--; if (cart[i].qtd <= 0) cart.splice(i, 1); saveCart(); updateCartUI(); }
+  if (rem) { cart.splice(+rem.dataset.remove, 1); saveCart(); updateCartUI(); }
+});
+
+document.addEventListener('input', e => {
+  if (e.target.matches('[data-obs]')) {
+    const i = cart[+e.target.dataset.obs];
+    i.obs = e.target.value; i.key = `${i.id}|${i.nome}|${i.obs}`; saveCart();
+  }
+});
+
+$('#pmMinus').onclick = () => { pmState.qtd = Math.max(1, pmState.qtd - 1); updatePmTotal(); };
+$('#pmPlus').onclick = () => { pmState.qtd++; updatePmTotal(); };
+$('#pmAdd').onclick = () => {
+  addToCart(pmState.prod, pmState.variacao, pmState.qtd, $('#pmObs').value);
+  closeLayer('#productModal');
+};
+
+$('#cartBtnTop').onclick = openCart;
+$('#floatBtn').onclick = openCart;
+$('#goCheckout').onclick = () => showStep('checkout');
+$('#backToCart').onclick = () => showStep('cart');
+form.addEventListener('change', updateCheckoutTotals);
+
+let searchT;
+$('#search').addEventListener('input', e => {
+  clearTimeout(searchT);
+  searchT = setTimeout(() => renderMenu(e.target.value), 150);
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeLayer('#productModal'); closeLayer('#cartDrawer'); }
+});
+
+/* =====================================================================
+   12. INICIALIZAÇÃO
+   ===================================================================== */
+(function init() {
+  if (EMB.logo) LOJA.logo = EMB.logo;
+  if (EMB.banner) LOJA.banner = EMB.banner;
+  $('#logo').src = LOJA.logo;
+  $('#banner').src = LOJA.banner;
+  $('#heroPlate').innerHTML = `<div class="aspect-square">${renderImage(produtos.find(p => p.id === 'combo-casal'))}</div>`;
+  const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(LOJA.endereco);
+  $('#mapLink').href = maps;
+  $('#footerAddress').innerHTML = `<a href="${maps}" target="_blank" rel="noopener" class="hover:text-gold">📍 ${esc(LOJA.endereco)}</a>`;
+  $('#pickupAddr').textContent = LOJA.endereco;
+  $('#footerWa').href = `https://wa.me/${LOJA.whatsapp}`;
+  $('#footerWa').textContent = '💬 (21) 96735-0248';
+  $('#year').textContent = new Date().getFullYear();
+
+  form.bairro.innerHTML = '<option value="">Selecione seu bairro *</option>' +
+    BAIRROS.map(b => `<option value="${esc(b.nome)}">${esc(b.nome)} — ${brl(b.taxa)}</option>`).join('');
+
+  // Preenche dados salvos do último pedido
+  try {
+    const c = JSON.parse(localStorage.getItem('seualves_cliente') || 'null');
+    if (c) Object.entries(c).forEach(([k, v]) => { if (form[k] && v) form[k].value = v; });
+  } catch {}
+
+  renderStatus(); setInterval(renderStatus, 60000);
+  renderHours();
+  renderTabs();
+  renderMenu();
+  updateCartUI();
+})();
+</script>
+</body>
+</html>
