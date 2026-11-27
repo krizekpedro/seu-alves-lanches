@@ -293,6 +293,14 @@
           <div class="space-y-3">
             <input name="nome" required placeholder="Seu nome *" class="field" autocomplete="name" />
             <input name="telefone" required type="tel" inputmode="tel" placeholder="WhatsApp / Telefone *" class="field" autocomplete="tel" />
+            <div class="rounded-xl border border-gold/20 bg-gold/5 p-3 space-y-2">
+              <label for="nascimento" class="block text-sm font-semibold text-gold">🎂 Ganhe um cupom no seu aniversário</label>
+              <input id="nascimento" name="nascimento" inputmode="numeric" maxlength="10" placeholder="Data de nascimento (opcional) · DD/MM/AAAA" class="field" autocomplete="bday" />
+              <label class="flex items-start gap-2 text-xs text-zinc-400 cursor-pointer">
+                <input type="checkbox" name="promoOk" value="sim" class="mt-0.5 accent-amber-500" />
+                <span>Quero receber o cupom de aniversário e promoções do Seu Alves pelo WhatsApp. Posso cancelar quando quiser.</span>
+              </label>
+            </div>
           </div>
 
           <div id="addressBox" class="space-y-3">
@@ -952,12 +960,26 @@ function updateCheckoutTotals() {
   $('#coTotal').textContent = brl(subtotal() + (fee || 0));
 }
 
+// Data de nascimento: máscara DD/MM/AAAA e validação simples
+function validBirth(v) {
+  const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v || '');
+  if (!m) return false;
+  const dd = +m[1], mm = +m[2], yy = +m[3], dt = new Date(yy, mm - 1, dd), ano = new Date().getFullYear();
+  return dt.getDate() === dd && dt.getMonth() === mm - 1 && yy >= ano - 110 && yy <= ano - 5;
+}
+form.nascimento.addEventListener('input', e => {
+  const n = e.target.value.replace(/\D/g, '').slice(0, 8);
+  e.target.value = n.length > 4 ? `${n.slice(0, 2)}/${n.slice(2, 4)}/${n.slice(4)}` : n.length > 2 ? `${n.slice(0, 2)}/${n.slice(2)}` : n;
+});
+
 function buildMessage(d) {
   const linhas = [];
   linhas.push(`*🍔 NOVO PEDIDO — ${LOJA.nome.toUpperCase()}*`);
   linhas.push('');
   linhas.push(`*Cliente:* ${d.nome}`);
   linhas.push(`*Telefone:* ${d.telefone}`);
+  if (d.nascimento) linhas.push(`*Aniversário:* ${d.nascimento}${d.promoOk ? ' (aceita cupom e promoções)' : ''}`);
+  else if (d.promoOk) linhas.push('*Aceita promoções pelo WhatsApp:* sim');
   linhas.push(`*Tipo:* ${d.tipo === 'entrega' ? '🛵 Entrega' : '🏪 Retirada no local'}`);
   if (d.tipo === 'entrega') {
     linhas.push(`*Endereço:* ${d.rua}, ${d.numero}${d.complemento ? ' — ' + d.complemento : ''}`);
@@ -988,6 +1010,7 @@ form.addEventListener('submit', e => {
   const faltando = [];
   if (!d.nome?.trim()) faltando.push('nome');
   if ((d.telefone || '').replace(/\D/g, '').length < 10) faltando.push('telefone com DDD');
+  if (d.nascimento && !validBirth(d.nascimento)) faltando.push('data de nascimento válida (DD/MM/AAAA)');
   if (d.tipo === 'entrega') {
     if (!d.bairro) faltando.push('bairro');
     if (!d.rua?.trim()) faltando.push('rua');
@@ -1001,7 +1024,7 @@ form.addEventListener('submit', e => {
   err.classList.add('hidden');
 
   // Lembra os dados do cliente para o próximo pedido
-  try { localStorage.setItem('seualves_cliente', JSON.stringify({ nome: d.nome, telefone: d.telefone, bairro: d.bairro, rua: d.rua, numero: d.numero, complemento: d.complemento })); } catch {}
+  try { localStorage.setItem('seualves_cliente', JSON.stringify({ nome: d.nome, telefone: d.telefone, bairro: d.bairro, rua: d.rua, numero: d.numero, complemento: d.complemento, nascimento: d.nascimento, promoOk: d.promoOk || '' })); } catch {}
 
   const url = `https://wa.me/${LOJA.whatsapp}?text=${encodeURIComponent(buildMessage(d))}`;
   window.open(url, '_blank');
@@ -1084,7 +1107,7 @@ document.addEventListener('keydown', e => {
   // Preenche dados salvos do último pedido
   try {
     const c = JSON.parse(localStorage.getItem('seualves_cliente') || 'null');
-    if (c) Object.entries(c).forEach(([k, v]) => { if (form[k] && v) form[k].value = v; });
+    if (c) Object.entries(c).forEach(([k, v]) => { if (!form[k] || !v) return; if (form[k].type === 'checkbox') form[k].checked = true; else form[k].value = v; });
   } catch {}
 
   renderStatus(); setInterval(renderStatus, 60000);

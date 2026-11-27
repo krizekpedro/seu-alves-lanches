@@ -146,14 +146,18 @@ export class OrdersService {
     if (!input.customer) return null;
     const store = await tx.store.findUniqueOrThrow({ where: { id: input.storeId }, select: { organizationId: true } });
     const phone = input.customer.phone?.replace(/\D/g, '') || null;
+    const extra: { birthDate?: Date; marketingOptIn?: boolean; marketingOptInAt?: Date } = {};
+    if (input.customer.birthDate) extra.birthDate = new Date(input.customer.birthDate + 'T00:00:00Z');
+    if (input.customer.marketingOptIn) { extra.marketingOptIn = true; extra.marketingOptInAt = new Date(); }
     if (!phone) {
-      const c = await tx.customer.create({ data: { organizationId: store.organizationId, name: input.customer.name } });
+      const c = await tx.customer.create({ data: { organizationId: store.organizationId, name: input.customer.name, ...extra } });
       return c.id;
     }
     const c = await tx.customer.upsert({
       where: { organizationId_phone: { organizationId: store.organizationId, phone } },
-      create: { organizationId: store.organizationId, name: input.customer.name, phone },
-      update: {},
+      create: { organizationId: store.organizationId, name: input.customer.name, phone, ...extra },
+      // só atualiza o que o cliente informou agora; nunca apaga um aceite com um pedido sem a caixa marcada
+      update: extra,
     });
     return c.id;
   }

@@ -96,4 +96,14 @@ run('OrdersService (integração)', () => {
     })).rejects.toThrow(/esgotado/);
     await prisma.product.update({ where: { id: productId }, data: { available: true } });
   });
+  it('guarda aniversário e aceite de promoções sem desfazer o aceite depois', async () => {
+    const phone = '(21) 98888-' + String(Date.now()).slice(-4);
+    const base = { storeId, channel: 'CARDAPIO' as const, type: 'RETIRADA' as const, items: [{ productId, quantity: 1, options: [] }], deliveryFeeCents: 0, discountStoreCents: 0 };
+    await service.create({ ...base, id: randomUUID(), customer: { name: 'Ana', phone, birthDate: '1990-03-12', marketingOptIn: true } });
+    await service.create({ ...base, id: randomUUID(), customer: { name: 'Ana', phone } });
+    const c = await prisma.customer.findFirstOrThrow({ where: { phone: phone.replace(/\D/g, '') } });
+    expect(c.birthDate?.toISOString().slice(0, 10)).toBe('1990-03-12');
+    expect(c.marketingOptIn).toBe(true);
+    expect(c.marketingOptInAt).toBeTruthy();
+  });
 });

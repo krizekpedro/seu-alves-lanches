@@ -21,7 +21,14 @@ export const createOrderInput = z.object({
   type: z.enum(ORDER_TYPES),
   externalId: z.string().optional(),
   customer: z
-    .object({ name: z.string().min(1), phone: z.string().optional() })
+    .object({
+      name: z.string().min(1),
+      phone: z.string().optional(),
+      // aniversário para cupom (opcional), formato AAAA-MM-DD
+      birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+      // aceite explícito para receber promoções (LGPD)
+      marketingOptIn: z.boolean().optional(),
+    })
     .optional(),
   items: z.array(orderItemInput).min(1),
   deliveryFeeCents: z.number().int().nonnegative().default(0),
