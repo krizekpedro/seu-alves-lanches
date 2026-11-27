@@ -771,7 +771,7 @@ Se for necessária, a integração é feita por uma API de emissor (Focus NFe, N
 **Situação do Seu Alves: a empresa é MEI.** Portanto a NFC-e **não entra no MVP**. O módulo fiscal fica desenhado e desligado (`FiscalProvider = nenhum`), pronto para ligar sem retrabalho. Pontos de atenção do MEI que afetam o sistema (conferir valores atuais com o contador):
 
 - **Venda para empresa (CNPJ):** o MEI precisa emitir nota (NFS-e/NF-e pelo emissor do governo). O sistema marca esses pedidos para lembrar a emissão.
-- **Teto de faturamento anual do MEI:** o sistema vai mostrar no painel o faturamento acumulado do ano contra o teto, com alerta ao se aproximar. Somando iFood, cardápio e balcão, um delivery cresce rápido; ao passar do teto, a empresa vira ME e a NFC-e passa a ser obrigatória. É só ligar o módulo.
+- **Limite de faturamento anual do MEI:** o sistema mostra no painel o faturamento acumulado do ano contra o limite, com avisos em 60%, 80% e 100%. O aviso é **apenas informativo** ("converse com seu contador"): o sistema não recomenda nenhuma decisão tributária, que fica com o gestor e o contador. Se um dia a empresa precisar emitir NFC-e, o módulo fiscal já está previsto e é só ligar.
 - **Multi-loja:** o MEI não pode ter filial e tem limite de 1 funcionário registrado. Abrir a segunda loja provavelmente exigirá migrar para ME (Simples Nacional), e com isso emitir NFC-e. Por isso o banco já nasce multi-loja e com o módulo fiscal previsto.
 
 Mesmo sem NFC-e, o mesmo certificado A1 é útil para **baixar automaticamente as NF-e de compra emitidas contra o seu CNPJ**, o que alimenta o estoque sem digitar nada.
@@ -824,7 +824,7 @@ A ideia é rodar o sistema novo **em paralelo** à OlaClick, assumindo um canal 
 - Regras de taxas (iFood, maquininha, Pix), recebíveis, contas a pagar.
 - Conciliação automática: webhook Pix, extrato via API do banco/Open Finance, repasses da API financeira do iFood.
 - DRE por canal, margem por produto, acerto de motoboys.
-- Alerta do teto do MEI no painel (NFC-e só quando a empresa virar ME).
+- Aviso informativo do limite do MEI no painel (o que fazer é decisão do gestor com o contador).
 - **Marco:** a planilha manual é aposentada.
 
 ### Fase 6 — Modo offline completo (2 semanas)
