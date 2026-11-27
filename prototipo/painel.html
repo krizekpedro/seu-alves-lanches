@@ -48,7 +48,8 @@ button:focus-visible{outline:2px solid #FBBF24;outline-offset:2px}
 </style>
 <style>*{box-sizing:border-box}
 .proto-back{position:fixed;left:12px;bottom:12px;z-index:50;padding:8px 12px;border-radius:99px;background:rgba(15,15,15,.85);border:1px solid rgba(245,158,11,.4);color:#FBBF24;font:600 12px Inter,system-ui,sans-serif;text-decoration:none}
-@media (max-width:499px){.proto-phone .proto-back{display:none}}</style>
+@media (max-width:499px){.proto-phone .proto-back{display:none}}
+@media (max-width:899px){.proto-top .proto-back{top:10px;bottom:auto;left:auto;right:10px}}</style>
 </head>
 <body class="">
 <div id="app"></div>
@@ -967,6 +968,16 @@ button:focus-visible{outline:2px solid #FBBF24;outline-offset:2px}
 
     <sc-if value="{{isPonto}}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="card" style="gap: 10px;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px;"><h2 class="h3">Chegada dos motoboys hoje</h2><span class="sub">🔒 Só o dono vê horários e horas da equipe</span></div>
+          <sc-for list="{{motoArr}}" as="m" hint-placeholder-count="2">
+            <div class="row" style="padding: 10px 12px; border-radius: 12px; background: #202024;">
+              <span style="width: 36px; height: 36px; border-radius: 99px; background: #7A1F1F; border: 1px solid rgba(245,158,11,.45); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #F5E9D7; flex: 0 0 auto;">{{m.ini}}</span>
+              <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 700;">{{m.name}}</span><span class="sub">{{m.meta}}</span></div>
+              <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;"><span class="num" style="font-size: 18px; font-weight: 800; color: {{m.color}};">{{m.time}}</span><span style="font-size: 11px; font-weight: 700; color: {{m.color}};">{{m.status}}</span></div>
+            </div>
+          </sc-for>
+        </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
           <sc-for list="{{pontoKpis}}" as="k" hint-placeholder-count="5">
             <div style="background: #18181B; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px;">
@@ -1285,7 +1296,7 @@ button:focus-visible{outline:2px solid #FBBF24;outline-offset:2px}
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px;">
           <section style="background: #18181B; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 4px;">
             <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 17px; font-weight: 700;">Cargos e acessos</h2>
-            <span style="font-size: 12px; color: #A1A1AA; margin-bottom: 10px;">Clique para liberar ou bloquear. O dono sempre tem acesso total.</span>
+            <span style="font-size: 12px; color: #A1A1AA; margin-bottom: 10px;">Clique para liberar ou bloquear. O dono sempre tem acesso total. Ponto, horas e banco de horas da equipe são só do dono e não podem ser liberados.</span>
             <div style="display: grid; grid-template-columns: minmax(0, 1fr) repeat(5, 46px); gap: 4px; align-items: end; padding: 0 0 6px; font-size: 11px; font-weight: 700; color: #A1A1AA;">
               <span></span><span style="text-align: center;">Ger.</span><span style="text-align: center;">Caixa</span><span style="text-align: center;">Atend.</span><span style="text-align: center;">Coz.</span><span style="text-align: center;">Moto</span>
             </div>
@@ -1473,6 +1484,16 @@ button:focus-visible{outline:2px solid #FBBF24;outline-offset:2px}
               <button type="button" onClick="{{tickMap}}" style="min-height: 36px; padding: 0 12px; border-radius: 9px; border: 1px solid rgba(245,158,11,.5); background: transparent; color: #FBBF24; font-weight: 700; font-size: 13px;">Simular 1 minuto</button>
             </div>
           </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 12px; border: 1px solid rgba(245,158,11,.35); background: rgba(245,158,11,.06);">
+            <span style="font-size: 14px; font-weight: 700;">Quando avisar o cliente</span>
+            <span class="sub" style="line-height: 1.45;">A saída para entrega fica só aqui dentro. O cliente recebe "Seu pedido está chegando!" e vê o mapa só quando o motoboy estiver perto.</span>
+            <div class="row">
+              <span style="flex: 1 1 auto; font-size: 13px;">Avisar a</span>
+              <button type="button" class="step" style="width: 36px; height: 36px;" aria-label="Diminuir distância do aviso" onClick="{{avisoDown}}">−</button>
+              <span class="num" style="min-width: 70px; text-align: center; font-weight: 800;">{{avisoTxt}}</span>
+              <button type="button" class="step" style="width: 36px; height: 36px;" aria-label="Aumentar distância do aviso" onClick="{{avisoUp}}">+</button>
+            </div>
+          </div>
           <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
             <div style="flex: 999 1 420px; min-width: 0;">
               <svg viewBox="0 0 360 240" width="100%" role="img" aria-label="Mapa com a posição dos motoboys em tempo real" style="display: block; border-radius: 12px; background: #141416;">
@@ -1504,10 +1525,10 @@ button:focus-visible{outline:2px solid #FBBF24;outline-offset:2px}
                 <button type="button" onClick="{{r.pick}}" style="{{r.rowStyle}}">
                   <span style="width: 36px; height: 36px; border-radius: 99px; background: {{r.color}}; color: #0F0F0F; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex: 0 0 auto;">{{r.ini}}</span>
                   <span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0; text-align: left;"><span style="font-size: 14px; font-weight: 700;">{{r.name}} · {{r.order}}</span><span style="font-size: 12px; color: #A1A1AA;">{{r.where}}</span></span>
-                  <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex: 0 0 auto;"><span class="num" style="font-size: 12px; font-weight: 700; color: {{r.statusColor}};">{{r.status}}</span><span class="num" style="font-size: 12px; color: #A1A1AA;">{{r.km}} restantes</span></span>
+                  <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex: 0 1 auto; max-width: 45%; text-align: right;"><span class="num" style="font-size: 12px; font-weight: 700; color: {{r.statusColor}};">{{r.status}}</span><span class="num" style="font-size: 12px; color: #A1A1AA;">{{r.km}} restantes</span></span>
                 </button>
               </sc-for>
-              <div style="padding: 12px 14px; border-radius: 12px; background: #202024; font-size: 12px; color: #A1A1AA; line-height: 1.5;">Toque em um motoboy para destacar a rota. O cliente recebe pelo WhatsApp um link com este mesmo mapa. Pedidos do iFood Entrega mostram o status enviado pelo iFood.</div>
+              <div style="padding: 12px 14px; border-radius: 12px; background: #202024; font-size: 12px; color: #A1A1AA; line-height: 1.5;">Toque em um motoboy para destacar a rota. O cliente só vê o mapa quando o motoboy entra no raio de aviso. Pedidos do iFood Entrega mostram o status enviado pelo iFood.</div>
             </div>
           </div>
         </section>
@@ -2013,7 +2034,7 @@ class Component extends DCLogic {
     ];
     var STAFF = [
       { id: 'felipe', name: 'Felipe', role: 'Dono', initials: 'FA', allow: 'all' },
-      { id: 'ana', name: 'Ana', role: 'Gerente', initials: 'AN', allow: ['painel', 'pdv', 'caixa', 'pedidos', 'tempos', 'kds', 'cardapio', 'produtos', 'estoque', 'compras', 'entregas', 'clientes', 'marketing', 'ponto', 'site'] },
+      { id: 'ana', name: 'Ana', role: 'Gerente', initials: 'AN', allow: ['painel', 'pdv', 'caixa', 'pedidos', 'tempos', 'kds', 'cardapio', 'produtos', 'estoque', 'compras', 'entregas', 'clientes', 'marketing', 'site'] },
       { id: 'bruno', name: 'Bruno', role: 'Caixa', initials: 'BR', allow: ['pdv', 'caixa', 'pedidos', 'kds'] },
       { id: 'julia', name: 'Júlia', role: 'Atendente WhatsApp', initials: 'JU', allow: ['pedidos', 'pdv', 'clientes'] },
       { id: 'rita', name: 'Rita', role: 'Cozinha', initials: 'RI', allow: ['kds'] }
@@ -2649,6 +2670,7 @@ class Component extends DCLogic {
     // ---------- Equipe ----------
     var PROLES = ['Gerente', 'Caixa', 'Atendente', 'Cozinha', 'Motoboy'];
     var PDEF = { Gerente: ['pdv', 'desc', 'cancel', 'caixa', 'esgotar', 'preco', 'fin', 'rel'], Caixa: ['pdv', 'desc', 'caixa', 'esgotar'], Atendente: ['pdv', 'esgotar'], Cozinha: ['esgotar', 'kds'], Motoboy: ['rota'] };
+    var motoArr = [['LE', 'Léo', 'escala 18h00 · 18 entregas hoje', '18:09', 'chegou 9 min atrasado', '#FDBA74'], ['MA', 'Marcos', 'escala 19h00', '--:--', 'ainda não chegou', '#A1A1AA']].map(function (m) { return { ini: m[0], name: m[1], meta: m[2], time: m[3], status: m[4], color: m[5] }; });
     var permRows = [['pdv', 'Lançar pedido no PDV'], ['kds', 'Usar a tela da cozinha'], ['rota', 'App do motoboy'], ['desc', 'Dar desconto (até 10%)'], ['cancel', 'Cancelar pedido'], ['caixa', 'Abrir e fechar caixa'], ['esgotar', 'Esgotar item'], ['preco', 'Mudar preço'], ['fin', 'Ver financeiro'], ['rel', 'Ver relatórios e tempos'], ['equipe', 'Gerenciar equipe']].map(function (p) {
       return { label: p[1], cells: PROLES.map(function (r) {
         var key = r + ':' + p[0], on = key in st.permOv ? st.permOv[key] : PDEF[r].indexOf(p[0]) >= 0;
@@ -2851,7 +2873,7 @@ class Component extends DCLogic {
       accents: accents, copyLink: function () { toast('Link do cardápio copiado.'); }, publishSite: function () { toast('Site atualizado. Clientes já veem o novo visual.'); },
       hourRows: hourRows, closedTodayTrack: ct.track, closedTodayKnob: ct.knob, closedTodayAria: ct.aria, toggleClosedToday: function () { set({ closedToday: !self.state.closedToday, toast: self.state.closedToday ? 'Horário normal de hoje mantido.' : 'Hoje aparece como fechado em todos os canais.' }); },
       bairroRows: bairroRows, adicRows: adicRows, adicResumo: ADIC.length + ' grupos trazidos da OlaClick' + (adicSoltos ? ' · ' + adicSoltos + ' sem produto ligado' : '') + '. Esgotou? Desligue o item e ele some em todos os canais.', newGrupo: function () { set({ toast: 'Novo grupo criado. Dê um nome, defina mínimo e máximo e ligue aos produtos.' }); }, newBairro: function () { var n = self.state.newBairros.length + 1; set({ newBairros: self.state.newBairros.concat([['Novo bairro ' + n, 7]]), toast: 'Bairro adicionado com taxa de R$ 7.' }); },
-      team: team, isPonto: st.screen === 'ponto', pontoKpis: pontoKpis, staffMetrics: staffMetrics, storeDays: storeDays, punches: punches, blocked: blocked, fixes: fixes, rules: rules, radius: st.radius, radiusDown: function () { self.setState({ radius: Math.max(30, self.state.radius - 10) }); }, radiusUp: function () { self.setState({ radius: Math.min(300, self.state.radius + 10) }); }, exportLabel: st.exported ? '✓ Espelho de novembro gerado (PDF)' : 'Gerar espelho de ponto do mês (PDF)', exportPonto: function () { self.setState({ exported: true }); }, permRows: permRows, audit: audit, inviteOpen: st.invite, toggleInvite: function () { self.setState({ invite: !self.state.invite }); }, isTempos: st.screen === 'tempos', flowTypes: flowTypes, stages: stages, flowTotal: 'Tempo total: ' + fmtMin(flowSum) + ' · meta ' + fmtMin(flowTarget), flowTotalColor: totalSt[0], flowInsight: fl.insight, hourCols: hourCols, targetLine: Math.round(flowTarget * hScale) + 21, slow: slow, taps: taps, isPedidos: st.screen === 'pedidos', isProdutos: st.screen === 'produtos', isEntregas: st.screen === 'entregas', isClientes: st.screen === 'clientes', isIntegracoes: st.screen === 'integracoes',
+      team: team, isPonto: st.screen === 'ponto', pontoKpis: pontoKpis, staffMetrics: staffMetrics, storeDays: storeDays, punches: punches, blocked: blocked, fixes: fixes, rules: rules, radius: st.radius, radiusDown: function () { self.setState({ radius: Math.max(30, self.state.radius - 10) }); }, radiusUp: function () { self.setState({ radius: Math.min(300, self.state.radius + 10) }); }, exportLabel: st.exported ? '✓ Espelho de novembro gerado (PDF)' : 'Gerar espelho de ponto do mês (PDF)', exportPonto: function () { self.setState({ exported: true }); }, permRows: permRows, motoArr: motoArr, avisoTxt: (st.avisoM || 800) >= 1000 ? ((st.avisoM || 800) / 1000).toFixed(1).replace('.', ',') + ' km' : (st.avisoM || 800) + ' m', avisoDown: function () { self.setState({ avisoM: Math.max(200, (self.state.avisoM || 800) - 100) }); }, avisoUp: function () { self.setState({ avisoM: Math.min(3000, (self.state.avisoM || 800) + 100) }); }, audit: audit, inviteOpen: st.invite, toggleInvite: function () { self.setState({ invite: !self.state.invite }); }, isTempos: st.screen === 'tempos', flowTypes: flowTypes, stages: stages, flowTotal: 'Tempo total: ' + fmtMin(flowSum) + ' · meta ' + fmtMin(flowTarget), flowTotalColor: totalSt[0], flowInsight: fl.insight, hourCols: hourCols, targetLine: Math.round(flowTarget * hScale) + 21, slow: slow, taps: taps, isPedidos: st.screen === 'pedidos', isProdutos: st.screen === 'produtos', isEntregas: st.screen === 'entregas', isClientes: st.screen === 'clientes', isIntegracoes: st.screen === 'integracoes',
       pdvCats: pdvCats, pdvProducts: pdvProducts, cart: cart, cartEmpty: cart.length === 0, cartTotal: this.brl(cartTotalN, 2), pdvTypes: pdvTypes, pdvPays: pdvPays, finish: finish, pdvSent: st.sent,
       orderFilters: orderFilters, orderRows: orderRows, abc: abc, matrix: matrix,
       entKpis: entKpis, riders: riders, tickMap: function () { self.setState({ mapTick: self.state.mapTick + 1 }); }, heat: heat, couriers: couriers, cliKpis: cliKpis, cliWeeks: cliWeeks, lost: lost, topCli: topCli, integrations: integrations,

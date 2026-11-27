@@ -11,114 +11,251 @@
 body{margin:0;background:#0F0F0F}
 a{color:#FBBF24}a:hover{color:#F59E0B}
 button{font-family:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #FBBF24;outline-offset:2px}
 .num{font-variant-numeric:tabular-nums}
+.cl-root{width:100%;min-height:100vh;box-sizing:border-box;background:#0F0F0F;color:#FAFAF9;font-family:Inter,system-ui,sans-serif;padding-bottom:96px}
+.cl-wrap{max-width:1180px;margin:0 auto;padding:0 16px;box-sizing:border-box}
+.cl-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-items:start}
+.cl-items{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.cl-side{display:none}
+.cl-bar{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:12px 16px 16px;background:linear-gradient(180deg,rgba(15,15,15,0),#0F0F0F 30%)}
+.cl-card{background:#18181B;border:1px solid rgba(255,255,255,.08);border-radius:18px}
+.cl-inp{width:100%;box-sizing:border-box;min-height:46px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:#0F0F0F;color:#FAFAF9;font:500 15px Inter,system-ui,sans-serif}
+.cl-inp:focus{outline:none;border-color:#F59E0B}
+.cl-sheet{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center}
+.cl-sheet>div{width:100%;max-width:560px;max-height:92vh;overflow-y:auto;background:#141416;border-radius:22px 22px 0 0;border:1px solid rgba(245,158,11,.25)}
+.cl-track{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;max-width:760px;margin:0 auto}
+@media (min-width:900px){
+  .cl-root{padding-bottom:24px}
+  .cl-layout{grid-template-columns:minmax(0,1fr) 360px}
+  .cl-items{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cl-side{display:flex;position:sticky;top:16px}
+  .cl-bar{display:none}
+  .cl-sheet{align-items:center}
+  .cl-sheet>div{border-radius:22px}
+}
 </style>
 <style>*{box-sizing:border-box}
-html,body{height:100%}
-body{display:flex;justify-content:center;align-items:center;min-height:100dvh;background:radial-gradient(circle at 50% 0%,#2a1212 0%,#0F0F0F 60%)}
-#app>div{width:min(430px,100vw) !important;height:min(900px,100dvh) !important}
-@media (min-width:500px){#app>div{border-radius:28px;border:1px solid rgba(245,158,11,.25);box-shadow:0 30px 80px rgba(0,0,0,.6)}}
 .proto-back{position:fixed;left:12px;bottom:12px;z-index:50;padding:8px 12px;border-radius:99px;background:rgba(15,15,15,.85);border:1px solid rgba(245,158,11,.4);color:#FBBF24;font:600 12px Inter,system-ui,sans-serif;text-decoration:none}
-@media (max-width:499px){.proto-phone .proto-back{display:none}}</style>
+@media (max-width:499px){.proto-phone .proto-back{display:none}}
+@media (max-width:899px){.proto-top .proto-back{top:10px;bottom:auto;left:auto;right:10px}}</style>
 </head>
-<body class="proto-phone">
+<body class=" proto-top">
 <div id="app"></div>
 <a class="proto-back" href="./">← Todas as telas</a>
 <template id="tpl">
-<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0F0F0F; color: #FAFAF9; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden;">
-
-  <div role="tablist" aria-label="Telas do cliente" style="display: flex; gap: 4px; margin: 14px 14px 0; padding: 4px; border-radius: 12px; background: #18181B; border: 1px solid rgba(255,255,255,.08);">
-    <sc-for list="{{views}}" as="v" hint-placeholder-count="2">
-      <button type="button" role="tab" onClick="{{v.pick}}" style="{{v.style}}">{{v.label}}</button>
-    </sc-for>
-  </div>
-
+<div class="cl-root">
   <sc-if value="{{isMenu}}" hint-placeholder-val="{{ true }}">
-    <div style="flex: 1 1 auto; overflow-y: auto; display: flex; flex-direction: column;">
-      <div style="margin: 14px 14px 0; padding: 20px; border-radius: 18px; background: #7A1F1F; display: flex; flex-direction: column; gap: 8px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="width: 48px; height: 48px; border-radius: 14px; background: #0F0F0F; border: 1px solid rgba(245,158,11,.6); display: flex; align-items: center; justify-content: center; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 16px; color: #F5E9D7; overflow: hidden; padding: 0;"><img src="../assets/img/logo.webp" alt="Seu Alves Lanches" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.replaceWith('SA')"></div>
-          <div style="display: flex; flex-direction: column;">
-            <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 20px; color: #F5E9D7;">Seu Alves Lanches</span>
-            <span style="font-size: 12px; color: #E7D2B3;">Vila Kosmos · aberto até 23h30</span>
-          </div>
+    <div style="position: relative; height: 190px; overflow: hidden; background: #7A1F1F;">
+      <img src="{{banner}}" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .45;">
+      <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,15,15,.1), #0F0F0F);"></div>
+    </div>
+    <div class="cl-wrap" style="margin-top: -92px; position: relative;">
+      <div style="display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap;">
+        <img src="{{logo}}" alt="Seu Alves Lanches" style="width: 84px; height: 84px; border-radius: 22px; border: 2px solid rgba(245,158,11,.7); object-fit: cover; background: #0F0F0F;">
+        <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1 1 200px;">
+          <h1 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 26px; color: #F5E9D7;">Seu Alves Lanches</h1>
+          <span style="font-size: 13px; color: #E7D2B3;"><span style="color: #22C55E;">●</span> Aberto até 2h · Vila Kosmos</span>
         </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-          <span style="font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 99px; background: rgba(15,15,15,.45); color: #F5E9D7;">Entrega em ~45 min</span>
-          <span style="font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 99px; background: #F59E0B; color: #0F0F0F;">Você tem R$ 6,40 de cashback</span>
-        </div>
+        <button type="button" onClick="{{goTrack}}" style="min-height: 40px; padding: 0 14px; border-radius: 99px; border: 1px solid rgba(245,158,11,.5); background: rgba(15,15,15,.6); color: #FBBF24; font-weight: 700; font-size: 13px;">{{trackBtn}}</button>
       </div>
-      <div role="group" aria-label="Categorias" style="display: flex; gap: 8px; padding: 14px; overflow-x: auto;">
-        <sc-for list="{{cats}}" as="c" hint-placeholder-count="3">
-          <button type="button" onClick="{{c.pick}}" style="{{c.style}}">{{c.label}}</button>
-        </sc-for>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;">
+        <span style="font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 99px; background: #18181B; border: 1px solid rgba(255,255,255,.1); color: #F5E9D7;">🛵 Entrega 35 a 50 min</span>
+        <span style="font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 99px; background: #18181B; border: 1px solid rgba(255,255,255,.1); color: #F5E9D7;">🏪 Retirada em 20 min</span>
+        <span style="font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 99px; background: #F59E0B; color: #0F0F0F;">Você tem R$ 6,40 de cashback</span>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 10px; padding: 0 14px 14px;">
-        <sc-for list="{{items}}" as="p" hint-placeholder-count="5">
-          <div style="display: flex; gap: 12px; padding: 12px; border-radius: 16px; background: #18181B; border: 1px solid rgba(255,255,255,.08);">
-            <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px;">
-              <span style="font-size: 15px; font-weight: 700; color: {{p.nameColor}};">{{p.name}}</span>
-              <span style="font-size: 12px; color: #A1A1AA; line-height: 1.35;">{{p.desc}}</span>
-              <span class="num" style="font-size: 15px; font-weight: 800; color: {{p.priceColor}};">{{p.price}}</span>
-            </div>
-            <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 8px;">
-              <div style="width: 76px; height: 64px; border-radius: 12px; background: #202024; border: 1px dashed rgba(255,255,255,.14); display: flex; align-items: center; justify-content: center; font-size: 10px; color: #71717A; text-align: center;">foto</div>
-              <button type="button" onClick="{{p.add}}" aria-label="{{p.aria}}" style="{{p.btnStyle}}">{{p.btn}}</button>
-            </div>
+
+      <div class="cl-layout" style="margin-top: 18px;">
+        <div style="display: flex; flex-direction: column; gap: 14px; min-width: 0;">
+          <input class="cl-inp" type="search" placeholder="Buscar no cardápio (ex.: bacon, batata, açaí)" value="{{q}}" onChange="{{search}}" aria-label="Buscar no cardápio">
+          <div role="group" aria-label="Categorias" style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <sc-for list="{{cats}}" as="c" hint-placeholder-count="8">
+              <button type="button" onClick="{{c.pick}}" style="{{c.style}}">{{c.label}}</button>
+            </sc-for>
           </div>
-        </sc-for>
+          <sc-for list="{{sections}}" as="s" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <h2 style="margin: 6px 0 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; font-weight: 800; color: #F5E9D7;">{{s.title}}</h2>
+              <div class="cl-items">
+                <sc-for list="{{s.items}}" as="p" hint-placeholder-count="4">
+                  <button type="button" onClick="{{p.open}}" aria-label="{{p.aria}}" class="cl-card" style="display: flex; gap: 12px; padding: 12px; text-align: left; color: inherit; opacity: {{p.op}};">
+                    <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+                      <span style="font-size: 15px; font-weight: 700;">{{p.name}}</span>
+                      <span style="font-size: 12px; color: #A1A1AA; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">{{p.desc}}</span>
+                      <span class="num" style="margin-top: auto; font-size: 15px; font-weight: 800; color: {{p.priceColor}};">{{p.price}}</span>
+                    </div>
+                    <div style="position: relative; flex: 0 0 auto; width: 104px; height: 104px; border-radius: 14px; overflow: hidden; background: #202024;">
+                      <img src="{{p.img}}" alt="" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
+                      <span style="position: absolute; right: 6px; bottom: 6px; min-width: 30px; height: 30px; padding: 0 8px; box-sizing: border-box; border-radius: 99px; background: {{p.badgeBg}}; color: {{p.badgeFg}}; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center;">{{p.badge}}</span>
+                    </div>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+          <sc-if value="{{noResults}}" hint-placeholder-val="{{ false }}">
+            <div class="cl-card" style="padding: 20px; text-align: center; color: #A1A1AA; font-size: 14px;">Nada encontrado para "{{q}}".</div>
+          </sc-if>
+        </div>
+
+        <aside class="cl-side cl-card" aria-label="Seu pedido" style="flex-direction: column; gap: 12px; padding: 16px;">
+          <div style="display: flex; gap: 6px;"><sc-for list="{{tipos}}" as="t" hint-placeholder-count="2"><button type="button" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button></sc-for></div>
+          <sc-if value="{{emptyCart}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; color: #A1A1AA; padding: 10px 0;">Seu pedido está vazio. Toque num lanche para adicionar.</span></sc-if>
+          <sc-for list="{{lines}}" as="l" hint-placeholder-count="2">
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <img src="{{l.img}}" alt="" style="width: 48px; height: 48px; border-radius: 10px; object-fit: cover; flex: 0 0 auto;">
+              <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 700;">{{l.name}}</span><span style="font-size: 12px; color: #A1A1AA;">{{l.extras}}</span></div>
+              <span class="num" style="font-size: 14px; font-weight: 700;">{{l.price}}</span>
+              <button type="button" aria-label="Remover" onClick="{{l.remove}}" style="width: 32px; height: 32px; border-radius: 99px; border: 1px solid rgba(255,255,255,.12); background: transparent; color: #A1A1AA;">✕</button>
+            </div>
+          </sc-for>
+          <sc-if value="{{isEntrega}}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 12px; color: #A1A1AA;">Bairro de entrega</span><div style="display: flex; flex-wrap: wrap; gap: 6px;"><sc-for list="{{bairros}}" as="b" hint-placeholder-count="5"><button type="button" onClick="{{b.pick}}" style="{{b.style}}">{{b.label}}</button></sc-for></div></div>
+          </sc-if>
+          <div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 12px; color: #A1A1AA;">Pagamento</span><div style="display: flex; flex-wrap: wrap; gap: 6px;"><sc-for list="{{pays}}" as="p" hint-placeholder-count="3"><button type="button" onClick="{{p.pick}}" style="{{p.style}}">{{p.label}}</button></sc-for></div></div>
+          <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.08); font-size: 14px;">
+            <div style="display: flex; justify-content: space-between;"><span style="color: #A1A1AA;">Subtotal</span><span class="num">{{subTxt}}</span></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: #A1A1AA;">Taxa de entrega</span><span class="num">{{feeTxt}}</span></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: #A1A1AA;">Cashback</span><button type="button" onClick="{{toggleCash}}" style="{{cashStyle}}">{{cashTxt}}</button></div>
+            <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 800;"><span>Total</span><span class="num" style="color: #FBBF24;">{{totalTxt}}</span></div>
+          </div>
+          <button type="button" onClick="{{finish}}" style="{{finishStyle}}">Fazer pedido</button>
+        </aside>
       </div>
     </div>
-    <div style="padding: 12px 14px 18px; background: #0A0A0A; border-top: 1px solid rgba(255,255,255,.08);">
-      <button type="button" onClick="{{checkout}}" style="width: 100%; min-height: 56px; border-radius: 14px; border: none; background: #F59E0B; color: #0F0F0F; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px;">
-        <span>{{cartCount}}</span><span>Pagar com Pix</span><span class="num">{{cartTotal}}</span>
+
+    <div class="cl-bar">
+      <button type="button" onClick="{{openCart}}" style="width: 100%; min-height: 58px; border-radius: 16px; border: none; background: {{barBg}}; color: #0F0F0F; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px;">
+        <span>{{cartCount}}</span><span>{{barLabel}}</span><span class="num">{{cartTotal}}</span>
       </button>
     </div>
+
+    <sc-if value="{{cartOpen}}" hint-placeholder-val="{{ false }}">
+      <div class="cl-sheet">
+        <div role="dialog" aria-label="Seu pedido" style="padding: 18px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 18px;">Seu pedido</span><button type="button" aria-label="Fechar" onClick="{{closeCart}}" style="width: 40px; height: 40px; border-radius: 99px; border: 1px solid rgba(255,255,255,.12); background: transparent; color: #FAFAF9; font-size: 18px;">✕</button></div>
+          <div style="display: flex; gap: 6px;"><sc-for list="{{tipos}}" as="t" hint-placeholder-count="2"><button type="button" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button></sc-for></div>
+          <sc-if value="{{emptyCart}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; color: #A1A1AA; padding: 10px 0;">Seu pedido está vazio. Toque num lanche para adicionar.</span></sc-if>
+          <sc-for list="{{lines}}" as="l" hint-placeholder-count="2">
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <img src="{{l.img}}" alt="" style="width: 48px; height: 48px; border-radius: 10px; object-fit: cover; flex: 0 0 auto;">
+              <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 700;">{{l.name}}</span><span style="font-size: 12px; color: #A1A1AA;">{{l.extras}}</span></div>
+              <span class="num" style="font-size: 14px; font-weight: 700;">{{l.price}}</span>
+              <button type="button" aria-label="Remover" onClick="{{l.remove}}" style="width: 32px; height: 32px; border-radius: 99px; border: 1px solid rgba(255,255,255,.12); background: transparent; color: #A1A1AA;">✕</button>
+            </div>
+          </sc-for>
+          <sc-if value="{{isEntrega}}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 12px; color: #A1A1AA;">Bairro de entrega</span><div style="display: flex; flex-wrap: wrap; gap: 6px;"><sc-for list="{{bairros}}" as="b" hint-placeholder-count="5"><button type="button" onClick="{{b.pick}}" style="{{b.style}}">{{b.label}}</button></sc-for></div></div>
+          </sc-if>
+          <div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 12px; color: #A1A1AA;">Pagamento</span><div style="display: flex; flex-wrap: wrap; gap: 6px;"><sc-for list="{{pays}}" as="p" hint-placeholder-count="3"><button type="button" onClick="{{p.pick}}" style="{{p.style}}">{{p.label}}</button></sc-for></div></div>
+          <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.08); font-size: 14px;">
+            <div style="display: flex; justify-content: space-between;"><span style="color: #A1A1AA;">Subtotal</span><span class="num">{{subTxt}}</span></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: #A1A1AA;">Taxa de entrega</span><span class="num">{{feeTxt}}</span></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: #A1A1AA;">Cashback</span><button type="button" onClick="{{toggleCash}}" style="{{cashStyle}}">{{cashTxt}}</button></div>
+            <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 800;"><span>Total</span><span class="num" style="color: #FBBF24;">{{totalTxt}}</span></div>
+          </div>
+          <button type="button" onClick="{{finish}}" style="{{finishStyle}}">Fazer pedido</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{modalOpen}}" hint-placeholder-val="{{ false }}">
+      <div class="cl-sheet">
+        <div role="dialog" aria-label="{{mName}}" style="display: flex; flex-direction: column;">
+          <div style="position: relative; height: 240px; background: #202024;">
+            <img src="{{mImg}}" alt="{{mName}}" style="width: 100%; height: 100%; object-fit: cover;">
+            <button type="button" aria-label="Fechar" onClick="{{closeModal}}" style="position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border-radius: 99px; border: none; background: rgba(15,15,15,.75); color: #FAFAF9; font-size: 18px;">✕</button>
+          </div>
+          <div style="padding: 18px; display: flex; flex-direction: column; gap: 12px;">
+            <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 22px;">{{mName}}</span>
+            <span style="font-size: 14px; color: #D4D4D8; line-height: 1.45;">{{mDesc}}</span>
+            <span class="num" style="font-size: 18px; font-weight: 800; color: #FBBF24;">{{mPrice}}</span>
+            <sc-for list="{{mGroups}}" as="g" hint-placeholder-count="2">
+              <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.08);">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px;"><span style="font-weight: 700; font-size: 15px;">{{g.name}}</span><span style="font-size: 12px; color: #A1A1AA;">{{g.rule}}</span></div>
+                <sc-for list="{{g.opts}}" as="o" hint-placeholder-count="4">
+                  <button type="button" role="checkbox" aria-checked="{{o.aria}}" onClick="{{o.toggle}}" style="display: flex; align-items: center; gap: 10px; min-height: 46px; padding: 0 12px; border-radius: 12px; border: 1px solid {{o.border}}; background: {{o.bg}}; color: #FAFAF9; text-align: left;">
+                    <span style="width: 22px; height: 22px; border-radius: 6px; border: 2px solid {{o.border}}; background: {{o.box}}; color: #0F0F0F; font-size: 13px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex: 0 0 auto;">{{o.mark}}</span>
+                    <span style="flex: 1 1 auto; font-size: 14px;">{{o.name}}</span>
+                    <span class="num" style="font-size: 13px; color: #FBBF24; font-weight: 700;">{{o.price}}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-for>
+            <input class="cl-inp" placeholder="Alguma observação? Ex.: sem cebola" aria-label="Observação" value="{{mObs}}" onChange="{{setObs}}">
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 4px; border: 1px solid rgba(255,255,255,.12); border-radius: 14px; padding: 4px;">
+                <button type="button" aria-label="Menos um" onClick="{{qDown}}" style="width: 44px; height: 44px; border-radius: 10px; border: none; background: #202024; color: #FAFAF9; font-size: 20px;">−</button>
+                <span class="num" style="min-width: 28px; text-align: center; font-weight: 800; font-size: 16px;">{{mQty}}</span>
+                <button type="button" aria-label="Mais um" onClick="{{qUp}}" style="width: 44px; height: 44px; border-radius: 10px; border: none; background: #202024; color: #FAFAF9; font-size: 20px;">+</button>
+              </div>
+              <button type="button" onClick="{{addToCart}}" style="flex: 1 1 auto; min-height: 54px; border-radius: 14px; border: none; background: #F59E0B; color: #0F0F0F; font-weight: 800; font-size: 15px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px;"><span>Adicionar</span><span class="num">{{mTotal}}</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
   </sc-if>
 
   <sc-if value="{{isTrack}}" hint-placeholder-val="{{ false }}">
-    <div style="flex: 1 1 auto; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 14px;">
-      <div style="padding: 20px; border-radius: 18px; background: #18181B; border: 1px solid rgba(255,255,255,.08); display: flex; flex-direction: column; gap: 6px;">
-        <span style="font-size: 13px; color: #A1A1AA;">Pedido #1053 · Seu Alves</span>
-        <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 24px; line-height: 1.15;">{{headline}}</span>
-        <span class="num" style="font-size: 15px; color: #FBBF24; font-weight: 700;">{{eta}}</span>
-      </div>
-      <div style="height: 150px; border-radius: 18px; background: #18181B; border: 1px solid rgba(255,255,255,.08); position: relative; overflow: hidden;">
-        <div style="position: absolute; left: 30px; top: 100px; width: 14px; height: 14px; border-radius: 99px; background: #F59E0B; border: 3px solid #0F0F0F;"></div>
-        <div style="position: absolute; left: 44px; top: 104px; width: {{routeW}}px; height: 4px; border-radius: 99px; background: #F59E0B;"></div>
-        <div style="position: absolute; left: {{bikeX}}px; top: 92px; width: 28px; height: 28px; border-radius: 99px; background: #7A1F1F; color: #F5E9D7; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; border: 2px solid #F59E0B;">LE</div>
-        <div style="position: absolute; right: 30px; top: 40px; width: 16px; height: 16px; border-radius: 4px; background: #22C55E; border: 3px solid #0F0F0F;"></div>
-        <span style="position: absolute; left: 14px; top: 12px; font-size: 11px; color: #A1A1AA;">mapa ao vivo (na versão final)</span>
-      </div>
-      <div style="padding: 18px; border-radius: 18px; background: #18181B; border: 1px solid rgba(255,255,255,.08); display: flex; flex-direction: column; gap: 0;">
-        <sc-for list="{{steps}}" as="s" hint-placeholder-count="5">
-          <div style="display: flex; gap: 14px;">
-            <div style="display: flex; flex-direction: column; align-items: center; width: 22px;">
-              <span style="width: 22px; height: 22px; border-radius: 99px; background: {{s.dotBg}}; border: 2px solid {{s.dotBorder}}; color: #0F0F0F; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">{{s.mark}}</span>
-              <sc-if value="{{s.notLast}}" hint-placeholder-val="{{ true }}">
-                <span style="flex: 1 1 auto; width: 2px; min-height: 26px; background: {{s.lineColor}};"></span>
-              </sc-if>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 16px;">
-              <span style="font-size: 15px; font-weight: 700; color: {{s.color}};">{{s.label}}</span>
-              <span class="num" style="font-size: 12px; color: #A1A1AA;">{{s.time}}</span>
-            </div>
-          </div>
-        </sc-for>
-      </div>
-      <sc-if value="{{delivered}}" hint-placeholder-val="{{ false }}">
-        <div style="padding: 18px; border-radius: 18px; background: #7A1F1F; display: flex; flex-direction: column; gap: 10px; align-items: center;">
-          <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 18px; color: #F5E9D7;">Como foi seu pedido?</span>
-          <div role="group" aria-label="Nota de 1 a 5" style="display: flex; gap: 6px;">
-            <sc-for list="{{rate}}" as="r" hint-placeholder-count="5">
-              <button type="button" onClick="{{r.pick}}" aria-label="{{r.aria}}" style="{{r.style}}">★</button>
-            </sc-for>
-          </div>
-          <span style="font-size: 12px; color: #E7D2B3;">{{rateMsg}}</span>
+    <div class="cl-wrap" style="padding-top: 16px;">
+      <div class="cl-track">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button type="button" onClick="{{goMenu}}" aria-label="Voltar ao cardápio" style="width: 42px; height: 42px; border-radius: 99px; border: 1px solid rgba(255,255,255,.12); background: #18181B; color: #FAFAF9; font-size: 18px;">←</button>
+          <img src="{{logo}}" alt="" style="width: 42px; height: 42px; border-radius: 12px; object-fit: cover;">
+          <div style="display: flex; flex-direction: column;"><span style="font-weight: 800; font-size: 15px;">Pedido #1053</span><span style="font-size: 12px; color: #A1A1AA;">{{trackSub}}</span></div>
         </div>
-      </sc-if>
-      <button type="button" onClick="{{advance}}" style="min-height: 48px; border-radius: 12px; border: 1px dashed rgba(245,158,11,.5); background: transparent; color: #FBBF24; font-weight: 700; font-size: 14px;">{{advanceLabel}}</button>
-      <span style="font-size: 12px; color: #A1A1AA; text-align: center;">Dúvidas? <a href="#">Falar com a loja no WhatsApp</a></span>
+        <div class="cl-card" style="padding: 22px; display: flex; flex-direction: column; gap: 8px; border-color: {{headBorder}};">
+          <span style="font-size: 32px; line-height: 1;">{{headIcon}}</span>
+          <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 24px; line-height: 1.2;">{{headline}}</span>
+          <span style="font-size: 14px; color: #D4D4D8;">{{headText}}</span>
+          <span class="num" style="font-size: 16px; color: #FBBF24; font-weight: 800;">{{eta}}</span>
+        </div>
+        <sc-if value="{{showMap}}" hint-placeholder-val="{{ false }}">
+          <div class="cl-card" style="padding: 10px; display: flex; flex-direction: column; gap: 8px;">
+            <svg viewBox="0 0 360 170" width="100%" role="img" aria-label="Mapa: o motoboy está chegando" style="display: block; width: 100%; max-width: 520px; margin: 0 auto; border-radius: 12px; background: #141416;">
+              <path d="M0 40H360M0 100H360M0 150H360M70 0V170M170 0V170M280 0V170" stroke="rgba(255,255,255,.06)" stroke-width="10"></path>
+              <path d="M70 150 L70 100 L170 100 L170 40 L280 40" fill="none" stroke="rgba(245,158,11,.35)" stroke-width="4" stroke-dasharray="6 6"></path>
+              <path d="{{routeDone}}" fill="none" stroke="#F59E0B" stroke-width="4" stroke-linecap="round"></path>
+              <circle cx="280" cy="40" r="10" fill="#22C55E" stroke="#0F0F0F" stroke-width="3"></circle>
+              <text x="280" y="22" fill="#86EFAC" font-size="11" font-weight="700" text-anchor="middle">Você</text>
+              <circle cx="{{bikeX}}" cy="{{bikeY}}" r="14" fill="#7A1F1F" stroke="#F59E0B" stroke-width="3"></circle>
+              <text x="{{bikeX}}" y="{{bikeTY}}" fill="#F5E9D7" font-size="10" font-weight="800" text-anchor="middle">LE</text>
+            </svg>
+            <span style="font-size: 13px; color: #D4D4D8; text-align: center;">{{mapNote}}</span>
+          </div>
+        </sc-if>
+        <div class="cl-card" style="padding: 18px;">
+          <sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+            <div style="display: flex; gap: 14px;">
+              <div style="display: flex; flex-direction: column; align-items: center; width: 24px;">
+                <span style="width: 24px; height: 24px; border-radius: 99px; background: {{s.dotBg}}; border: 2px solid {{s.dotBorder}}; color: #0F0F0F; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">{{s.mark}}</span>
+                <sc-if value="{{s.notLast}}" hint-placeholder-val="{{ true }}"><span style="flex: 1 1 auto; width: 2px; min-height: 26px; background: {{s.lineColor}};"></span></sc-if>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 16px;">
+                <span style="font-size: 15px; font-weight: 700; color: {{s.color}};">{{s.label}}</span>
+                <span class="num" style="font-size: 12px; color: #A1A1AA;">{{s.time}}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{delivered}}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 18px; border-radius: 18px; background: #7A1F1F; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+            <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 18px; color: #F5E9D7;">Como foi seu pedido?</span>
+            <div role="group" aria-label="Nota de 1 a 5" style="display: flex; gap: 6px;">
+              <sc-for list="{{rate}}" as="r" hint-placeholder-count="5"><button type="button" onClick="{{r.pick}}" aria-label="{{r.aria}}" style="{{r.style}}">★</button></sc-for>
+            </div>
+            <span style="font-size: 12px; color: #E7D2B3;">{{rateMsg}}</span>
+          </div>
+        </sc-if>
+        <div style="padding: 14px; border-radius: 14px; border: 1px dashed rgba(245,158,11,.45); display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: .06em; color: #FBBF24;">SIMULAÇÃO · VISÃO INTERNA DA LOJA</span>
+          <span style="font-size: 13px; color: #E4E4E7;">{{internal}}</span>
+          <span style="font-size: 12px; color: #A1A1AA;">{{internalNote}}</span>
+          <button type="button" onClick="{{advance}}" style="min-height: 46px; border-radius: 12px; border: none; background: #27272A; color: #FBBF24; font-weight: 700; font-size: 14px;">{{advanceLabel}}</button>
+        </div>
+        <span style="font-size: 12px; color: #A1A1AA; text-align: center;">Dúvidas? <a href="#">Falar com a loja no WhatsApp</a></span>
+      </div>
     </div>
   </sc-if>
 </div>
@@ -205,69 +342,111 @@ window.PROTO_IMG='../assets/img/produtos/';window.PROTO_LOGO='../assets/img/logo
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { view: 'menu', cat: 'burgers', cart: { onion: 1 }, step: 2, stars: 0 };
+    this.state = { view: 'menu', cat: 'todos', q: '', cart: [{ id: 'duplo-onion', qty: 1, extras: ['BACON (50g)'], add: 3, obs: '' }], modal: null, mSel: {}, mQty: 1, mObs: '', cartOpen: false, tipo: 'entrega', bairro: 0, pay: 'Pix', stage: 0, stars: 0, ordered: false };
   }
   brl(n) { return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
   renderVals() {
     var self = this, st = this.state;
-    function chip(on) {
-      return 'flex:0 0 auto;min-height:40px;padding:0 16px;border-radius:99px;font-size:14px;font-weight:700;white-space:nowrap;border:1px solid ' + (on ? '#F59E0B' : 'rgba(255,255,255,.12)') + ';background:' + (on ? '#F59E0B' : '#18181B') + ';color:' + (on ? '#0F0F0F' : '#E4E4E7') + ';';
+    function set(o) { self.setState(o); }
+    var IMGBASE = (typeof window !== 'undefined' && window.PROTO_IMG) || 'https://assets.olaclick.app/companies/products/images/800/';
+    var LOGO = (typeof window !== 'undefined' && window.PROTO_LOGO) || 'https://assets.olaclick.app/companies/logos/01bf6473-9273-413d-93dd-c51f71faf7b4.webp';
+    var BANNER = (typeof window !== 'undefined' && window.PROTO_BANNER) || 'https://assets.olaclick.app/companies/backgrounds/f9d0f8a5-877b-4f12-b69c-3c6b1991615a.webp';
+    var MENU_P = [["combo-casal", "Combo Casal", "promocoes", 42, "038e2a3f-6631-4266-affd-13f252333dcc", "1 Seu Cheddar, 1 Duplo Alves, batata P e 2 Guaravitas."], ["combo-familia", "Combo Família Alves", "promocoes", 89.9, "2b903f6f-3e7f-477b-abd8-4176a4fb49e2", "4 X-Tudos, Batata Maluca com cream cheese, cheddar e frango, 8 nuggets e molho."], ["combo-01", "Combo 01", "combos", 55, "91d554f1-2ff1-4ab5-ae54-09a87fb0c506", "4 Mini Alves, 10 nuggets, batata média com cheddar e bacon e refri 1 litro."], ["combo-02", "Combo 02", "combos", 65, "11e3cf33-678b-49a4-be40-fc942ecc190c", "3 Duplos Alves, batata com cheddar e bacon, 10 nuggets e Convenção 2L."], ["combo-03", "Combo 03", "combos", 65, "532b90d9-ab81-4eaa-94f9-a51cd1d2cf0e", "1 Seu Cheddar, 1 Seu Cheese, 1 Mini Alves, 10 nuggets, batata com cheddar e bacon e refri 1L."], ["x-alves", "X-Alves", "hamburgueres", 25, "bd64864e-7adb-4188-b9e4-831d32dbba71", "2 carnes, presunto, calabresa, bacon, ovo, 2 queijos, milho, ervilha, queijo ralado, batata palha, alface, tomate e cebola."], ["x-tudo", "X-Tudo", "hamburgueres", 20, "6619a978-e672-4055-a594-6af8143c376a", "Carne, calabresa, presunto, bacon, ovo, queijo, milho, ervilha, queijo ralado, batata palha, alface, tomate e cebola."], ["burger-classico", "Burger Clássico", "hamburgueres", 20, "4856c0e0-46a7-4760-8eae-b05e0a61f62f", "Carne artesanal 150g, queijo, alface, tomate, cebola, picles e Molho Alves."], ["toscano", "Toscano Artesanal", "hamburgueres", 30, "5ffdb9ed-912b-45e9-9093-75cd439fcf2a", "Blend de linguiça toscana, carne artesanal 90g, queijo branco, queijo coalho, cebola e tomate picadinho e maionese temperada."], ["duplo-onion", "Duplo Onion Artesanal", "hamburgueres", 28, "1cf8c0cd-f889-4281-afc9-3a78c32c0548", "2 carnes artesanais 90g, 2 queijos, bacon, anel de cebola empanado, barbecue, alface, tomate e Molho Alves."], ["ct2", "CT2 - Contra Filé", "hamburgueres", 22, "bec91678-231c-4d43-87fa-18ef1fb023a9", "Iscas de carne acebolada, mussarela, cream cheese e maionese de alho."], ["c1", "C1 - Mini Alves", "hamburgueres", 9, "6223c409-664c-4267-896b-4aa10d8d9917", "Hambúrguer, queijo e ketchup."], ["c2", "C2 - Duplo Alves", "hamburgueres", 14, "b4ee9c32-a5d3-41c7-bed2-fdea94dd8a57", "2 hambúrgueres, 2 queijos, alface, tomate, cebola, picles e molho american burgers."], ["c3", "C3 - Triplo Alves", "hamburgueres", 18, "5ded3b99-defc-49a8-92d2-bdd9bf596901", "3 hambúrgueres, 3 queijos, alface, tomate, cebola, picles e molho american burgers."], ["c4", "C4 - Monstrão", "hamburgueres", 20, "679af8e2-b3ce-4be0-a93b-2d9733f7e38f", "4 carnes, 4 queijos, alface, tomate, cebola, picles e molho american burgers."], ["hb2", "HB2 - Seu Cheddar", "hamburgueres", 16, "611d000f-e109-410f-9723-f430a85a8240", "2 carnes, 2 queijos cheddar, bacon, molho cheddar melt, alface, picles e molho american burgers."], ["hb4", "HB4 - Seu Cheese", "hamburgueres", 18, "6bf6fc11-ebe6-4bae-9ca3-967a181f208d", "2 carnes, bacon, cream cheese, cebola caramelizada no barbecue, 2 queijos, alface, tomate, picles e molho american."], ["p1", "P1 - Seu Picanha", "hamburgueres", 15, "6e03b41c-b8b2-4582-b49f-0341952f0a33", "Carne sabor picanha, 2 queijos, alface, tomate, cebola, picles e molho american."], ["p2", "P2 - Duplo Picanha", "hamburgueres", 19, "eab7ee48-4731-4c0c-a8e9-244542c45c23", "2 carnes sabor picanha, 3 queijos, alface, tomate, cebola, picles e molho american."], ["f1", "F1 - Franguinho", "hamburgueres", 14, "bcb3c745-7865-4fd5-8e17-8b315ca8cd63", "Filé de frango grelhado, queijo, salada e maionese temperada."], ["batata", "Batata Frita", "batatas", 7, "b0d91043-63ed-4bd6-a540-70e07eb1549b", "Batata frita 7mm, corte fino e sequinha."], ["batata-maluca", "Batata Maluca", "batatas", 35, "9c83fd8b-b668-4242-9715-d05b61cf0206", "Cheddar, bacon e calabresa."], ["maluca-frango", "Maluca c/ Frango", "batatas", 45, "54da5494-e8fb-4c75-a64d-68ceca3c99dc", "Frango, bacon, calabresa, cheddar e cream cheese."], ["nugget-6", "Nuggets 6 un.", "porcoes", 9, "4fcbb19c-b749-4fab-937f-f478f7a29b12", "6 unidades de nuggets de frango."], ["nugget-15", "Nuggets 15 un.", "porcoes", 18, "4fcbb19c-b749-4fab-937f-f478f7a29b12", "15 unidades de nuggets de frango."], ["anel-cebola", "Anel de Cebola", "porcoes", 5, "d1aec5b3-bf86-4fe8-ab1a-5721c285fc74", "Cebola empanada + potinho de molho."], ["calabresa-fritas", "Calabresa c/ Fritas", "porcoes", 38, "306f0704-d85b-4fd0-bce0-183cacb1973b", "Calabresa acebolada acompanhada de batata frita."], ["frango-passarinho", "Frango à Passarinho c/ Fritas", "porcoes", 40, "59ac47df-9bde-4cd4-bb91-fa4eed781293", "Cerca de 1kg de cortes de frango frito, alho torrado, limão, molho e batata frita."], ["carne-fritas", "Carne c/ Fritas", "porcoes", 65, "b5eca595-db20-4515-b3b0-d6a0cceb55d0", "500g de isca de carne acebolada com fritas + potinho de molho."], ["churraskinho", "Churraskinho Misto", "porcoes", 60, "d98cebad-b2e5-4e4f-a4c3-bcabba935ed8", "Iscas de carne, frango e calabresa aceboladas com fritas + potinho de molho."], ["file-frango-fritas", "Filé de Frango c/ Fritas", "porcoes", 42, "b2f5091a-ccce-4a98-959c-4bcb0d60037e", "Iscas de filé de frango acebolado com fritas + potinho de molho."], ["gurjao", "Gurjão de Frango", "porcoes", 45, "", "Tiras de frango empanadas e crocantes."], ["acai", "Açaí", "acai", 6, "996c790c-a8cc-48c7-84d3-4c5a9ddd9b67", "Açaí natural batido todo dia (sempre fresco)."], ["refri-2l", "Refri 2L", "bebidas", null, "1b08db59-656f-4f6a-8dd8-49f3427aa130", "Coca-Cola, Fanta ou Sprite 2 litros."], ["refri-lata", "Refri Lata 350ml", "bebidas", 7, "64b58b48-240a-46f4-8e28-f87a9d215818", "Coca-Cola 350ml."], ["guaravita", "Guaravita", "bebidas", 3, "344d4717-fea1-4a41-b4de-1ecd1c20b99b", "Guaravita 290ml."], ["agua-500", "Água 500ml", "bebidas", 3, "32d6afe5-9859-4834-b065-f0b6aefa6508", "Água mineral sem gás (pequena)."], ["agua-1500", "Água 1,5L", "bebidas", 6, "9b34160c-5328-4ba4-99bf-dba354318d23", "Água mineral sem gás (grande)."]];
+    var MENU_C = [["promocoes", "Promoções", "🔥"], ["combos", "Combo na Caixa", "📦"], ["hamburgueres", "Hambúrgueres", "🍔"], ["batatas", "Batata Frita", "🍟"], ["porcoes", "Porções", "🍗"], ["acai", "Açaí", "🍇"], ["bebidas", "Bebidas", "🥤"]];
+    var MENU_B = [["Vila Kosmos", 5], ["Ipase", 5], ["Vila da Penha", 5], ["Morro da Fé", 6], ["Praça do Carmo", 6], ["Penha Circular", 6], ["Largo do Bicão", 6], ["Vaz Lobo", 7], ["Quitungo", 7], ["Penha", 7], ["Irajá", 7]];
+    var OUT = { toscano: true };
+    var EXTRAS = { name: 'Adicionais', rule: 'opcional · até 5', opts: [['OVO', 2], ['BACON (50g)', 3], ['CALABRESA (50g)', 3], ['CHEDDAR (30g)', 2], ['Hambúrguer', 4], ['Hamb. Picanha', 6]] };
+    var MOLHO = { name: 'Molho no potinho', rule: 'opcional', opts: [['Molho Verde', 1], ['Barbecue', 2], ['Maionese Temperada', 3], ['Rosê', 2], ['Mostarda c/ Mel', 2]] };
+    var COMBO = { name: 'Vira combo?', rule: 'opcional', opts: [['Batata P + Coca Lata', 12], ['Batata P + Guaraná Lata', 12]] };
+    function groupsFor(p) { return p[2] === 'hamburgueres' ? [EXTRAS, COMBO, MOLHO] : (p[2] === 'porcoes' || p[2] === 'batatas') ? [MOLHO] : []; }
+    var byId = {}; MENU_P.forEach(function (p) { byId[p[0]] = p; });
+    var img = function (p) { return p[4] ? IMGBASE + p[4] + '.webp' : LOGO; };
+    function chip(on) { return 'min-height:38px;padding:0 14px;border-radius:99px;font-size:13px;font-weight:700;border:1px solid ' + (on ? '#F59E0B' : 'rgba(255,255,255,.12)') + ';background:' + (on ? '#F59E0B' : '#18181B') + ';color:' + (on ? '#0F0F0F' : '#E4E4E7') + ';'; }
+    var cats = [['todos', 'Tudo', '']].concat(MENU_C).map(function (c) { return { label: (c[2] ? c[2] + ' ' : '') + c[1], style: chip(st.cat === c[0]), pick: function () { set({ cat: c[0] }); } }; });
+    var inCart = {}; st.cart.forEach(function (l) { inCart[l.id] = (inCart[l.id] || 0) + l.qty; });
+    var q = (st.q || '').toLowerCase().trim();
+    var sections = MENU_C.filter(function (c) { return st.cat === 'todos' || st.cat === c[0]; }).map(function (c) {
+      var items = MENU_P.filter(function (p) { return p[2] === c[0] && (!q || (p[1] + ' ' + p[5]).toLowerCase().indexOf(q) >= 0); }).map(function (p) {
+        var out = !!OUT[p[0]], n = inCart[p[0]] || 0;
+        return { name: p[1], desc: p[5], img: img(p), price: out ? 'Esgotado hoje' : (p[3] ? self.brl(p[3]) : 'Escolha o sabor'), priceColor: out ? '#71717A' : '#FBBF24', op: out ? '.55' : '1',
+          badge: out ? '—' : (n ? String(n) : '+'), badgeBg: n ? '#F59E0B' : 'rgba(15,15,15,.85)', badgeFg: n ? '#0F0F0F' : '#FBBF24', aria: (out ? p[1] + ', esgotado' : 'Ver ' + p[1]),
+          open: function () { if (!out) set({ modal: p[0], mSel: {}, mQty: 1, mObs: '' }); } };
+      });
+      return { title: (c[2] ? c[2] + ' ' : '') + c[1], items: items, n: items.length };
+    }).filter(function (s) { return s.n; });
+    // modal
+    var mp = st.modal ? byId[st.modal] : null, mGroups = [], mAdd = 0, mExtras = [];
+    if (mp) {
+      mGroups = groupsFor(mp).map(function (g, gi) {
+        return { name: g.name, rule: g.rule, opts: g.opts.map(function (o, oi) {
+          var k = gi + ':' + oi, on = !!st.mSel[k];
+          if (on) { mAdd += o[1]; mExtras.push(o[0]); }
+          return { name: o[0], price: '+ ' + self.brl(o[1]), aria: on ? 'true' : 'false', mark: on ? '✓' : '', border: on ? '#F59E0B' : 'rgba(255,255,255,.14)', bg: on ? 'rgba(245,158,11,.10)' : 'transparent', box: on ? '#F59E0B' : 'transparent',
+            toggle: function () { var ns = Object.assign({}, self.state.mSel); ns[k] = !ns[k]; set({ mSel: ns }); } };
+        }) };
+      });
     }
-    var views = [['menu', 'Cardápio'], ['track', 'Acompanhar pedido']].map(function (v) {
-      var on = st.view === v[0];
-      return { label: v[1], pick: function () { self.setState({ view: v[0] }); },
-        style: 'flex:1 1 0;min-height:40px;border-radius:9px;border:none;font-size:13px;font-weight:700;background:' + (on ? '#F59E0B' : 'transparent') + ';color:' + (on ? '#0F0F0F' : '#D4D4D8') + ';' };
+    // cart
+    var fees = MENU_B, fee = st.tipo === 'entrega' ? fees[st.bairro][1] : 0, sub = 0, count = 0;
+    var lines = st.cart.map(function (l, i) {
+      var p = byId[l.id], unit = p[3] + l.add; sub += unit * l.qty; count += l.qty;
+      return { name: l.qty + 'x ' + p[1], extras: l.extras.length ? '+ ' + l.extras.join(', ') : (l.obs ? 'Obs.: ' + l.obs : ''), price: self.brl(unit * l.qty), img: img(p),
+        remove: function () { var nc = self.state.cart.slice(); nc.splice(i, 1); set({ cart: nc }); } };
     });
-    var cats = [['combos', 'Combos'], ['burgers', 'Hambúrgueres'], ['batatas', 'Batatas']].map(function (c) {
-      return { label: c[1], style: chip(st.cat === c[0]), pick: function () { self.setState({ cat: c[0] }); } };
+    var total = sub + fee - (st.useCash ? 6.4 : 0);
+    var tipos = [['entrega', '🛵 Entrega'], ['retirada', '🏪 Retirar na loja']].map(function (t) { return { label: t[1], style: chip(st.tipo === t[0]) + 'flex:1 1 0;', pick: function () { set({ tipo: t[0] }); } }; });
+    var pays = ['Pix', 'Cartão na entrega', 'Dinheiro'].map(function (pg) { return { label: pg, style: chip(st.pay === pg), pick: function () { set({ pay: pg }); } }; });
+    var bairros = fees.map(function (b, i) { return { label: b[0] + ' · ' + self.brl(b[1], 0).replace(',00', ''), style: chip(i === st.bairro) + 'min-height:34px;font-size:12px;padding:0 10px;', pick: function () { set({ bairro: i }); } }; });
+    // tracking
+    var S = st.stage, ret = st.tipo === 'retirada';
+    var internalTxt = ret ? ['Pedido entrou. Aguardando aceite.', 'Cozinha aceitou às 21:43.', 'Em preparo na chapa.', 'Pronto no balcão às 21:58.', 'Cliente retirou às 22:04.'] :
+      ['Pedido entrou às 21:42. Aguardando aceite.', 'Cozinha aceitou às 21:43.', 'Em preparo na chapa desde 21:43.', 'Pronto às 21:56. Esperando o motoboy.', 'Saiu para entrega com o Léo às 21:58 (2,8 km até o cliente).', 'Léo está a 600 m do cliente (cerca de 3 min).', 'Léo marcou "Entreguei" às 22:09.'];
+    var maxS = internalTxt.length - 1;
+    var vis = ret ? [0, 1, 1, 2, 3] : [0, 1, 1, 1, 1, 2, 3];
+    var V = vis[Math.min(S, maxS)];
+    var cSteps = ret ? [['Pedido recebido', '21:42'], ['Preparando seu pedido', 'desde 21:43'], ['Pronto para retirar', '21:58'], ['Retirado', '22:04']] :
+      [['Pedido recebido', '21:42'], ['Preparando seu pedido', 'desde 21:43'], ['Está chegando!', '22:06'], ['Entregue', '22:09']];
+    var steps = cSteps.map(function (sd, i) {
+      var done = i < V || (i === V && i === cSteps.length - 1), cur = i === V && !done;
+      return { label: sd[0], time: done || cur ? sd[1] : 'aguardando', notLast: i < cSteps.length - 1, mark: done ? '✓' : '',
+        dotBg: done ? '#22C55E' : (cur ? '#F59E0B' : 'transparent'), dotBorder: done ? '#22C55E' : (cur ? '#F59E0B' : '#3F3F46'), lineColor: done ? '#22C55E' : '#3F3F46', color: done || cur ? '#FAFAF9' : '#71717A' };
     });
-    var menu = [
-      { id: 'casal', cat: 'combos', name: 'Combo Casal', desc: '2 hambúrgueres, batata M e 2 refris.', price: 42 },
-      { id: 'familia', cat: 'combos', name: 'Combo Família Alves', desc: '4 hambúrgueres, batata G e refri 2 L.', price: 89.9 },
-      { id: 'xalves', cat: 'burgers', name: 'X-Alves', desc: 'Blend 180 g, cheddar, bacon e molho da casa no brioche.', price: 25 },
-      { id: 'onion', cat: 'burgers', name: 'Duplo Onion Artesanal', desc: 'Dois blends, cebola caramelizada e cheddar.', price: 28 },
-      { id: 'toscano', cat: 'burgers', name: 'Toscano Artesanal', desc: 'Linguiça toscana artesanal, queijo e vinagrete.', price: 30, out: true },
-      { id: 'p2', cat: 'burgers', name: 'P2 - Duplo Picanha', desc: 'Dois discos de picanha com queijo.', price: 19 },
-      { id: 'batm', cat: 'batatas', name: 'Batata M (2 pessoas)', desc: 'Batata crocante, porção para dois.', price: 14 },
-      { id: 'maluca', cat: 'batatas', name: 'Batata Maluca', desc: 'Batata com cheddar, bacon e calabresa.', price: 35 }
-    ];
-    var total = 0, count = 0;
-    menu.forEach(function (m) { var q = st.cart[m.id] || 0; total += q * m.price; count += q; });
-    var items = menu.filter(function (m) { return m.cat === st.cat; }).map(function (m) {
-      var q = st.cart[m.id] || 0;
-      return { name: m.name, desc: m.desc, price: m.out ? 'Esgotado hoje' : self.brl(m.price),
-        nameColor: m.out ? '#71717A' : '#FAFAF9', priceColor: m.out ? '#71717A' : '#FBBF24',
-        btn: m.out ? '—' : (q ? q + ' no pedido' : 'Adicionar'), aria: 'Adicionar ' + m.name,
-        btnStyle: 'min-height:40px;padding:0 12px;border-radius:10px;font-size:13px;font-weight:800;border:none;background:' + (m.out ? '#27272A' : (q ? '#F59E0B' : '#7A1F1F')) + ';color:' + (m.out ? '#71717A' : (q ? '#0F0F0F' : '#F5E9D7')) + ';',
-        add: function () { if (m.out) return; var c = Object.assign({}, self.state.cart); c[m.id] = (c[m.id] || 0) + 1; self.setState({ cart: c }); } };
-    });
-    var stepDefs = [
-      ['Pedido recebido', '21:42'], ['Aceito pela cozinha', '21:43'], ['Em preparo', 'desde 21:43'], ['Saiu para entrega com Léo', '21:58'], ['Entregue', '22:11']
-    ];
-    var heads = ['Recebemos seu pedido!', 'A cozinha aceitou seu pedido.', 'Seu lanche está na chapa.', 'Saiu para entrega com o Léo.', 'Pedido entregue. Bom apetite!'];
-    var etas = ['Chega entre 22:15 e 22:25', 'Chega entre 22:15 e 22:25', 'Chega entre 22:12 e 22:20', 'Chega em cerca de 12 min', 'Entregue às 22:11'];
-    var steps = stepDefs.map(function (sd, i) {
-      var done = i < st.step, cur = i === st.step;
-      return { label: sd[0], time: done || cur ? sd[1] : 'aguardando', notLast: i < stepDefs.length - 1,
-        mark: done ? '✓' : '', dotBg: done ? '#22C55E' : (cur ? '#F59E0B' : 'transparent'), dotBorder: done ? '#22C55E' : (cur ? '#F59E0B' : '#3F3F46'),
-        lineColor: done ? '#22C55E' : '#3F3F46', color: done || cur ? '#FAFAF9' : '#71717A' };
-    });
-    var delivered = st.step >= 4;
-    var progress = Math.min(st.step, 4) / 4;
-    var rate = [1, 2, 3, 4, 5].map(function (n) {
-      var on = n <= st.stars;
-      return { aria: n + ' estrelas', pick: function () { self.setState({ stars: n }); },
-        style: 'width:44px;height:44px;border-radius:10px;border:none;font-size:22px;background:' + (on ? '#F59E0B' : 'rgba(15,15,15,.45)') + ';color:' + (on ? '#0F0F0F' : '#E7D2B3') + ';' };
-    });
+    var heads = ret ? [['🧾', 'Recebemos seu pedido!', 'A loja já vai confirmar.', 'Fica pronto às 22:00'], ['👨‍🍳', 'Preparando seu pedido', 'Avisamos aqui e no WhatsApp quando estiver pronto.', 'Fica pronto às 22:00'], ['✅', 'Pronto para retirar!', 'Retire no balcão do Seu Alves.', 'Rua Sd. Ivo de Oliveira, 64'], ['😋', 'Bom apetite!', 'Obrigado pela preferência.', 'Retirado às 22:04']] :
+      [['🧾', 'Recebemos seu pedido!', 'A loja já vai confirmar.', 'Chega entre 22:15 e 22:25'], ['👨‍🍳', 'Preparando seu pedido', 'Avisamos aqui e no WhatsApp quando o motoboy estiver chegando.', 'Chega entre 22:15 e 22:25'], ['🛵', 'Seu pedido está chegando!', 'O Léo está a cerca de 600 m. Fique de olho no portão.', 'Chega em cerca de 3 min'], ['😋', 'Pedido entregue. Bom apetite!', 'Obrigado pela preferência.', 'Entregue às 22:09']];
+    var H = heads[V];
+    var near = !ret && S === 5, prog = near ? 0.75 : 0;
+    // rota do mapa: (70,150)->(70,100)->(170,100)->(170,40)->(280,40); moto a 75%
+    var rate = [1, 2, 3, 4, 5].map(function (n) { var on = n <= st.stars; return { aria: n + ' estrelas', pick: function () { set({ stars: n }); }, style: 'width:44px;height:44px;border-radius:10px;border:none;font-size:22px;background:' + (on ? '#F59E0B' : 'rgba(15,15,15,.45)') + ';color:' + (on ? '#0F0F0F' : '#E7D2B3') + ';' }; });
+    var hiddenNote = (!ret && S === 4) ? 'O cliente NÃO é avisado da saída. Ele continua vendo "Preparando seu pedido" com a previsão de chegada.' : (!ret && S === 5 ? 'Agora sim: o cliente recebe "Está chegando!" no WhatsApp e vê o mapa, porque o motoboy entrou no raio de 800 m.' : 'O que o cliente vê está acima. Mensagens no WhatsApp: recebido, chegando e entregue.');
     return {
-      views: views, isMenu: st.view === 'menu', isTrack: st.view === 'track', cats: cats, items: items,
-      cartCount: count + (count === 1 ? ' item' : ' itens'), cartTotal: this.brl(total),
-      checkout: function () { if (count) self.setState({ view: 'track', step: 0, stars: 0 }); },
-      headline: heads[Math.min(st.step, 4)], eta: etas[Math.min(st.step, 4)], steps: steps, delivered: delivered,
-      routeW: Math.round(270 * progress), bikeX: 30 + Math.round(270 * progress),
-      advance: function () { self.setState({ step: self.state.step >= 4 ? 0 : self.state.step + 1, stars: 0 }); },
-      advanceLabel: st.step >= 4 ? 'Simular de novo' : 'Simular próxima etapa',
-      rate: rate, rateMsg: st.stars ? (st.stars >= 4 ? 'Obrigado! Você ganhou R$ 2 de cashback.' : 'Sentimos muito. O Felipe vai falar com você no WhatsApp.') : 'Sua nota ajuda a gente a melhorar.'
+      logo: LOGO, banner: BANNER, isMenu: st.view === 'menu', isTrack: st.view === 'track', q: st.q,
+      search: function (e) { set({ q: e && e.target ? e.target.value : '' }); },
+      cats: cats, sections: sections, noResults: !sections.length,
+      trackBtn: st.ordered ? 'Acompanhar pedido' : 'Meus pedidos', goTrack: function () { set({ view: 'track', stage: self.state.ordered ? self.state.stage : 1 }); },
+      modalOpen: !!mp, mName: mp ? mp[1] : '', mDesc: mp ? mp[5] : '', mImg: mp ? img(mp) : '', mPrice: mp ? self.brl(mp[3]) : '', mGroups: mGroups, mQty: st.mQty, mObs: st.mObs,
+      mTotal: mp ? self.brl((mp[3] + mAdd) * st.mQty) : '',
+      setObs: function (e) { set({ mObs: e && e.target ? e.target.value : '' }); },
+      qDown: function () { set({ mQty: Math.max(1, self.state.mQty - 1) }); }, qUp: function () { set({ mQty: self.state.mQty + 1 }); },
+      closeModal: function () { set({ modal: null }); }, stop: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
+      addToCart: function () { var nc = self.state.cart.concat([{ id: mp[0], qty: self.state.mQty, extras: mExtras, add: mAdd, obs: self.state.mObs }]); set({ cart: nc, modal: null }); },
+      lines: lines, hasLines: lines.length > 0, emptyCart: !lines.length,
+      tipos: tipos, isEntrega: st.tipo === 'entrega', bairros: bairros,
+      pays: pays, subTxt: self.brl(sub), feeTxt: st.tipo === 'entrega' ? self.brl(fee) : 'grátis', cashTxt: st.useCash ? '− R$ 6,40' : 'usar R$ 6,40', cashStyle: 'border:none;background:transparent;color:#FBBF24;font-weight:700;font-size:13px;padding:0;',
+      toggleCash: function () { set({ useCash: !self.state.useCash }); },
+      totalTxt: self.brl(Math.max(0, total)), cartCount: count + (count === 1 ? ' item' : ' itens'), cartTotal: self.brl(Math.max(0, total)),
+      barLabel: count ? 'Ver pedido' : 'Escolha seus lanches', barBg: count ? '#F59E0B' : '#3F3F46',
+      cartOpen: st.cartOpen, openCart: function () { if (count) set({ cartOpen: true }); }, closeCart: function () { set({ cartOpen: false }); },
+      finish: function () { if (count) set({ view: 'track', stage: 0, stars: 0, cartOpen: false, ordered: true }); },
+      finishStyle: 'width:100%;min-height:54px;border-radius:14px;border:none;font-weight:800;font-size:16px;' + (count ? 'background:#F59E0B;color:#0F0F0F;' : 'background:#27272A;color:#71717A;cursor:not-allowed;'),
+      goMenu: function () { set({ view: 'menu' }); },
+      trackSub: (ret ? 'Retirada na loja' : 'Entrega em ' + fees[st.bairro][0]) + ' · ' + st.pay,
+      headIcon: H[0], headline: H[1], headText: H[2], eta: H[3], headBorder: near ? 'rgba(245,158,11,.6)' : 'rgba(255,255,255,.08)',
+      steps: steps, delivered: S >= maxS, showMap: near, mapNote: 'O Léo está a 600 m de você',
+      routeDone: 'M70 150 L70 100 L170 100 L170 55', bikeX: 170, bikeY: 55, bikeTY: 59,
+      rate: rate, rateMsg: st.stars ? (st.stars >= 4 ? 'Obrigado! Você ganhou R$ 2 de cashback.' : 'Sentimos muito. O Felipe vai falar com você no WhatsApp.') : 'Sua nota ajuda a gente a melhorar.',
+      internal: 'Na loja: ' + internalTxt[Math.min(S, maxS)], internalNote: hiddenNote,
+      advance: function () { set({ stage: self.state.stage >= maxS ? 0 : self.state.stage + 1, stars: 0 }); },
+      advanceLabel: S >= maxS ? 'Simular de novo' : 'Simular próxima etapa interna'
     };
   }
 }

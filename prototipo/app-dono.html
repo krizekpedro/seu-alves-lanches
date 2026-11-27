@@ -31,7 +31,8 @@ body{display:flex;justify-content:center;align-items:center;min-height:100dvh;ba
 #app>div{width:min(430px,100vw) !important;height:min(900px,100dvh) !important}
 @media (min-width:500px){#app>div{border-radius:28px;border:1px solid rgba(245,158,11,.25);box-shadow:0 30px 80px rgba(0,0,0,.6)}}
 .proto-back{position:fixed;left:12px;bottom:12px;z-index:50;padding:8px 12px;border-radius:99px;background:rgba(15,15,15,.85);border:1px solid rgba(245,158,11,.4);color:#FBBF24;font:600 12px Inter,system-ui,sans-serif;text-decoration:none}
-@media (max-width:499px){.proto-phone .proto-back{display:none}}</style>
+@media (max-width:499px){.proto-phone .proto-back{display:none}}
+@media (max-width:899px){.proto-top .proto-back{top:10px;bottom:auto;left:auto;right:10px}}</style>
 </head>
 <body class="proto-phone">
 <div id="app"></div>
@@ -236,7 +237,17 @@ body{display:flex;justify-content:center;align-items:center;min-height:100dvh;ba
             </button>
           </sc-for>
           <button type="button" class="btn2" onClick="{{tickMap}}">Simular 1 minuto</button>
-          <span class="sub" style="line-height: 1.45;">O cliente recebe um link e acompanha o mesmo trajeto. Entregas feitas pelo iFood mostram o status que o iFood envia.</span>
+          <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 12px; border: 1px solid rgba(245,158,11,.35); background: rgba(245,158,11,.06);">
+            <span style="font-size: 14px; font-weight: 700;">Quando avisar o cliente</span>
+            <span class="sub" style="line-height: 1.45;">A saída para entrega fica só aqui dentro. O cliente recebe "Seu pedido está chegando!" e vê o mapa só quando o motoboy estiver perto.</span>
+            <div class="row">
+              <span style="flex: 1 1 auto; font-size: 13px;">Avisar a</span>
+              <button type="button" class="step" style="width: 36px; height: 36px;" aria-label="Diminuir distância do aviso" onClick="{{avisoDown}}">−</button>
+              <span class="num" style="min-width: 70px; text-align: center; font-weight: 800;">{{avisoTxt}}</span>
+              <button type="button" class="step" style="width: 36px; height: 36px;" aria-label="Aumentar distância do aviso" onClick="{{avisoUp}}">+</button>
+            </div>
+          </div>
+          <span class="sub" style="line-height: 1.45;">Entregas feitas pelo iFood mostram o status que o iFood envia.</span>
         </div>
         <div class="card">
           <div class="row" style="justify-content: space-between;"><h2 class="h3">Pedidos agora</h2><span class="sub">mais atrasados primeiro</span></div>
@@ -613,7 +624,7 @@ body{display:flex;justify-content:center;align-items:center;min-height:100dvh;ba
                   <button type="button" role="switch" aria-checked="{{p.aria}}" aria-label="{{p.label}}" onClick="{{p.toggle}}" style="{{p.track}}"><span style="{{p.knob}}"></span></button>
                 </div>
               </sc-for>
-              <span class="sub">O dono sempre tem acesso total. Mudanças valem no próximo toque da pessoa.</span>
+              <span class="sub">O dono sempre tem acesso total. Ponto, horas e banco de horas da equipe são só do dono. Mudanças valem no próximo toque da pessoa.</span>
             </div>
 
             <div class="card">
@@ -640,6 +651,16 @@ body{display:flex;justify-content:center;align-items:center;min-height:100dvh;ba
 
         <sc-if value="{{gPonto}}" hint-placeholder-val="{{ false }}">
           <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="card" style="gap: 10px;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px;"><h2 class="h3">Chegada dos motoboys hoje</h2><span class="sub">🔒 Só o dono vê horários e horas da equipe</span></div>
+          <sc-for list="{{motoArr}}" as="m" hint-placeholder-count="2">
+            <div class="row" style="padding: 10px 12px; border-radius: 12px; background: #202024;">
+              <span style="width: 36px; height: 36px; border-radius: 99px; background: #7A1F1F; border: 1px solid rgba(245,158,11,.45); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #F5E9D7; flex: 0 0 auto;">{{m.ini}}</span>
+              <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 700;">{{m.name}}</span><span class="sub">{{m.meta}}</span></div>
+              <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;"><span class="num" style="font-size: 18px; font-weight: 800; color: {{m.color}};">{{m.time}}</span><span style="font-size: 11px; font-weight: 700; color: {{m.color}};">{{m.status}}</span></div>
+            </div>
+          </sc-for>
+        </div>
             <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
               <sc-for list="{{pKpis}}" as="k" hint-placeholder-count="3">
                 <div class="card" style="padding: 12px; gap: 2px;"><span style="font-size: 11px; color: #A1A1AA;">{{k.label}}</span><span class="num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 18px; color: {{k.color}};">{{k.value}}</span></div>
@@ -1142,6 +1163,7 @@ class Component extends DCLogic {
     });
     var onShift = team.filter(function (x) { return x.status.indexOf('turno') >= 0 || x.status.indexOf('Na rua') === 0; }).length + ' no turno agora';
     var ROLES = ['Gerente', 'Caixa', 'Atendente', 'Cozinha', 'Motoboy'];
+    var motoArr = [['LE', 'Léo', 'escala 18h00 · 18 entregas hoje', '18:09', 'chegou 9 min atrasado', '#FDBA74'], ['MA', 'Marcos', 'escala 19h00', '--:--', 'ainda não chegou', '#A1A1AA']].map(function (m) { return { ini: m[0], name: m[1], meta: m[2], time: m[3], status: m[4], color: m[5] }; });
     var PERMS = [
       ['pdv', 'Lançar pedido no PDV', 'balcão e telefone'],
       ['desc', 'Dar desconto', 'até 10%; acima disso pede o gerente'],
@@ -1428,7 +1450,7 @@ class Component extends DCLogic {
       accents: accents, copyLink: function () { toast('Link do cardápio copiado.'); }, publishSite: function () { toast('Site atualizado. Clientes já veem o novo visual.'); },
       hourRows: hourRows, closedTodayTrack: ct.track, closedTodayKnob: ct.knob, closedTodayAria: ct.aria, toggleClosedToday: function () { set({ closedToday: !self.state.closedToday, toast: self.state.closedToday ? 'Horário normal de hoje mantido.' : 'Hoje aparece como fechado em todos os canais.' }); },
       bairroRows: bairroRows, adicRows: adicRows, adicResumo: ADIC.length + ' grupos trazidos da OlaClick' + (adicSoltos ? ' · ' + adicSoltos + ' sem produto ligado' : '') + '. Esgotou? Desligue o item e ele some em todos os canais.', newGrupo: function () { set({ toast: 'Novo grupo criado. Dê um nome, defina mínimo e máximo e ligue aos produtos.' }); }, newBairro: function () { var n = self.state.newBairros.length + 1; set({ newBairros: self.state.newBairros.concat([['Novo bairro ' + n, 7]]), toast: 'Bairro adicionado com taxa de R$ 7.' }); },
-      gEquipe: st.gsec === 'equipe', gPonto: st.gsec === 'ponto', staffMetrics: staffMetrics, pKpis: pKpis, punches: punches, fixOpen: !st.done.fix, fixClosed: !!st.done.fix, fixOk: function () { mark('fix', 'done', 'Correção do ponto da Rita aprovada e anotada.'); }, fixNo: function () { mark('fix', 'done', 'Correção recusada. A Rita foi avisada.'); }, gCardapio: st.gsec === 'cardapio', gPrecos: st.gsec === 'precos', gCampanhas: st.gsec === 'campanhas', gAvaliacoes: st.gsec === 'avaliacoes'
+      gEquipe: st.gsec === 'equipe', gPonto: st.gsec === 'ponto', motoArr: motoArr, avisoTxt: (st.avisoM || 800) >= 1000 ? ((st.avisoM || 800) / 1000).toFixed(1).replace('.', ',') + ' km' : (st.avisoM || 800) + ' m', avisoDown: function () { self.setState({ avisoM: Math.max(200, (self.state.avisoM || 800) - 100) }); }, avisoUp: function () { self.setState({ avisoM: Math.min(3000, (self.state.avisoM || 800) + 100) }); }, staffMetrics: staffMetrics, pKpis: pKpis, punches: punches, fixOpen: !st.done.fix, fixClosed: !!st.done.fix, fixOk: function () { mark('fix', 'done', 'Correção do ponto da Rita aprovada e anotada.'); }, fixNo: function () { mark('fix', 'done', 'Correção recusada. A Rita foi avisada.'); }, gCardapio: st.gsec === 'cardapio', gPrecos: st.gsec === 'precos', gCampanhas: st.gsec === 'campanhas', gAvaliacoes: st.gsec === 'avaliacoes'
     };
   }
 }

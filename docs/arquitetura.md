@@ -174,7 +174,7 @@ Mapeamento iFood (códigos de evento do `/events:polling`): `PLC` → CRIADO, `C
   2. Chatwoot dispara webhook `message_created` → Core.
   3. Se a conversa está "no bot" (fora do horário de pico humano, primeira mensagem etc.), o Core responde via API do Chatwoot com boas-vindas e **link personalizado do cardápio** (já identificando o cliente pelo telefone).
   4. Atendente humano pode assumir a qualquer momento; dentro da conversa, o *Dashboard App* abre o PDV com o cliente já preenchido para lançar o pedido.
-  5. Mudanças de status do pedido geram mensagens automáticas ("Seu pedido saiu para entrega") enviadas **pelo Chatwoot**, para o histórico ficar num lugar só.
+  5. Mudanças de status do pedido geram mensagens automáticas enviadas **pelo Chatwoot**, para o histórico ficar num lugar só. O cliente recebe só três: **recebido**, **está chegando** e **entregue** (ou **pronto para retirar**). A saída para entrega é controle interno e não gera mensagem (ver 1.11).
 - **Custos da Meta:** mensagens respondendo ao cliente dentro da janela de 24 h são gratuitas; mensagens iniciadas pela loja usam *templates* aprovados e são cobradas por mensagem (utilidade é barata, marketing é mais caro). Status de pedido logo após o cliente pedir normalmente cai na janela gratuita.
 
 ### 1.8 Modo offline da loja
@@ -241,7 +241,8 @@ Objetivo: saber **onde o pedido está demorando** e se cada etapa está dentro d
 | Entrega ao cliente (balcão/retirada) | `ready_at` | `delivered_at` | balcão chama a senha e toca **Entregue** |
 
 - **App do motoboy:** login por telefone, lista dos pedidos prontos, botões *Peguei* e *Entreguei* e a rota no mapa. O QR code impresso no ticket abre o pedido direto, para o motoboy não esquecer de marcar.
-- **Rastreio em tempo real (estilo iFood):** enquanto o motoboy está com um pedido, o app envia a posição a cada 5 a 10 segundos. O dono vê todos no mapa (painel e celular), com rota, distância e previsão de chegada, e o cliente acompanha o mesmo trajeto pelo link de acompanhamento.
+- **Rastreio em tempo real (estilo iFood):** enquanto o motoboy está com um pedido, o app envia a posição a cada 5 a 10 segundos. O dono vê todos no mapa (painel e celular), com rota, distância e previsão de chegada.
+  - **O que o cliente vê:** a saída para entrega **não** aparece para o cliente, para não gerar ansiedade nem mensagens de "cadê meu pedido". Ele vê "Preparando seu pedido" com a janela de chegada até o motoboy entrar no **raio de aviso** (ajustável pelo dono, padrão 800 m). Nesse momento recebe "Seu pedido está chegando!" no WhatsApp e passa a ver o mapa. O cálculo usa a posição do motoboy contra o endereço do pedido, no servidor.
   - **Por que app instalado e não só PWA:** o navegador do celular para de mandar localização quando a tela apaga ou o motoboy troca de app (no iPhone isso é garantido). Para rastrear de verdade, o app do motoboy é feito em **React Native (Expo)**, aproveitando o mesmo TypeScript do resto do sistema, com localização em segundo plano. Primeiro Android (a maioria dos motoboys); a PWA continua como reserva, funcionando com a tela ligada.
   - **Publicação:** Android pela Play Store (taxa única de US$ 25) ou instalação direta do arquivo; iPhone pela App Store (US$ 99 por ano), só se houver motoboy com iPhone.
   - **Mapa e rota:** MapLibre com mapas do OpenStreetMap (sem custo por acesso) e cálculo de rota por OSRM/OpenRouteService; Google Maps fica como opção paga.
@@ -282,9 +283,9 @@ Recursos que entram no núcleo, desenhados junto com o protótipo:
 
 ### 1.12 Ponto e RH dos funcionários
 
-Cada funcionário tem a sua área (no celular dele ou no aparelho da loja) com **Meu ponto**, **Minhas horas** e **Minha escala**.
+Cada funcionário tem a sua área (no celular dele ou no aparelho da loja) com **Meu ponto** e **Minha escala**. Horas trabalhadas, banco de horas, atrasos e métricas **não aparecem para o funcionário**: só o dono vê. Esse acesso não pode ser liberado para gerente ou outro cargo.
 
-**Registros do dia.** Todo funcionário registra **entrada** e **saída**. Quem abre e fecha a loja (caixa ou gerente, conforme o cargo) registra também **abertura da loja** e **fechamento da loja**. Assim o dono sabe a que horas cada um chegou, a que horas a loja abriu, a que horas fechou e quando cada um foi embora.
+**Registros do dia.** Todo funcionário registra **entrada** e **saída**, inclusive os motoboys (a entrada do motoboy é a **chegada na loja**, e o dono vê a que horas cada motoboy chegou contra a escala). Quem abre e fecha a loja (caixa ou gerente, conforme o cargo) registra também **abertura da loja** e **fechamento da loja**. Assim o dono sabe a que horas cada um chegou, a que horas a loja abriu, a que horas fechou e quando cada um foi embora.
 
 **Só bate dentro da loja.** O registro só é aceito quando o aparelho prova que está na loja:
 
@@ -297,9 +298,9 @@ Cada funcionário tem a sua área (no celular dele ou no aparelho da loja) com *
 
 Fora da loja, o botão fica bloqueado e a **tentativa é registrada** para o gestor (quem, quando, a que distância). O GPS sozinho pode ser falsificado; por isso o padrão combina GPS com a rede da loja.
 
-**Garantias.** Ninguém apaga um registro. Correções são pedidas pelo funcionário e aprovadas ou recusadas pelo gestor, e ficam anotadas (quem pediu, quem aprovou, quando). Cada registro gera um comprovante com data, hora e local, enviado no WhatsApp do funcionário. No fim do mês o sistema gera o espelho de ponto em PDF.
+**Garantias.** Ninguém apaga um registro. Correções são pedidas pelo funcionário e aprovadas ou recusadas pelo gestor, e ficam anotadas (quem pediu, quem aprovou, quando). Cada registro gera um comprovante enviado no WhatsApp do funcionário (o app mostra só que o registro foi feito; totais de horas ficam com o dono). No fim do mês o sistema gera o espelho de ponto em PDF.
 
-**Visão do dono** (painel e celular): quem está no turno, atrasos contra a escala, horário de abertura e fechamento da loja por dia, horas e horas extras da semana, tentativas bloqueadas e correções pendentes. Pedidos de correção aparecem em "Precisa de você".
+**Visão do dono** (painel e celular, só o dono): quem está no turno, atrasos contra a escala, horário de abertura e fechamento da loja por dia, horas e horas extras da semana, tentativas bloqueadas e correções pendentes. Pedidos de correção aparecem em "Precisa de você".
 
 > Registro de ponto eletrônico tem regras próprias na legislação trabalhista. O sistema guarda os dados de forma íntegra e gera o espelho; como usar isso (e qualquer obrigação legal) é decisão do gestor com o contador.
 
