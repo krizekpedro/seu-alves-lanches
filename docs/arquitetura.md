@@ -305,6 +305,20 @@ Fora da loja, o botão fica bloqueado e a **tentativa é registrada** para o ges
 
 Tabelas: `time_clock_entries` (id, store_id, user_id, tipo: entrada, abertura_loja, fechamento_loja, saída; registrado_em, lat, lng, distância_m, wifi_ok, device_id, selfie_url, status: aceito ou bloqueado), `time_clock_adjustments` (entry_id ou dia, pedido_por, motivo, novo_horário, decidido_por, decisão, decidido_em), `work_schedules` (user_id, dia, início, fim), `store_geofence` (store_id, lat, lng, raio_m, wifi_ssid/bssid).
 
+### 1.13 Gestão do cardápio e do site pelo dono
+
+Tudo o que hoje se faz no painel da OlaClick passa a ser feito no nosso sistema, pelo celular ou pelo computador, sem depender de programador:
+
+- **Produtos:** criar, editar nome, descrição, preço (e preço diferente no iFood), categoria e em quais canais aparece; ligar/desligar (esgotado) em todos os canais de uma vez.
+- **Fotos:** adicionar ou trocar a foto direto da galeria ou da câmera do celular. O servidor gera versões leves em WebP (150, 400 e 800 px) e o cardápio usa a do tamanho certo.
+- **Categorias:** criar, renomear, ordenar (setas, sem arrastar) e esconder.
+- **Site:** trocar banner e logo, frase de boas-vindas, faixa de aviso no topo e cor de destaque; botão "Publicar alterações".
+- **Horários e bairros:** horário por dia da semana, "hoje fechado" para imprevistos, bairros com taxa e tempo de entrega.
+
+**Onde ficam as imagens:** num armazenamento de arquivos compatível com S3 (ex.: Cloudflare R2, que não cobra pela saída de dados), servido por CDN. As imagens atuais (logo, banner e fotos dos produtos) são **resgatadas da OlaClick** para `assets/img/` no repositório e depois importadas para esse armazenamento; o site deixa de depender da OlaClick antes do cancelamento.
+
+Tabelas: `product_images` (id, product_id, chave_original, variações 150/400/800, criado_por, criado_em), `site_settings` (store_id, banner_image_id, logo_image_id, frase, aviso_ativo, aviso_texto, cor_destaque, publicado_em), `store_hours` (store_id, dia_semana, abre, fecha), `store_closures` (store_id, data, motivo). Toda alteração entra no `audit_log`.
+
 ## 2. Stack tecnológica
 
 ### 2.1 Backend
