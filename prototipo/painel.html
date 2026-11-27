@@ -13,6 +13,17 @@ a{color:#FBBF24}a:hover{color:#F59E0B}
 button{font-family:inherit;cursor:pointer}
 button:focus-visible{outline:2px solid #FBBF24;outline-offset:2px}
 .num{font-variant-numeric:tabular-nums}
+.h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;margin:0}
+.card{background:#18181B;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;align-items:center;gap:10px}
+.sub{font-size:12px;color:#A1A1AA}
+.bar{height:8px;border-radius:99px;background:#27272A}
+.bar>div{height:8px;border-radius:99px}
+.btn{min-height:40px;padding:0 14px;border-radius:10px;border:none;background:#F59E0B;color:#0F0F0F;font-weight:800;font-size:13px;flex:0 0 auto}
+.btn2{min-height:40px;padding:0 12px;border-radius:10px;border:1px solid rgba(245,158,11,.5);background:transparent;color:#FBBF24;font-weight:700;font-size:13px;flex:0 0 auto}
+.inp{width:100%;min-height:44px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#0F0F0F;color:#FAFAF9;font:500 14px Inter,system-ui,sans-serif;resize:none}
+.inp:focus{outline:none;border-color:#F59E0B}
+.step{width:40px;height:40px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#202024;color:#FAFAF9;font-size:18px;font-weight:700}
 .sa-mobile-user{display:none}
 @media (max-width: 760px){
 .sa-aside{flex:1 1 100% !important;padding:14px 14px 0 !important;gap:12px !important;border-right:none !important;border-bottom:1px solid rgba(255,255,255,.07)}
@@ -1033,6 +1044,147 @@ button:focus-visible{outline:2px solid #FBBF24;outline-offset:2px}
       </div>
     </sc-if>
 
+    <sc-if value="{{isSite}}" hint-placeholder-val="{{ false }}">
+      <div class="sa-site" style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+        <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <sc-if value="{{editing}}" hint-placeholder-val="{{ false }}">
+              <div class="card" style="border-color: rgba(245,158,11,.45);">
+                <div class="row" style="justify-content: space-between;"><h2 class="h3">{{edTitle}}</h2><button type="button" onClick="{{edClose}}" aria-label="Fechar" style="width: 36px; height: 36px; border-radius: 10px; border: 1px solid rgba(255,255,255,.12); background: #202024; color: #FAFAF9; font-size: 16px; font-weight: 800;">×</button></div>
+                <div style="position: relative; width: 100%; max-width: 440px; aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden; background: radial-gradient(circle at 50% 40%, #2a1a12, #0F0F0F 70%); display: flex; align-items: center; justify-content: center;">
+                  <sc-if value="{{edHasPhoto}}" hint-placeholder-val="{{ true }}"><img src="{{edPhoto}}" alt="Foto do produto" style="width: 100%; height: 100%; object-fit: cover;"></sc-if>
+                  <sc-if value="{{edNoPhoto}}" hint-placeholder-val="{{ false }}"><span class="sub">Sem foto ainda</span></sc-if>
+                  <label style="position: absolute; right: 10px; bottom: 10px; min-height: 40px; padding: 0 14px; border-radius: 10px; background: #F59E0B; color: #0F0F0F; font-weight: 800; font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h3l2-3h6l2 3h3v13H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8"></path></svg>
+                    {{edPhotoBtn}}
+                    <input type="file" accept="image/*" onChange="{{edOnPhoto}}" style="display: none;">
+                  </label>
+                </div>
+                <label class="sub" style="display: flex; flex-direction: column; gap: 6px;">Nome<input class="inp" value="{{edNome}}" onChange="{{edOnNome}}" placeholder="Ex.: X-Bacon Duplo"></label>
+                <label class="sub" style="display: flex; flex-direction: column; gap: 6px;">Descrição<textarea class="inp" rows="2" onChange="{{edOnDesc}}" placeholder="O que vem no lanche">{{edDesc}}</textarea></label>
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+                  <label class="sub" style="display: flex; flex-direction: column; gap: 6px;">Preço (R$)<input class="inp" inputmode="decimal" value="{{edPreco}}" onChange="{{edOnPreco}}" placeholder="0,00"></label>
+                  <label class="sub" style="display: flex; flex-direction: column; gap: 6px;">Preço no iFood (R$)<input class="inp" inputmode="decimal" value="{{edPrecoIfood}}" onChange="{{edOnPrecoIfood}}" placeholder="igual"></label>
+                </div>
+                <span class="sub">Categoria</span>
+                <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;">
+                  <sc-for list="{{edCats}}" as="c" hint-placeholder-count="7"><button type="button" onClick="{{c.pick}}" style="{{c.style}}">{{c.label}}</button></sc-for>
+                </div>
+                <span class="sub">Onde aparece</span>
+                <sc-for list="{{edChannels}}" as="c" hint-placeholder-count="4">
+                  <div class="row"><span style="flex: 1 1 auto; font-size: 14px; font-weight: 600;">{{c.label}}</span><button type="button" role="switch" aria-checked="{{c.aria}}" aria-label="{{c.label}}" onClick="{{c.toggle}}" style="{{c.track}}"><span style="{{c.knob}}"></span></button></div>
+                </sc-for>
+                <span class="sub" style="line-height: 1.45;">A foto é ajustada para o padrão do cardápio e vai para o site, o WhatsApp e o PDV. No iFood, a foto é enviada junto quando a integração estiver ativa.</span>
+                <div class="row"><button type="button" class="btn" onClick="{{edSave}}" style="flex: 1 1 auto; min-height: 48px;">{{edSaveLabel}}</button><button type="button" class="btn2" onClick="{{edClose}}" style="min-height: 48px;">Cancelar</button></div>
+              </div>
+            </sc-if>
+
+            <div class="card">
+              <div class="row" style="justify-content: space-between;"><h2 class="h3">Produtos e fotos</h2><button type="button" class="btn" onClick="{{newProduct}}">+ Novo produto</button></div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px;">
+                <sc-for list="{{catFilter}}" as="c" hint-placeholder-count="8"><button type="button" onClick="{{c.pick}}" style="{{c.style}}">{{c.label}}</button></sc-for>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 8px;">
+              <sc-for list="{{prodList}}" as="p" hint-placeholder-count="6">
+                <div class="row" style="padding: 8px; border-radius: 12px; background: #202024;">
+                  <span style="width: 56px; height: 56px; border-radius: 12px; overflow: hidden; background: #0F0F0F; flex: 0 0 auto; display: flex; align-items: center; justify-content: center;"><img src="{{p.img}}" alt="" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;"></span>
+                  <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                    <span style="font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{p.nome}}</span>
+                    <span class="num sub">{{p.preco}} · <span style="color: {{p.stColor}};">{{p.status}}</span></span>
+                  </div>
+                  <button type="button" role="switch" aria-checked="{{p.aria}}" aria-label="{{p.ariaLabel}}" onClick="{{p.toggle}}" style="{{p.track}}"><span style="{{p.knob}}"></span></button>
+                  <button type="button" onClick="{{p.edit}}" aria-label="{{p.editLabel}}" style="width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgba(245,158,11,.5); background: transparent; color: #FBBF24; flex: 0 0 auto; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"></path></svg></button>
+                </div>
+              </sc-for>
+              </div>
+              <span class="sub">O botão liga e desliga o produto em todos os canais (esgotado). O lápis abre a edição com foto, preço e descrição.</span>
+            </div>
+          </div>
+        </div>
+        <div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="card">
+              <h2 class="h3">Como o cliente vê o site</h2>
+              <div style="position: relative; border-radius: 14px; overflow: hidden; height: 150px; background: #202024;">
+                <img src="{{siteBanner}}" alt="Banner do site" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,15,15,0) 30%, rgba(15,15,15,.9));"></div>
+                <div class="row" style="position: absolute; left: 12px; right: 12px; bottom: 10px;">
+                  <span style="width: 46px; height: 46px; border-radius: 99px; overflow: hidden; border: 2px solid {{siteAccent}}; background: #7A1F1F; flex: 0 0 auto;"><img src="{{siteLogo}}" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;"></span>
+                  <div style="display: flex; flex-direction: column;"><span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 16px;">Seu Alves <span style="color: {{siteAccent}};">Lanches</span></span><span style="font-size: 12px; color: #D4D4D8;">{{siteWelcome}}</span></div>
+                </div>
+              </div>
+              <sc-if value="{{siteNoticeOn}}" hint-placeholder-val="{{ true }}">
+                <div style="padding: 8px 12px; border-radius: 10px; background: {{siteAccent}}; color: #0F0F0F; font-size: 13px; font-weight: 700; text-align: center;">{{siteNotice}}</div>
+              </sc-if>
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+                <label class="btn2" style="display: flex; align-items: center; justify-content: center; cursor: pointer;">Trocar banner<input type="file" accept="image/*" onChange="{{onBanner}}" style="display: none;"></label>
+                <label class="btn2" style="display: flex; align-items: center; justify-content: center; cursor: pointer;">Trocar logo<input type="file" accept="image/*" onChange="{{onLogo}}" style="display: none;"></label>
+              </div>
+            </div>
+            <div class="card">
+              <h2 class="h3">Textos e avisos</h2>
+              <label class="sub" style="display: flex; flex-direction: column; gap: 6px;">Frase abaixo do nome<input class="inp" value="{{siteWelcome}}" onChange="{{onWelcome}}"></label>
+              <div class="row"><span style="flex: 1 1 auto; font-size: 14px; font-weight: 600;">Faixa de aviso no topo</span><button type="button" role="switch" aria-checked="{{noticeAria}}" aria-label="Faixa de aviso" onClick="{{toggleNotice}}" style="{{noticeTrack}}"><span style="{{noticeKnob}}"></span></button></div>
+              <label class="sub" style="display: flex; flex-direction: column; gap: 6px;">Texto do aviso<input class="inp" value="{{siteNotice}}" onChange="{{onNotice}}"></label>
+            </div>
+            <div class="card">
+              <h2 class="h3">Cor de destaque</h2>
+              <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+                <sc-for list="{{accents}}" as="a" hint-placeholder-count="4">
+                  <button type="button" onClick="{{a.pick}}" aria-label="{{a.label}}" style="{{a.style}}"><span style="width: 26px; height: 26px; border-radius: 99px; background: {{a.color}};"></span><span style="font-size: 11px;">{{a.label}}</span></button>
+                </sc-for>
+              </div>
+            </div>
+            <div class="card" style="gap: 8px;">
+              <h2 class="h3">Endereço do cardápio</h2>
+              <div class="row"><span class="num" style="flex: 1 1 auto; font-size: 14px; color: #FBBF24;">krizekpedro.github.io/seu-alves-lanches</span><button type="button" class="btn2" onClick="{{copyLink}}">Copiar</button></div>
+              <span class="sub">Com domínio próprio, vira seualves.com.br.</span>
+            </div>
+            <button type="button" class="btn" onClick="{{publishSite}}" style="min-height: 52px; font-size: 15px;">Publicar alterações no site</button>
+          </div>
+          <div class="card">
+            <div class="row" style="justify-content: space-between;"><h2 class="h3">Categorias do cardápio</h2><button type="button" class="btn2" onClick="{{newCat}}">+ Nova</button></div>
+            <span class="sub">A ordem aqui é a ordem no site e no WhatsApp.</span>
+            <sc-for list="{{catRows}}" as="c" hint-placeholder-count="7">
+              <div class="row" style="padding: 8px 10px; border-radius: 12px; background: #202024;">
+                <span style="font-size: 18px; width: 28px; text-align: center;">{{c.icon}}</span>
+                <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">{{c.label}}</span><span class="sub">{{c.count}}</span></div>
+                <button type="button" class="step" style="width: 36px; height: 36px; font-size: 14px;" aria-label="{{c.upLabel}}" onClick="{{c.up}}">↑</button>
+                <button type="button" class="step" style="width: 36px; height: 36px; font-size: 14px;" aria-label="{{c.downLabel}}" onClick="{{c.down}}">↓</button>
+                <button type="button" role="switch" aria-checked="{{c.aria}}" aria-label="{{c.ariaLabel}}" onClick="{{c.toggle}}" style="{{c.track}}"><span style="{{c.knob}}"></span></button>
+              </div>
+            </sc-for>
+          </div>
+
+          <div class="card">
+            <h2 class="h3">Horário de funcionamento</h2>
+            <sc-for list="{{hourRows}}" as="h" hint-placeholder-count="7">
+              <div class="row" style="padding: 8px 10px; border-radius: 12px; background: #202024;">
+                <span style="width: 70px; font-size: 14px; font-weight: 700;">{{h.day}}</span>
+                <span class="num" style="flex: 1 1 auto; font-size: 13px; color: {{h.color}};">{{h.text}}</span>
+                <button type="button" role="switch" aria-checked="{{h.aria}}" aria-label="{{h.ariaLabel}}" onClick="{{h.toggle}}" style="{{h.track}}"><span style="{{h.knob}}"></span></button>
+              </div>
+            </sc-for>
+            <div class="row"><span style="flex: 1 1 auto; font-size: 14px; font-weight: 600;">Hoje fechado (imprevisto ou feriado)</span><button type="button" role="switch" aria-checked="{{closedTodayAria}}" aria-label="Hoje fechado" onClick="{{toggleClosedToday}}" style="{{closedTodayTrack}}"><span style="{{closedTodayKnob}}"></span></button></div>
+            <span class="sub">O site, o WhatsApp e o iFood mostram "fechado" sozinhos fora do horário.</span>
+          </div>
+          <div class="card">
+            <div class="row" style="justify-content: space-between;"><h2 class="h3">Bairros e taxas de entrega</h2><button type="button" class="btn2" onClick="{{newBairro}}">+ Bairro</button></div>
+            <sc-for list="{{bairroRows}}" as="b" hint-placeholder-count="8">
+              <div class="row" style="padding: 8px 10px; border-radius: 12px; background: #202024;">
+                <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span style="font-size: 14px; font-weight: 600;">{{b.nome}}</span><span class="sub">{{b.meta}}</span></div>
+                <button type="button" class="step" style="width: 36px; height: 36px;" aria-label="{{b.downLabel}}" onClick="{{b.down}}">−</button>
+                <span class="num" style="min-width: 56px; text-align: center; font-weight: 800;">{{b.taxa}}</span>
+                <button type="button" class="step" style="width: 36px; height: 36px;" aria-label="{{b.upLabel}}" onClick="{{b.up}}">+</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
     <sc-if value="{{isEquipe}}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; gap: 16px;">
         <section style="background: #18181B; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 6px;">
@@ -1620,7 +1772,7 @@ button:focus-visible{outline:2px solid #FBBF24;outline-offset:2px}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { fix: {}, prules: { wifi: true, device: true, selfie: false }, radius: 80, exported: false, permOv: {}, mapTick: 0, mapSel: '', finTab: 'resumo', paid: {}, conc: {}, screen: 'painel', period: 'hoje', done: {}, cat: 'burgers', cart: { xalves: 2, batm: 1 }, ptype: 'Balcão', pay: 'Pix', sent: false, ofilter: 'todos', flow: 'delivery', acc: {}, user: null, loginTab: 'pin', pick: null, pin: '', counted: '600,00', closed: false, off: { toscano: true }, sel: 'xalves', toast: '', buy: { pao: true, bacon: true, queijo: true, embal: true }, invite: false, inactive: {} };
+    this.state = { pcat: 'todos', edit: null, draft: null, pEdit: {}, newProds: [], catOrder: null, catHidden: {}, newCats: [], site: { accent: '#F59E0B', notice: true, noticeTxt: 'Hoje tem Combo Casal com refri grátis!', welcome: 'Hambúrguer artesanal na Vila Kosmos', banner: '', logo: '' }, dayOff: {}, closedToday: false, taxa: {}, newBairros: [], fix: {}, prules: { wifi: true, device: true, selfie: false }, radius: 80, exported: false, permOv: {}, mapTick: 0, mapSel: '', finTab: 'resumo', paid: {}, conc: {}, screen: 'painel', period: 'hoje', done: {}, cat: 'burgers', cart: { xalves: 2, batm: 1 }, ptype: 'Balcão', pay: 'Pix', sent: false, ofilter: 'todos', flow: 'delivery', acc: {}, user: null, loginTab: 'pin', pick: null, pin: '', counted: '600,00', closed: false, off: { toscano: true }, sel: 'xalves', toast: '', buy: { pao: true, bacon: true, queijo: true, embal: true }, invite: false, inactive: {} };
   }
   brl(n, dec) {
     return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 });
@@ -1658,6 +1810,9 @@ class Component extends DCLogic {
         done: done.map(fmt).join(' '), rest: rest.map(fmt).join(' '), dx: end[0], dy: end[1], hasDest: !d.back, op: on ? 1 : 0.25, statusColor: t >= 1 ? '#86EFAC' : (left <= 3 ? '#FBBF24' : '#E4E4E7') };
     });
   }
+  sw(on) {
+    return { track: 'width:52px;height:32px;border-radius:99px;border:none;padding:3px;flex:0 0 auto;display:flex;align-items:center;justify-content:' + (on ? 'flex-end' : 'flex-start') + ';background:' + (on ? '#22C55E' : '#3F3F46') + ';', knob: 'width:26px;height:26px;border-radius:99px;background:#FFF;display:block;', aria: on ? 'true' : 'false' };
+  }
   renderVals() {
     var self = this, st = this.state;
     var GOLD = '#F59E0B', OK = '#22C55E', WARN = '#FB923C', LATE = '#EF4444';
@@ -1674,6 +1829,7 @@ class Component extends DCLogic {
       ] },
       { label: 'Gestão', items: [
         { id: 'fin', label: 'Financeiro', icon: 'M4 20V10M10 20V4M16 20v-7M22 20H2' },
+        { id: 'site', label: 'Produtos, fotos e site', icon: 'M3 5h18v14H3zM3 16l5-5 4 4 3-3 6 6M15 9h.01' },
         { id: 'cardapio', label: 'Cardápio', icon: 'M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4zM8 9h8M8 13h6' },
         { id: 'produtos', label: 'Produtos', icon: 'M4 11h16M5 11a7 7 0 0 1 14 0M4 15h16M5 15v1a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-1' },
         { id: 'estoque', label: 'Estoque e perdas', icon: 'M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7M12 11v10' },
@@ -1690,7 +1846,7 @@ class Component extends DCLogic {
     ];
     var STAFF = [
       { id: 'felipe', name: 'Felipe', role: 'Dono', initials: 'FA', allow: 'all' },
-      { id: 'ana', name: 'Ana', role: 'Gerente', initials: 'AN', allow: ['painel', 'pdv', 'caixa', 'pedidos', 'tempos', 'kds', 'cardapio', 'produtos', 'estoque', 'compras', 'entregas', 'clientes', 'marketing', 'ponto'] },
+      { id: 'ana', name: 'Ana', role: 'Gerente', initials: 'AN', allow: ['painel', 'pdv', 'caixa', 'pedidos', 'tempos', 'kds', 'cardapio', 'produtos', 'estoque', 'compras', 'entregas', 'clientes', 'marketing', 'ponto', 'site'] },
       { id: 'bruno', name: 'Bruno', role: 'Caixa', initials: 'BR', allow: ['pdv', 'caixa', 'pedidos', 'kds'] },
       { id: 'julia', name: 'Júlia', role: 'Atendente WhatsApp', initials: 'JU', allow: ['pedidos', 'pdv', 'clientes'] },
       { id: 'rita', name: 'Rita', role: 'Cozinha', initials: 'RI', allow: ['kds'] }
@@ -1735,7 +1891,7 @@ class Component extends DCLogic {
       return 'min-height:44px;padding:0 16px;border-radius:12px;font-size:14px;font-weight:600;border:1px solid ' + (on ? '#F59E0B' : 'rgba(255,255,255,.1)') + ';background:' + (on ? '#F59E0B' : '#202024') + ';color:' + (on ? '#0F0F0F' : '#E4E4E7') + ';' + (extra || '');
     }
 
-    var titles = { painel: 'Painel do dia', pdv: 'PDV · balcão', pedidos: 'Pedidos de todos os canais', tempos: 'Tempos e gargalos', kds: 'Cozinha · fila de preparo', fin: 'Financeiro', produtos: 'Produtos e margens', estoque: 'Estoque e desperdício', entregas: 'Entregas', clientes: 'Clientes', integracoes: 'Integrações', caixa: 'Caixa do turno', cardapio: 'Cardápio e disponibilidade', compras: 'Compras', marketing: 'Marketing e avaliações', equipe: 'Equipe', ponto: 'Ponto e RH' };
+    var titles = { painel: 'Painel do dia', pdv: 'PDV · balcão', pedidos: 'Pedidos de todos os canais', tempos: 'Tempos e gargalos', kds: 'Cozinha · fila de preparo', fin: 'Financeiro', produtos: 'Produtos e margens', estoque: 'Estoque e desperdício', entregas: 'Entregas', clientes: 'Clientes', integracoes: 'Integrações', caixa: 'Caixa do turno', cardapio: 'Cardápio e disponibilidade', compras: 'Compras', marketing: 'Marketing e avaliações', equipe: 'Equipe', ponto: 'Ponto e RH', site: 'Produtos, fotos e site' };
     var periodDefs = [{ id: 'hoje', label: 'Hoje' }, { id: '7d', label: '7 dias' }, { id: '30d', label: '30 dias' }];
     var periods = periodDefs.map(function (p) {
       var on = st.period === p.id;
@@ -2389,6 +2545,74 @@ class Component extends DCLogic {
       return { ini: m[0], name: m[1], role: m[2], pont: m[3] + '%', pontW: m[3], pontColor: pc, hours: m[4], extra: m[5], faltas: m[6] ? m[6] + ' falta' : 'sem faltas', faltaColor: m[6] ? '#FDBA74' : '#86EFAC',
         stats: m[7].map(function (s) { return { label: s[0], value: s[1] }; }), note: m[8] };
     });
+    // ---------- Produtos, fotos e site ----------
+    function set(o) { self.setState(o); }
+    function toast(m) { self.setState({ toast: m }); }
+    function chip3(on) { return 'min-height:40px;border-radius:10px;font-weight:700;font-size:12px;padding:0 6px;' + (on ? 'border:none;background:#F59E0B;color:#0F0F0F;' : 'border:1px solid rgba(255,255,255,.12);background:#202024;color:#E4E4E7;'); }
+    function goTo(t) { if (t === 'novo') set({ edit: 'novo', draft: { nome: '', desc: '', preco: '', precoIfood: '', cat: 'hamburgueres', foto: '', ch: { ifood: true, site: true, whats: true, balcao: true } } }); }
+    // ---------- cardápio, site, horários, bairros ----------
+    var IMGBASE = (typeof window !== 'undefined' && window.PROTO_IMG) || 'https://assets.olaclick.app/companies/products/images/800/';
+    var LOGO = (typeof window !== 'undefined' && window.PROTO_LOGO) || 'https://assets.olaclick.app/companies/logos/01bf6473-9273-413d-93dd-c51f71faf7b4.webp';
+    var BANNER = (typeof window !== 'undefined' && window.PROTO_BANNER) || 'https://assets.olaclick.app/companies/backgrounds/f9d0f8a5-877b-4f12-b69c-3c6b1991615a.webp';
+    var MENU_P = [["combo-casal", "Combo Casal", "promocoes", 42, "038e2a3f-6631-4266-affd-13f252333dcc", "1 Seu Cheddar, 1 Duplo Alves, batata P e 2 Guaravitas."], ["combo-familia", "Combo Família Alves", "promocoes", 89.9, "2b903f6f-3e7f-477b-abd8-4176a4fb49e2", "4 X-Tudos, Batata Maluca com cream cheese, cheddar e frango, 8 nuggets e molho."], ["combo-01", "Combo 01", "combos", 55, "91d554f1-2ff1-4ab5-ae54-09a87fb0c506", "4 Mini Alves, 10 nuggets, batata média com cheddar e bacon e refri 1 litro."], ["combo-02", "Combo 02", "combos", 65, "11e3cf33-678b-49a4-be40-fc942ecc190c", "3 Duplos Alves, batata com cheddar e bacon, 10 nuggets e Convenção 2L."], ["combo-03", "Combo 03", "combos", 65, "532b90d9-ab81-4eaa-94f9-a51cd1d2cf0e", "1 Seu Cheddar, 1 Seu Cheese, 1 Mini Alves, 10 nuggets, batata com cheddar e bacon e refri 1L."], ["x-alves", "X-Alves", "hamburgueres", 25, "bd64864e-7adb-4188-b9e4-831d32dbba71", "2 carnes, presunto, calabresa, bacon, ovo, 2 queijos, milho, ervilha, queijo ralado, batata palha, alface, tomate e cebola."], ["x-tudo", "X-Tudo", "hamburgueres", 20, "6619a978-e672-4055-a594-6af8143c376a", "Carne, calabresa, presunto, bacon, ovo, queijo, milho, ervilha, queijo ralado, batata palha, alface, tomate e cebola."], ["burger-classico", "Burger Clássico", "hamburgueres", 20, "4856c0e0-46a7-4760-8eae-b05e0a61f62f", "Carne artesanal 150g, queijo, alface, tomate, cebola, picles e Molho Alves."], ["toscano", "Toscano Artesanal", "hamburgueres", 30, "5ffdb9ed-912b-45e9-9093-75cd439fcf2a", "Blend de linguiça toscana, carne artesanal 90g, queijo branco, queijo coalho, cebola e tomate picadinho e maionese temperada."], ["duplo-onion", "Duplo Onion Artesanal", "hamburgueres", 28, "1cf8c0cd-f889-4281-afc9-3a78c32c0548", "2 carnes artesanais 90g, 2 queijos, bacon, anel de cebola empanado, barbecue, alface, tomate e Molho Alves."], ["ct2", "CT2 - Contra Filé", "hamburgueres", 22, "bec91678-231c-4d43-87fa-18ef1fb023a9", "Iscas de carne acebolada, mussarela, cream cheese e maionese de alho."], ["c1", "C1 - Mini Alves", "hamburgueres", 9, "6223c409-664c-4267-896b-4aa10d8d9917", "Hambúrguer, queijo e ketchup."], ["c2", "C2 - Duplo Alves", "hamburgueres", 14, "b4ee9c32-a5d3-41c7-bed2-fdea94dd8a57", "2 hambúrgueres, 2 queijos, alface, tomate, cebola, picles e molho american burgers."], ["c3", "C3 - Triplo Alves", "hamburgueres", 18, "5ded3b99-defc-49a8-92d2-bdd9bf596901", "3 hambúrgueres, 3 queijos, alface, tomate, cebola, picles e molho american burgers."], ["c4", "C4 - Monstrão", "hamburgueres", 20, "679af8e2-b3ce-4be0-a93b-2d9733f7e38f", "4 carnes, 4 queijos, alface, tomate, cebola, picles e molho american burgers."], ["hb2", "HB2 - Seu Cheddar", "hamburgueres", 16, "611d000f-e109-410f-9723-f430a85a8240", "2 carnes, 2 queijos cheddar, bacon, molho cheddar melt, alface, picles e molho american burgers."], ["hb4", "HB4 - Seu Cheese", "hamburgueres", 18, "6bf6fc11-ebe6-4bae-9ca3-967a181f208d", "2 carnes, bacon, cream cheese, cebola caramelizada no barbecue, 2 queijos, alface, tomate, picles e molho american."], ["p1", "P1 - Seu Picanha", "hamburgueres", 15, "6e03b41c-b8b2-4582-b49f-0341952f0a33", "Carne sabor picanha, 2 queijos, alface, tomate, cebola, picles e molho american."], ["p2", "P2 - Duplo Picanha", "hamburgueres", 19, "eab7ee48-4731-4c0c-a8e9-244542c45c23", "2 carnes sabor picanha, 3 queijos, alface, tomate, cebola, picles e molho american."], ["f1", "F1 - Franguinho", "hamburgueres", 14, "bcb3c745-7865-4fd5-8e17-8b315ca8cd63", "Filé de frango grelhado, queijo, salada e maionese temperada."], ["batata", "Batata Frita", "batatas", 7, "b0d91043-63ed-4bd6-a540-70e07eb1549b", "Batata frita 7mm, corte fino e sequinha."], ["batata-maluca", "Batata Maluca", "batatas", 35, "9c83fd8b-b668-4242-9715-d05b61cf0206", "Cheddar, bacon e calabresa."], ["maluca-frango", "Maluca c/ Frango", "batatas", 45, "54da5494-e8fb-4c75-a64d-68ceca3c99dc", "Frango, bacon, calabresa, cheddar e cream cheese."], ["nugget-6", "Nuggets 6 un.", "porcoes", 9, "4fcbb19c-b749-4fab-937f-f478f7a29b12", "6 unidades de nuggets de frango."], ["nugget-15", "Nuggets 15 un.", "porcoes", 18, "4fcbb19c-b749-4fab-937f-f478f7a29b12", "15 unidades de nuggets de frango."], ["anel-cebola", "Anel de Cebola", "porcoes", 5, "d1aec5b3-bf86-4fe8-ab1a-5721c285fc74", "Cebola empanada + potinho de molho."], ["calabresa-fritas", "Calabresa c/ Fritas", "porcoes", 38, "306f0704-d85b-4fd0-bce0-183cacb1973b", "Calabresa acebolada acompanhada de batata frita."], ["frango-passarinho", "Frango à Passarinho c/ Fritas", "porcoes", 40, "59ac47df-9bde-4cd4-bb91-fa4eed781293", "Cerca de 1kg de cortes de frango frito, alho torrado, limão, molho e batata frita."], ["carne-fritas", "Carne c/ Fritas", "porcoes", 65, "b5eca595-db20-4515-b3b0-d6a0cceb55d0", "500g de isca de carne acebolada com fritas + potinho de molho."], ["churraskinho", "Churraskinho Misto", "porcoes", 60, "d98cebad-b2e5-4e4f-a4c3-bcabba935ed8", "Iscas de carne, frango e calabresa aceboladas com fritas + potinho de molho."], ["file-frango-fritas", "Filé de Frango c/ Fritas", "porcoes", 42, "b2f5091a-ccce-4a98-959c-4bcb0d60037e", "Iscas de filé de frango acebolado com fritas + potinho de molho."], ["gurjao", "Gurjão de Frango", "porcoes", 45, "", "Tiras de frango empanadas e crocantes."], ["acai", "Açaí", "acai", 6, "996c790c-a8cc-48c7-84d3-4c5a9ddd9b67", "Açaí natural batido todo dia (sempre fresco)."], ["refri-2l", "Refri 2L", "bebidas", null, "1b08db59-656f-4f6a-8dd8-49f3427aa130", "Coca-Cola, Fanta ou Sprite 2 litros."], ["refri-lata", "Refri Lata 350ml", "bebidas", 7, "64b58b48-240a-46f4-8e28-f87a9d215818", "Coca-Cola 350ml."], ["guaravita", "Guaravita", "bebidas", 3, "344d4717-fea1-4a41-b4de-1ecd1c20b99b", "Guaravita 290ml."], ["agua-500", "Água 500ml", "bebidas", 3, "32d6afe5-9859-4834-b065-f0b6aefa6508", "Água mineral sem gás (pequena)."], ["agua-1500", "Água 1,5L", "bebidas", 6, "9b34160c-5328-4ba4-99bf-dba354318d23", "Água mineral sem gás (grande)."]];
+    var MENU_C = [["promocoes", "Promoções", "🔥"], ["combos", "Combo na Caixa", "📦"], ["hamburgueres", "Hambúrgueres", "🍔"], ["batatas", "Batata Frita", "🍟"], ["porcoes", "Porções", "🍗"], ["acai", "Açaí", "🍇"], ["bebidas", "Bebidas", "🥤"]];
+    var MENU_B = [["Vila Kosmos", 5], ["Ipase", 5], ["Vila da Penha", 5], ["Morro da Fé", 6], ["Praça do Carmo", 6], ["Penha Circular", 6], ["Largo do Bicão", 6], ["Vaz Lobo", 7], ["Quitungo", 7], ["Penha", 7], ["Irajá", 7]];
+    function brl2(v) { return v == null || v === '' || isNaN(v) ? 'a definir' : self.brl(+v, 2); }
+    function num(s) { var n = parseFloat(String(s).replace(/\./g, '').replace(',', '.')); return isNaN(n) ? null : n; }
+    function fmtIn(v) { return v == null ? '' : String((+v).toFixed(2)).replace('.', ','); }
+    var catOrder = st.catOrder || MENU_C.map(function (c) { return c[0]; });
+    var catById = {}; MENU_C.concat(st.newCats || []).forEach(function (c) { catById[c[0]] = c; });
+    var allProds = MENU_P.map(function (p) {
+      var e = st.pEdit[p[0]] || {};
+      return { id: p[0], nome: e.nome != null ? e.nome : p[1], cat: e.cat || p[2], preco: e.preco !== undefined ? e.preco : p[3], precoIfood: e.precoIfood, desc: e.desc != null ? e.desc : p[5], img: e.foto || (p[4] ? IMGBASE + p[4] + '.webp' : LOGO), ch: e.ch };
+    }).concat(st.newProds);
+    var catFilter = ['todos'].concat(catOrder).slice(0, 8).map(function (id) {
+      var c = catById[id], on = st.pcat === id;
+      return { label: id === 'todos' ? 'Todos' : (c ? c[1] : id), style: chip3(on) + 'font-size:11px;', pick: function () { set({ pcat: id }); } };
+    });
+    var prodList = allProds.filter(function (p) { return st.pcat === 'todos' || p.cat === st.pcat; }).map(function (p) {
+      var on = !st.off[p.id], s = self.sw(on);
+      return { nome: p.nome, preco: brl2(p.preco), img: p.img, status: on ? 'à venda' : 'esgotado', stColor: on ? '#86EFAC' : '#FCA5A5', track: s.track, knob: s.knob, aria: s.aria,
+        ariaLabel: p.nome + ' à venda', editLabel: 'Editar ' + p.nome,
+        toggle: function () { var no = Object.assign({}, self.state.off); no[p.id] = !no[p.id]; set({ off: no, toast: p.nome + (no[p.id] ? ' esgotado em todos os canais.' : ' voltou para todos os canais.') }); },
+        edit: function () { set({ edit: p.id, draft: { nome: p.nome, desc: p.desc, preco: fmtIn(p.preco), precoIfood: p.precoIfood != null ? fmtIn(p.precoIfood) : '', cat: p.cat, foto: p.img, ch: Object.assign({ ifood: true, site: true, whats: true, balcao: true }, p.ch || {}) } }); } };
+    });
+    var dr = st.draft || {}, isNew = st.edit === 'novo';
+    function setDraft(k, v) { var nd = Object.assign({}, self.state.draft); nd[k] = v; set({ draft: nd }); }
+    var edCats = catOrder.map(function (id) { var c = catById[id]; return { label: c ? c[1] : id, style: chip3(dr.cat === id) + 'font-size:11px;', pick: function () { setDraft('cat', id); } }; });
+    var edChannels = [['ifood', 'iFood'], ['site', 'Cardápio próprio (site)'], ['whats', 'WhatsApp'], ['balcao', 'Balcão (PDV)']].map(function (c) {
+      var on = !!(dr.ch || {})[c[0]], s = self.sw(on);
+      return { label: c[1], track: s.track, knob: s.knob, aria: s.aria, toggle: function () { var nc = Object.assign({}, self.state.draft.ch); nc[c[0]] = !nc[c[0]]; setDraft('ch', nc); } };
+    });
+    function readFile(e, cb) { var f = e && e.target && e.target.files && e.target.files[0]; if (!f) return; var r = new FileReader(); r.onload = function () { cb(r.result); }; r.readAsDataURL(f); }
+    var MAX_CH = { ifood: 1, site: 1, whats: 1, balcao: 1 };
+    var accentsDef = [['#F59E0B', 'Dourado'], ['#FBBF24', 'Amarelo'], ['#E11D48', 'Vermelho'], ['#F5E9D7', 'Creme']];
+    var accents = accentsDef.map(function (a) {
+      var on = st.site.accent === a[0];
+      return { label: a[1], color: a[0], pick: function () { set({ site: Object.assign({}, self.state.site, { accent: a[0] }) }); },
+        style: 'min-height:64px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#E4E4E7;' + (on ? 'border:2px solid ' + a[0] + ';background:#202024;' : 'border:1px solid rgba(255,255,255,.1);background:#202024;') };
+    });
+    function siteSet(k, v) { var ns = Object.assign({}, self.state.site); ns[k] = v; set({ site: ns }); }
+    var nt = this.sw(st.site.notice);
+    var catRows = catOrder.map(function (id, i) {
+      var c = catById[id] || [id, id, '•'], on = !st.catHidden[id], s = self.sw(on), n = allProds.filter(function (p) { return p.cat === id; }).length;
+      function move(d) { var o = catOrder.slice(), j = i + d; if (j < 0 || j >= o.length) return; var t = o[i]; o[i] = o[j]; o[j] = t; set({ catOrder: o }); }
+      return { icon: c[2], label: c[1], count: n + ' produtos' + (on ? '' : ' · escondida'), track: s.track, knob: s.knob, aria: s.aria, ariaLabel: c[1] + ' visível',
+        up: function () { move(-1); }, down: function () { move(1); }, upLabel: 'Subir ' + c[1], downLabel: 'Descer ' + c[1],
+        toggle: function () { var nh = Object.assign({}, self.state.catHidden); nh[id] = !nh[id]; set({ catHidden: nh }); } };
+    });
+    var DAYS = [['dom', 'Domingo', '19:00 às 02:00'], ['seg', 'Segunda', 'só a madrugada até 02:00'], ['ter', 'Terça', '19:00 à meia-noite'], ['qua', 'Quarta', '19:00 às 02:00'], ['qui', 'Quinta', '19:00 às 02:00'], ['sex', 'Sexta', '19:00 às 02:00'], ['sab', 'Sábado', '19:00 às 02:00']];
+    var hourRows = DAYS.map(function (d) {
+      var on = !st.dayOff[d[0]], s = self.sw(on);
+      return { day: d[1], text: on ? d[2] : 'fechado', color: on ? '#E4E4E7' : '#71717A', track: s.track, knob: s.knob, aria: s.aria, ariaLabel: 'Aberto ' + d[1],
+        toggle: function () { var nd = Object.assign({}, self.state.dayOff); nd[d[0]] = !nd[d[0]]; set({ dayOff: nd }); } };
+    });
+    var ct = this.sw(st.closedToday);
+    var bairroRows = MENU_B.concat(st.newBairros).map(function (b) {
+      var tx = st.taxa[b[0]] != null ? st.taxa[b[0]] : b[1];
+      function setT(v) { var nt2 = Object.assign({}, self.state.taxa); nt2[b[0]] = Math.max(0, v); set({ taxa: nt2 }); }
+      return { nome: b[0], taxa: self.brl(tx, 0), meta: 'entrega em ' + (24 + tx * 2) + ' a ' + (34 + tx * 2) + ' min', down: function () { setT(tx - 1); }, up: function () { setT(tx + 1); }, downLabel: 'Baixar taxa de ' + b[0], upLabel: 'Subir taxa de ' + b[0] };
+    });
     var teamDefs = [
       ['felipe', 'Felipe', 'FA', 'Dono', 'acesso por e-mail · agora', 'senha + WhatsApp'],
       ['ana', 'Ana', 'AN', 'Gerente', 'último acesso: hoje 17:40', 'PIN criado'],
@@ -2419,6 +2643,33 @@ class Component extends DCLogic {
       caixaPays: caixaPays, caixaMoves: caixaMoves, counted: cx.counted, onCount: cx.onCount, diffLabel: cx.diffLabel, diffValue: cx.diffValue, diffColor: cx.diffColor, diffBg: cx.diffBg, caixaStatus: cx.caixaStatus, caixaDot: cx.caixaDot, caixaBannerBg: cx.caixaBannerBg, caixaBannerBorder: cx.caixaBannerBorder, closeLabel: cx.closeLabel, closeCaixa: cx.closeCaixa,
       toastOn: cd.toastOn, toast: cd.toast, toastBg: cd.toastBg, toastFg: cd.toastFg, menuItems: cd.menuItems, selName: cd.selName, recipe: cd.recipe, recipeCost: cd.recipeCost, marginsBy: cd.marginsBy, addons: cd.addons,
       buyList: buyList, buyTotal: this.brl(buyTotalN, 2), mktKpis: mk.mktKpis, campaigns: mk.campaigns, stars: mk.stars, reviews: mk.reviews,
+      isSite: st.screen === 'site', editing: !!st.edit, edTitle: isNew ? 'Novo produto' : 'Editar produto', edHasPhoto: !!dr.foto, edNoPhoto: !dr.foto, edPhoto: dr.foto || '', edPhotoBtn: dr.foto ? 'Trocar foto' : 'Adicionar foto',
+      edOnPhoto: function (e) { readFile(e, function (u) { setDraft('foto', u); }); },
+      edNome: dr.nome || '', edDesc: dr.desc || '', edPreco: dr.preco || '', edPrecoIfood: dr.precoIfood || '',
+      edOnNome: function (e) { setDraft('nome', e.target.value); }, edOnDesc: function (e) { setDraft('desc', e.target.value); }, edOnPreco: function (e) { setDraft('preco', e.target.value); }, edOnPrecoIfood: function (e) { setDraft('precoIfood', e.target.value); },
+      edCats: edCats, edChannels: edChannels, edSaveLabel: isNew ? 'Publicar no cardápio' : 'Salvar alterações',
+      edClose: function () { set({ edit: null, draft: null }); },
+      edSave: function () {
+        var d = self.state.draft || {};
+        if (!d.nome || !String(d.nome).trim()) { set({ toast: 'Dê um nome para o produto.' }); return; }
+        if (num(d.preco) == null) { set({ toast: 'Informe o preço.' }); return; }
+        if (self.state.edit === 'novo') {
+          var np = { id: 'novo-' + Date.now(), nome: d.nome.trim(), cat: d.cat, preco: num(d.preco), precoIfood: num(d.precoIfood), desc: d.desc, img: d.foto || LOGO, ch: d.ch };
+          set({ newProds: self.state.newProds.concat([np]), edit: null, draft: null, pcat: d.cat, toast: d.nome.trim() + ' publicado no site, WhatsApp e PDV.' });
+        } else {
+          var pe = Object.assign({}, self.state.pEdit); pe[self.state.edit] = { nome: d.nome.trim(), desc: d.desc, preco: num(d.preco), precoIfood: num(d.precoIfood), cat: d.cat, foto: d.foto, ch: d.ch };
+          set({ pEdit: pe, edit: null, draft: null, toast: 'Alterações salvas em todos os canais.' });
+        }
+      },
+      newProduct: function () { goTo('novo'); }, catFilter: catFilter, prodList: prodList,
+      catRows: catRows, newCat: function () { var n = (self.state.newCats || []).length + 1, id = 'nova' + n, o = (self.state.catOrder || MENU_C.map(function (c) { return c[0]; })).concat([id]); set({ newCats: (self.state.newCats || []).concat([[id, 'Nova categoria ' + n, '✨']]), catOrder: o, toast: 'Categoria criada no fim da lista.' }); },
+      siteBanner: st.site.banner || BANNER, siteLogo: st.site.logo || LOGO, siteAccent: st.site.accent, siteWelcome: st.site.welcome, siteNotice: st.site.noticeTxt, siteNoticeOn: st.site.notice,
+      onBanner: function (e) { readFile(e, function (u) { siteSet('banner', u); }); }, onLogo: function (e) { readFile(e, function (u) { siteSet('logo', u); }); },
+      onWelcome: function (e) { siteSet('welcome', e.target.value); }, onNotice: function (e) { siteSet('noticeTxt', e.target.value); },
+      noticeTrack: nt.track, noticeKnob: nt.knob, noticeAria: nt.aria, toggleNotice: function () { siteSet('notice', !self.state.site.notice); },
+      accents: accents, copyLink: function () { toast('Link do cardápio copiado.'); }, publishSite: function () { toast('Site atualizado. Clientes já veem o novo visual.'); },
+      hourRows: hourRows, closedTodayTrack: ct.track, closedTodayKnob: ct.knob, closedTodayAria: ct.aria, toggleClosedToday: function () { set({ closedToday: !self.state.closedToday, toast: self.state.closedToday ? 'Horário normal de hoje mantido.' : 'Hoje aparece como fechado em todos os canais.' }); },
+      bairroRows: bairroRows, newBairro: function () { var n = self.state.newBairros.length + 1; set({ newBairros: self.state.newBairros.concat([['Novo bairro ' + n, 7]]), toast: 'Bairro adicionado com taxa de R$ 7.' }); },
       team: team, isPonto: st.screen === 'ponto', pontoKpis: pontoKpis, staffMetrics: staffMetrics, storeDays: storeDays, punches: punches, blocked: blocked, fixes: fixes, rules: rules, radius: st.radius, radiusDown: function () { self.setState({ radius: Math.max(30, self.state.radius - 10) }); }, radiusUp: function () { self.setState({ radius: Math.min(300, self.state.radius + 10) }); }, exportLabel: st.exported ? '✓ Espelho de novembro gerado (PDF)' : 'Gerar espelho de ponto do mês (PDF)', exportPonto: function () { self.setState({ exported: true }); }, permRows: permRows, audit: audit, inviteOpen: st.invite, toggleInvite: function () { self.setState({ invite: !self.state.invite }); }, isTempos: st.screen === 'tempos', flowTypes: flowTypes, stages: stages, flowTotal: 'Tempo total: ' + fmtMin(flowSum) + ' · meta ' + fmtMin(flowTarget), flowTotalColor: totalSt[0], flowInsight: fl.insight, hourCols: hourCols, targetLine: Math.round(flowTarget * hScale) + 21, slow: slow, taps: taps, isPedidos: st.screen === 'pedidos', isProdutos: st.screen === 'produtos', isEntregas: st.screen === 'entregas', isClientes: st.screen === 'clientes', isIntegracoes: st.screen === 'integracoes',
       pdvCats: pdvCats, pdvProducts: pdvProducts, cart: cart, cartEmpty: cart.length === 0, cartTotal: this.brl(cartTotalN, 2), pdvTypes: pdvTypes, pdvPays: pdvPays, finish: finish, pdvSent: st.sent,
       orderFilters: orderFilters, orderRows: orderRows, abc: abc, matrix: matrix,
