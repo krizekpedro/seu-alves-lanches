@@ -240,7 +240,14 @@ Objetivo: saber **onde o pedido está demorando** e se cada etapa está dentro d
 | Rota até o cliente (delivery) | `picked_up_at` | `delivered_at` | motoboy toca **Entreguei** (com horário e localização) |
 | Entrega ao cliente (balcão/retirada) | `ready_at` | `delivered_at` | balcão chama a senha e toca **Entregue** |
 
-- **App do motoboy:** uma tela simples em PWA (abre pelo navegador do celular, sem instalar loja de apps), com login por telefone, lista dos pedidos prontos, botões *Peguei* e *Entreguei* e a rota no mapa. O QR code impresso no ticket abre o pedido direto, para o motoboy não esquecer de marcar.
+- **App do motoboy:** login por telefone, lista dos pedidos prontos, botões *Peguei* e *Entreguei* e a rota no mapa. O QR code impresso no ticket abre o pedido direto, para o motoboy não esquecer de marcar.
+- **Rastreio em tempo real (estilo iFood):** enquanto o motoboy está com um pedido, o app envia a posição a cada 5 a 10 segundos. O dono vê todos no mapa (painel e celular), com rota, distância e previsão de chegada, e o cliente acompanha o mesmo trajeto pelo link de acompanhamento.
+  - **Por que app instalado e não só PWA:** o navegador do celular para de mandar localização quando a tela apaga ou o motoboy troca de app (no iPhone isso é garantido). Para rastrear de verdade, o app do motoboy é feito em **React Native (Expo)**, aproveitando o mesmo TypeScript do resto do sistema, com localização em segundo plano. Primeiro Android (a maioria dos motoboys); a PWA continua como reserva, funcionando com a tela ligada.
+  - **Publicação:** Android pela Play Store (taxa única de US$ 25) ou instalação direta do arquivo; iPhone pela App Store (US$ 99 por ano), só se houver motoboy com iPhone.
+  - **Mapa e rota:** MapLibre com mapas do OpenStreetMap (sem custo por acesso) e cálculo de rota por OSRM/OpenRouteService; Google Maps fica como opção paga.
+  - **Como trafega:** a posição chega pela API, a última fica no Redis e vai por WebSocket para o painel e para a página do cliente; o histórico fica em `courier_locations`.
+  - **Privacidade (LGPD):** só rastreia entre *Peguei* e *Entreguei* (ou a volta para a loja), com aviso e aceite no primeiro uso; fora do turno, nada é coletado. Histórico de posições guardado por 30 dias.
+  - **iFood Entrega:** quando o entregador é do iFood, mostramos o status que a API do iFood envia; a posição dele fica no app do iFood.
 - **iFood Entrega:** os horários de coleta e entrega vêm dos eventos do próprio iFood, sem toque do motoboy.
 - **Pedido do iFood com aceite automático:** o tempo de aceite passa a medir até a cozinha visualizar o pedido no KDS.
 - Cada mudança fica em `order_status_history` (quem, quando, de qual aparelho), e os horários principais ficam em colunas do pedido para os relatórios serem rápidos.
@@ -304,7 +311,7 @@ apps/
   web/          Admin, PDV, KDS (PWA)
   cardapio/     Cardápio digital público
   hub/          Agente local da loja
-  motoboy/      App do motoboy (PWA): Peguei / Entreguei, rota, acerto
+  motoboy/      App do motoboy (React Native/Expo): Peguei / Entreguei, GPS ao vivo, rota, acerto
 packages/
   shared/       Tipos, esquemas Zod, enums de status, utilitários de dinheiro
   ui/           Design system: cores, fontes, componentes e gráficos da marca
@@ -639,6 +646,7 @@ O telefone é a chave principal de unificação. Clientes do iFood muitas vezes 
 | `print_jobs` | id, store_id, impressora, tipo (cozinha, via cliente, entrega), conteúdo, status, tentativas |
 | `couriers` | id, store_id, nome, telefone, modelo_pagamento (fixo, diária, por_entrega, misto), valor_cents |
 | `deliveries` | id, order_id, provedor (proprio, terceirizado, ifood_entrega), courier_id, custo_cents, saiu_em, entregue_em, distância_km |
+| `courier_locations` | id, delivery_id, courier_id, lat, lng, precisão_m, velocidade, bateria, registrado_em (guardado por 30 dias; a última posição também fica no Redis) |
 | `courier_settlements` | id, courier_id, período, entregas, valor_total_cents, pago_em, financial_entry_id |
 
 ### 4.5 Estoque, fichas técnicas e PEPS
