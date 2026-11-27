@@ -1,6 +1,6 @@
 # Seu Alves — Plano Arquitetural do Sistema Unificado de Delivery
 
-> Versão 0.1 · 27/11/2026 · Documento de desenho (ainda sem código de aplicação)
+> Versão 0.2 · 27/11/2026 · Documento de desenho (ainda sem código de aplicação)
 
 Este documento une os quatro pilares (WhatsApp/atendimento, cardápio + PDV + KDS, iFood e financeiro) em um único sistema próprio, já considerando as respostas do questionário inicial. Onde algo ainda depende de uma informação sua, está marcado com **⚠ A confirmar**.
 
@@ -17,6 +17,8 @@ Este documento une os quatro pilares (WhatsApp/atendimento, cardápio + PDV + KD
 | WhatsApp | **Chatwoot + WhatsApp Cloud API (oficial)**, **sem Evolution API** | O Chatwoot já conecta direto na API Oficial da Meta. O Evolution API só faz sentido para números não oficiais (Baileys). Uma peça a menos para manter. |
 | Typebot / n8n | **Opcionais, fora do MVP** | O fluxo inicial (boas-vindas, link do cardápio, status do pedido) é simples e fica melhor no nosso código. n8n pode entrar depois para automações periféricas, nunca no caminho crítico do pedido. |
 | Firefly III / ERPNext | **Não rodar; usar como referência de modelagem** | São sistemas grandes e genéricos. O seu financeiro precisa nascer ligado ao pedido, ao estoque PEPS e às taxas por canal, o que é mais simples de construir no núcleo. |
+| Banco, maquininha, impressora, fiscal | **Adaptadores genéricos** (seção 1.9) | Nada fica amarrado a um fornecedor; vários modelos convivem e cada loja escolhe os seus. |
+| NFC-e | **Fora do MVP** (empresa é MEI), módulo previsto para ligar depois | MEI é dispensado em vendas ao consumidor final (seção 5). |
 | Hospedagem | **1 VPS (8 GB RAM) com Coolify**, backups automáticos externos | Roda 24/7 sem você online, custo estimado de R$ 100 a R$ 200/mês com tudo. Detalhes na seção 2.5. |
 | Offline | **PWA no balcão/KDS + "Hub da Loja"** (mini PC na loja) | Se a internet cair, balcão, impressão e KDS continuam e sincronizam depois. |
 | Multi-loja | Toda tabela tem `store_id` desde o dia 1 | Abrir a segunda loja vira cadastro, não reescrita. |
@@ -186,7 +188,40 @@ Objetivo: **se a internet cair, o balcão vende, a cozinha vê e a impressora im
 - **Sincronização:** quando a internet volta, o Hub envia a fila de pedidos offline para a nuvem. Como o ID foi gerado na origem, reenviar é seguro (idempotente). Pedidos são "só acrescenta", então praticamente não há conflitos.
 - Pagamentos offline: dinheiro e maquininha funcionam (a maquininha tem chip próprio). Pix dinâmico depende de internet; no offline, usa Pix estático da loja e marca "a conciliar".
 
-**⚠ A confirmar:** modelo das impressoras térmicas (Epson, Elgin, Bematech, Tanca…) e se são USB ou rede.
+A impressora não precisa ser escolhida agora: o Hub usa drivers intercambiáveis (seção 1.9).
+
+### 1.9 Camada de adaptadores: banco, maquininha, impressora e fiscal
+
+**Decisão:** o sistema **não fica amarrado** a nenhum banco, maquininha, impressora ou emissor fiscal. O núcleo só conhece **contratos genéricos** (interfaces); cada fornecedor é um **adaptador** (driver) que implementa esse contrato. Trocar de banco ou adicionar uma impressora nova é cadastrar/configurar um adaptador, sem mexer em pedidos, cozinha ou financeiro. É o mesmo princípio usado nos canais de venda (seção 1.4).
+
+```mermaid
+flowchart LR
+  CORE[Núcleo<br/>pedidos, financeiro, cozinha] --> I1[[PixProvider]]
+  CORE --> I2[[BankStatementProvider]]
+  CORE --> I3[[AcquirerProvider]]
+  CORE --> I4[[PrinterDriver]]
+  CORE --> I5[[FiscalProvider]]
+  I1 --> A1[Efí] & A2[Inter] & A3[Sicoob / Itaú / outros]
+  I2 --> B1[API do banco] & B2[Agregador Open Finance] & B3[Importar OFX/CSV]
+  I3 --> C1[Stone / Cielo / Rede / Mercado Pago / PagBank...] & C2[Manual: total do dia]
+  I4 --> D1[ESC/POS rede TCP 9100] & D2[ESC/POS USB / serial] & D3[Bluetooth] & D4[Impressão do navegador]
+  I5 --> E1[Focus NFe / Nuvem Fiscal / NFE.io] & E2[Nenhum - MEI]
+```
+
+| Contrato | O que o núcleo pede | Adaptadores previstos | Sempre existe um modo "genérico" |
+|---|---|---|---|
+| **PixProvider** | criar cobrança com `txid`, consultar, estornar, receber webhook de pagamento | APIs Pix dos bancos (padrão do Banco Central, muito parecido entre bancos: Efí, Inter, Sicoob, Itaú, Santander, BB…) | **Pix estático** (chave + valor) com conciliação pelo extrato |
+| **BankStatementProvider** | listar lançamentos de uma conta num período | API do próprio banco; agregador Open Finance (ex.: Pluggy, Belvo) | **Importação de arquivo OFX/CSV** do internet banking |
+| **AcquirerProvider** (maquininha) | listar vendas e liquidações (bruto, taxa, líquido, data prevista) | APIs/arquivos de conciliação das adquirentes | **Taxas cadastradas** em `fee_rules` + casamento do crédito do dia no extrato |
+| **PrinterDriver** | imprimir um documento (cozinha, via do cliente, entrega) | ESC/POS por rede (porta 9100), USB, serial, Bluetooth | **Impressão pelo navegador** (qualquer impressora instalada no computador) |
+| **FiscalProvider** | emitir/cancelar NFC-e, baixar NF-e de compra pela chave | APIs de emissores (Focus NFe, Nuvem Fiscal, NFE.io, PlugNotas) | **Desligado** (situação atual, MEI) + upload manual de XML |
+
+**Impressoras:** quase todas as térmicas de 58 mm e 80 mm do mercado (Epson, Elgin, Bematech, Daruma, Tanca, Knup, genéricas chinesas) falam **ESC/POS**. O sistema gera o ticket num formato próprio (texto, negrito, tamanho, QR code, corte de papel) e o driver traduz para os comandos da impressora. Por loja, você cadastra quantas impressoras quiser, com:
+- conexão (IP de rede, USB, serial ou Bluetooth) e largura do papel (58 ou 80 mm, 32 ou 48 colunas);
+- página de código/acentuação (perfis prontos por fabricante, com opção de teste);
+- **roteamento:** quais praças/tipos de ticket vão para cada impressora (ex.: chapa imprime só lanches; balcão imprime a via do cliente; uma impressora pode receber tudo).
+
+**Configuração por loja:** cada loja escolhe seus adaptadores em `integration_credentials` + uma tabela `store_devices` (impressoras, KDS). Assim a loja 1 pode usar o banco X e a maquininha Y, e a loja 2 outros, sem código novo. Recomendação prática: comece pelos modos genéricos (OFX, taxas cadastradas, ESC/POS por rede) e ligue as APIs específicas conforme os fornecedores forem definidos.
 
 ---
 
@@ -498,7 +533,7 @@ O "preço de custo atual" exibido no cadastro (para precificar) é o do último 
 - **Maquininha:** se a adquirente tiver API/arquivo de conciliação (Stone, Cielo, Mercado Pago, PagBank têm opções), importamos as vendas e liquidações; senão, casamos o crédito do extrato com o total esperado do dia.
 - **Extrato do banco:** via API do próprio banco (Inter, Efí, Sicoob, Itaú…) ou por um agregador Open Finance (ex.: Pluggy). O que não casar sozinho aparece numa fila "a conciliar" para você resolver com um clique.
 
-**⚠ A confirmar:** banco da conta PJ e maquininha usada hoje. Isso define o conector do extrato e da adquirente.
+Banco e maquininha **não precisam ser definidos agora**: tudo passa pela camada de adaptadores (seção 1.9), e o modo genérico (extrato OFX + taxas cadastradas) funciona com qualquer um.
 
 **DRE por canal (gerada a partir dos lançamentos):**
 
@@ -522,6 +557,7 @@ Receita bruta (por canal: iFood | Cardápio | WhatsApp | Balcão)
 | `integration_credentials` | id, store_id, provedor (ifood, meta, chatwoot, banco, fiscal), dados_criptografados, expira_em |
 | `inbound_events` | id, provedor, chave_idempotência (única), payload (jsonb), recebido_em, processado_em, erro, tentativas |
 | `outbox_events` | id, tipo (order.created, order.status_changed…), agregado_id, payload, criado_em, publicado_em |
+| `store_devices` | id, store_id, tipo (impressora, kds, pdv), nome, driver (escpos_rede, escpos_usb, serial, bluetooth, navegador), conexão (IP/porta, caminho), largura_papel, perfil_codepage, roteamento (praças e tipos de ticket), ativo |
 | `sync_cursors` | provedor, store_id, cursor, atualizado_em |
 | `fiscal_documents` | id, order_id, tipo (NFC-e), chave, status, xml, danfe_url, protocolo |
 | `audit_log` | quem, o quê, quando, antes/depois (para cancelamentos, descontos, ajustes de estoque) |
@@ -572,7 +608,11 @@ A obrigação **não depende do canal** (balcão, delivery, iFood ou WhatsApp s�
 
 Se for necessária, a integração é feita por uma API de emissor (Focus NFe, Nuvem Fiscal, NFE.io, PlugNotas), com certificado digital A1 e o CSC (código de segurança) obtido na SEFAZ-RJ. A partir de 2026, as notas também ganham os campos da Reforma Tributária (CBS/IBS), que os emissores já tratam.
 
-**⚠ A confirmar com o seu contador:** o CNPJ é MEI ou ME/Simples? Com essa resposta fechamos se a NFC-e entra no MVP ou fica como módulo pronto para ligar.
+**Situação do Seu Alves: a empresa é MEI.** Portanto a NFC-e **não entra no MVP**. O módulo fiscal fica desenhado e desligado (`FiscalProvider = nenhum`), pronto para ligar sem retrabalho. Pontos de atenção do MEI que afetam o sistema (conferir valores atuais com o contador):
+
+- **Venda para empresa (CNPJ):** o MEI precisa emitir nota (NFS-e/NF-e pelo emissor do governo). O sistema marca esses pedidos para lembrar a emissão.
+- **Teto de faturamento anual do MEI:** o sistema vai mostrar no painel o faturamento acumulado do ano contra o teto, com alerta ao se aproximar. Somando iFood, cardápio e balcão, um delivery cresce rápido; ao passar do teto, a empresa vira ME e a NFC-e passa a ser obrigatória. É só ligar o módulo.
+- **Multi-loja:** o MEI não pode ter filial e tem limite de 1 funcionário registrado. Abrir a segunda loja provavelmente exigirá migrar para ME (Simples Nacional), e com isso emitir NFC-e. Por isso o banco já nasce multi-loja e com o módulo fiscal previsto.
 
 Mesmo sem NFC-e, o mesmo certificado A1 é útil para **baixar automaticamente as NF-e de compra emitidas contra o seu CNPJ**, o que alimenta o estoque sem digitar nada.
 
@@ -585,7 +625,7 @@ A ideia é rodar o sistema novo **em paralelo** à OlaClick, assumindo um canal 
 ### Fase 0 — Fundação (1 a 2 semanas)
 - Solicitar **já** o cadastro no **iFood Developer** e a criação do app (a homologação é o item mais demorado).
 - Solicitar o número na **WhatsApp Cloud API** (verificação da empresa no Meta Business).
-- Decidir com o contador: MEI ou Simples (NFC-e), banco para API Pix.
+- Emitir o certificado digital e-CNPJ A1 (útil para baixar NF de compra pela chave e, no futuro, para NFC-e).
 - Contratar VPS, instalar Coolify, domínio, Cloudflare, backups.
 - Criar o monorepo, CI, esquema inicial do banco (organização, loja, usuários, catálogo).
 
@@ -618,7 +658,7 @@ A ideia é rodar o sistema novo **em paralelo** à OlaClick, assumindo um canal 
 - Regras de taxas (iFood, maquininha, Pix), recebíveis, contas a pagar.
 - Conciliação automática: webhook Pix, extrato via API do banco/Open Finance, repasses da API financeira do iFood.
 - DRE por canal, margem por produto, acerto de motoboys.
-- NFC-e (se o contador confirmar a obrigatoriedade).
+- Alerta do teto do MEI no painel (NFC-e só quando a empresa virar ME).
 - **Marco:** a planilha manual é aposentada.
 
 ### Fase 6 — Modo offline completo (2 semanas)
@@ -631,7 +671,7 @@ A ideia é rodar o sistema novo **em paralelo** à OlaClick, assumindo um canal 
 - Período de convivência curto, depois cancelamento da OlaClick.
 
 ### Fase 8 — Escala e multi-loja
-- Segunda loja: cadastro de nova `store`, merchant iFood próprio, estoque e caixa separados, relatórios consolidados.
+- Segunda loja (provável migração de MEI para ME e ativação da NFC-e): cadastro de nova `store`, merchant iFood próprio, estoque e caixa separados, relatórios consolidados.
 - Opcionais: Typebot para fluxos mais elaborados, n8n para automações (avaliações, campanhas), programa de fidelidade, novos marketplaces.
 
 As durações são estimativas para uma pessoa desenvolvendo com apoio de IA, em ritmo parcial; servem para ordem e proporção, não como prazo fechado.
@@ -640,9 +680,25 @@ As durações são estimativas para uma pessoa desenvolvendo com apoio de IA, em
 
 ## 7. Pendências para a próxima rodada
 
-1. Regime tributário (MEI ou ME/Simples) → define NFC-e.
-2. Banco da conta PJ e maquininha usada → define conectores de conciliação.
-3. Modelo e conexão (USB/rede) das impressoras térmicas.
-4. Média de pedidos/dia e pico (só para confirmar o tamanho do servidor).
-5. Acesso à OlaClick para estudar os dados (Fase 7).
-6. Aprovação deste desenho para começar a Fase 0 (esqueleto do monorepo e esquema do banco).
+Resolvido nesta rodada: empresa é **MEI** (NFC-e fora do MVP); banco, maquininha e impressora ficam **genéricos** via adaptadores.
+
+1. Solicitar o acesso ao iFood Developer (passo a passo no Apêndice A).
+2. Média de pedidos/dia e pico (só para confirmar o tamanho do servidor).
+3. Acesso à OlaClick para estudar os dados (Fase 7).
+4. Aprovação deste desenho para começar a Fase 0 (esqueleto do monorepo e esquema do banco).
+
+---
+
+## Apêndice A. Como solicitar o acesso ao iFood Developer
+
+O processo é feito no **Portal do Desenvolvedor iFood** (developer.ifood.com.br). Os nomes de telas mudam com o tempo; a sequência abaixo é a usual, e a documentação do portal é a referência final.
+
+1. **Criar a conta de desenvolvedor.** Cadastre-se no portal com um e-mail da empresa e os dados do CNPJ. Use o mesmo dono da loja no iFood, para facilitar a autorização depois.
+2. **Criar a organização e o aplicativo.** No portal, crie um app. Escolha o tipo **centralizado**: é o indicado para quem integra **as próprias lojas** (o tipo *distribuído* é para empresas de software que vendem para muitos restaurantes). Dê um nome (ex.: "Seu Alves Gestão").
+3. **Escolher os módulos (escopos) da API.** Marque: *Merchant* (dados e status da loja), *Order* e *Events* (pedidos e polling), *Catalog* (cardápio), *Financial* (repasses e taxas, para a conciliação). *Logistics/Shipping* e *Review* podem ser adicionados depois.
+4. **Pegar as credenciais de teste.** O portal gera `client_id` e `client_secret` e disponibiliza uma **loja de teste**, onde é possível fazer pedidos fictícios. Guarde as credenciais num lugar seguro (nunca no GitHub); elas entram no sistema pela tela de integrações.
+5. **Desenvolver e testar** (Fase 3 do roadmap): autenticação, polling a cada 30 s, acknowledgment, confirmar, cancelar, pronto/despachado, e o tratamento de erros.
+6. **Solicitar a homologação.** Pelo portal, você pede a avaliação do app. A equipe do iFood verifica os requisitos obrigatórios (por exemplo: polling contínuo, acknowledgment de todos os eventos, confirmação e cancelamento corretos, exibição das informações obrigatórias do pedido). Pode haver uma sessão de testes acompanhada. Se algo não passar, corrigimos e reenviamos.
+7. **Liberar a produção e vincular a loja real.** Aprovado, o app recebe acesso de produção. A loja Seu Alves é vinculada ao app (autorização do dono pelo Portal do Parceiro / Gestor de Pedidos, conforme o portal indicar). A partir daí os pedidos reais começam a chegar no sistema.
+
+**O que você pode fazer já, mesmo antes de existir código:** passos 1 a 4. Assim a conta e as credenciais de teste estão prontas quando chegarmos à Fase 3, e qualquer pendência de cadastro com o iFood já fica resolvida. Enquanto o sistema novo não estiver homologado, a loja continua recebendo pedidos normalmente pelo Gestor de Pedidos do iFood.
