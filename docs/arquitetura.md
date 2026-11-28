@@ -165,6 +165,22 @@ Mapeamento iFood (códigos de evento do `/events:polling`): `PLC` → CRIADO, `C
 - **Webhook:** o iFood também oferece entrega de eventos via webhook. Podemos usar webhook como principal e manter o polling como garantia; o desenho com `inbound_events` aceita os dois sem duplicar.
 - **Financeiro iFood:** a API financeira do iFood fornece repasses e detalhamento de comissões/taxas. O worker importa isso diariamente e **ajusta o valor estimado** de cada pedido para o valor real (seção 4.6).
 
+### 1.6.1 Entregadores terceirizados: iFood Entrega e 99 Entrega
+
+Cada pedido de entrega pode sair com o **motoboy próprio**, o **iFood Entrega** (módulo Shipping, "entrega sob demanda", vale também para pedidos que não vieram do iFood) ou a **99 Entrega**. Os três falam o mesmo idioma dentro do sistema: um status único de entrega (`SOLICITADA → ENTREGADOR_ATRIBUIDO → NA_LOJA → COLETADA → CHEGANDO → ENTREGUE`, mais `CANCELADA` e `FALHOU`), na tabela `deliveries`.
+
+- **Sugestão de quem leva** (`suggestProvider`): motoboy próprio livre vem primeiro; sem ninguém livre, a cotação mais barata que chega na loja dentro do limite (padrão 15 min); se nenhuma chega a tempo, a mais rápida. A loja confirma com um toque.
+- **Cotar, solicitar, cancelar e acompanhar:** adaptadores em `apps/worker/src/delivery/` (`ifood-shipping.ts`, `n99-entrega.ts`). Toda solicitação leva chave de idempotência (`entrega-<id do pedido>`), então repetir por queda de internet não chama dois entregadores.
+- **Avisos automáticos:** `POST /webhooks/ifood` (assinatura HMAC no cabeçalho `X-IFood-Signature`) e `POST /webhooks/n99?token=…`. A API só grava e responde 200; o worker processa a cada 3 s. Eventos fora de ordem ou repetidos não fazem a entrega voltar para trás.
+- **Regra do cliente:** "saiu para entrega" e "chegou na loja" ficam internos. O cliente recebe **um** aviso, quando o entregador entra no raio da loja (padrão 800 m, campo `notify_radius_m`) ou quando o provedor informa que está chegando.
+- **Chegada na loja:** o horário em que o entregador chegou (`arrived_store_at`) aparece para o dono, igual ao dos motoboys próprios.
+- **Falha:** se ninguém aceitar, o evento `delivery.failed` alerta a loja para escolher outro entregador; a nova tentativa vira outra linha em `deliveries` do mesmo pedido.
+
+**Para ligar (depende do Krizek):**
+1. iFood: no Portal do Desenvolvedor, ativar o módulo **Shipping** no mesmo app da Merchant API. As chaves `IFOOD_*` servem para os dois.
+2. 99 Entrega: pedir a conta de desenvolvedor. Ela libera Client ID/Secret de teste e a documentação. Para produção a 99 exige passar em 5 testes (cotar, criar, cancelar, consultar e aviso automático), que o adaptador já cobre. Os caminhos da API vêm de `N99_PATH_*`, para ajustar sem mexer no código se a documentação usar outros nomes.
+3. Chaves só no `.env` do servidor (ou na futura tela de integrações, criptografadas). Nunca no GitHub: o repositório é público.
+
 ### 1.7 WhatsApp: Chatwoot + API Oficial (e por que tirar o Evolution API)
 
 - O Chatwoot tem caixa de entrada nativa para **WhatsApp Cloud API**. O número oficial fica conectado direto nele.
